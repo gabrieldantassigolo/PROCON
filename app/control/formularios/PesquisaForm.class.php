@@ -1,9 +1,9 @@
 <?php
 /**
- * EstabelecimentoForm Form
+ * PesquisaForm Form
  * @author  <your name here>
  */
-class EstabelecimentoForm extends TPage
+class PesquisaForm extends TPage
 {
     protected $form; // form
     
@@ -16,63 +16,22 @@ class EstabelecimentoForm extends TPage
         parent::__construct();
         
         // creates the form
-        $this->form = new BootstrapFormBuilder('form_Estabelecimento');
-        $this->form->setFormTitle('Estabelecimento');
+        $this->form = new BootstrapFormBuilder('form_Pesquisa');
+        $this->form->setFormTitle('Pesquisa');
         
 
         // create the form fields
         $nome = new TEntry('nome');
-        $razao = new TEntry('razao');
-        $cnpj = new TEntry('cnpj');
-        $responsavel = new TEntry('responsavel');
-        $email = new TEntry('email');
-        $telefone = new TEntry('telefone');
-        $cep = new TEntry('cep');
-        $estado = new TEntry('estado');
-        $municipio = new TEntry('municipio');
-        $logradouro = new TEntry('logradouro');
-        $bairro = new TEntry('bairro');
-        $numero = new TEntry('numero');
-        $complemento = new TEntry('complemento');
 
 
         // add the fields
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
-        $this->form->addFields( [ new TLabel('Razao') ], [ $razao ] );
-        $this->form->addFields( [ new TLabel('Cnpj') ], [ $cnpj ] );
-        $this->form->addFields( [ new TLabel('Responsavel') ], [ $responsavel ] );
-        $this->form->addFields( [ new TLabel('Email') ], [ $email ] );
-        $this->form->addFields( [ new TLabel('Telefone') ], [ $telefone ] );
-        $this->form->addFields( [ new TLabel('Cep') ], [ $cep ] );
-        $this->form->addFields( [ new TLabel('Estado') ], [ $estado ] );
-        $this->form->addFields( [ new TLabel('Municipio') ], [ $municipio ] );
-        $this->form->addFields( [ new TLabel('Logradouro') ], [ $logradouro ] );
-        $this->form->addFields( [ new TLabel('Bairro') ], [ $bairro ] );
-        $this->form->addFields( [ new TLabel('Numero') ], [ $numero ] );
-        $this->form->addFields( [ new TLabel('Complemento') ], [ $complemento ] );
 
         $nome->addValidation('Nome', new TRequiredValidator);
-        $responsavel->addValidation('Responsavel', new TRequiredValidator);
-        $email->addValidation('Email', new TRequiredValidator);
-        $telefone->addValidation('Telefone', new TRequiredValidator);
-        $cep->addValidation('Cep', new TRequiredValidator);
-        $numero->addValidation('Numero', new TRequiredValidator);
 
 
         // set sizes
         $nome->setSize('100%');
-        $razao->setSize('100%');
-        $cnpj->setSize('100%');
-        $responsavel->setSize('100%');
-        $email->setSize('100%');
-        $telefone->setSize('100%');
-        $cep->setSize('100%');
-        $estado->setSize('100%');
-        $municipio->setSize('100%');
-        $logradouro->setSize('100%');
-        $bairro->setSize('100%');
-        $numero->setSize('100%');
-        $complemento->setSize('100%');
 
 
 
@@ -96,8 +55,14 @@ class EstabelecimentoForm extends TPage
         $container->style = 'width: 90%';
         // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $container->add($this->form);
+        $this->form->addAction('Next', new TAction(array($this, 'onNextForm')), 'fa:chevron-circle-right green');
         
         parent::add($container);
+    }
+
+    public function onNextForm(){
+    
+        
     }
 
     /**
@@ -119,7 +84,7 @@ class EstabelecimentoForm extends TPage
             $this->form->validate(); // validate form data
             $data = $this->form->getData(); // get form data as array
             
-            $object = new Estabelecimento;  // create an empty object
+            $object = new Pesquisa;  // create an empty object
             $object->fromArray( (array) $data); // load the object with data
             $object->store(); // save the object
             
@@ -160,7 +125,7 @@ class EstabelecimentoForm extends TPage
             {
                 $key = $param['key'];  // get the parameter $key
                 TTransaction::open('procon_com'); // open a transaction
-                $object = new Estabelecimento($key); // instantiates the Active Record
+                $object = new Pesquisa($key); // instantiates the Active Record
                 $this->form->setData($object); // fill the form
                 TTransaction::close(); // close the transaction
             }

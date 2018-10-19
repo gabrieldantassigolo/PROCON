@@ -1,11 +1,11 @@
 <?php
 /**
- * Item Active Record
+ * RelacaoItem Active Record
  * @author  <your-name-here>
  */
-class Item extends TRecord
+class RelacaoItem extends TRecord
 {
-    const TABLENAME = 'item';
+    const TABLENAME = 'relacao_item';
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'max'; // {max, serial}
     
@@ -16,8 +16,8 @@ class Item extends TRecord
     public function __construct($id = NULL, $callObjectLoad = TRUE)
     {
         parent::__construct($id, $callObjectLoad);
-        parent::addAttribute('nome');
-        parent::addAttribute('quantidade');
+        parent::addAttribute('relacao_id');
+        parent::addAttribute('item_id');
     }
 
 

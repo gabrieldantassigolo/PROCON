@@ -1,9 +1,9 @@
 <?php
 /**
- * EstabelecimentoForm Form
+ * RelacaoForm Form
  * @author  <your name here>
  */
-class EstabelecimentoForm extends TPage
+class RelacaoForm extends TPage
 {
     protected $form; // form
     
@@ -16,63 +16,27 @@ class EstabelecimentoForm extends TPage
         parent::__construct();
         
         // creates the form
-        $this->form = new BootstrapFormBuilder('form_Estabelecimento');
-        $this->form->setFormTitle('Estabelecimento');
+        $this->form = new BootstrapFormBuilder('form_Relacao');
+        $this->form->setFormTitle('Relacao');
         
 
         // create the form fields
-        $nome = new TEntry('nome');
-        $razao = new TEntry('razao');
-        $cnpj = new TEntry('cnpj');
-        $responsavel = new TEntry('responsavel');
-        $email = new TEntry('email');
-        $telefone = new TEntry('telefone');
-        $cep = new TEntry('cep');
-        $estado = new TEntry('estado');
-        $municipio = new TEntry('municipio');
-        $logradouro = new TEntry('logradouro');
-        $bairro = new TEntry('bairro');
-        $numero = new TEntry('numero');
-        $complemento = new TEntry('complemento');
+        $pesquisa_id = new TDBCombo('pesquisa_id', 'procon_com', 'Pesquisa', 'id', 'nome');
+        $estabelecimento_id = new TDBCombo('estabelecimento_id', 'procon_com', 'Estabelecimento', 'id', 'nome');
+        $data = new TDate('data_criacao');
 
 
         // add the fields
-        $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
-        $this->form->addFields( [ new TLabel('Razao') ], [ $razao ] );
-        $this->form->addFields( [ new TLabel('Cnpj') ], [ $cnpj ] );
-        $this->form->addFields( [ new TLabel('Responsavel') ], [ $responsavel ] );
-        $this->form->addFields( [ new TLabel('Email') ], [ $email ] );
-        $this->form->addFields( [ new TLabel('Telefone') ], [ $telefone ] );
-        $this->form->addFields( [ new TLabel('Cep') ], [ $cep ] );
-        $this->form->addFields( [ new TLabel('Estado') ], [ $estado ] );
-        $this->form->addFields( [ new TLabel('Municipio') ], [ $municipio ] );
-        $this->form->addFields( [ new TLabel('Logradouro') ], [ $logradouro ] );
-        $this->form->addFields( [ new TLabel('Bairro') ], [ $bairro ] );
-        $this->form->addFields( [ new TLabel('Numero') ], [ $numero ] );
-        $this->form->addFields( [ new TLabel('Complemento') ], [ $complemento ] );
+        $this->form->addFields( [ new TLabel('Pesquisa Id') ], [ $pesquisa_id ] );
+        $this->form->addFields( [ new TLabel('Estabelecimento Id') ], [ $estabelecimento_id ] );
+        $this->form->addFields( [ new TLabel('Data') ], [ $data ] );
 
-        $nome->addValidation('Nome', new TRequiredValidator);
-        $responsavel->addValidation('Responsavel', new TRequiredValidator);
-        $email->addValidation('Email', new TRequiredValidator);
-        $telefone->addValidation('Telefone', new TRequiredValidator);
-        $cep->addValidation('Cep', new TRequiredValidator);
-        $numero->addValidation('Numero', new TRequiredValidator);
 
 
         // set sizes
-        $nome->setSize('100%');
-        $razao->setSize('100%');
-        $cnpj->setSize('100%');
-        $responsavel->setSize('100%');
-        $email->setSize('100%');
-        $telefone->setSize('100%');
-        $cep->setSize('100%');
-        $estado->setSize('100%');
-        $municipio->setSize('100%');
-        $logradouro->setSize('100%');
-        $bairro->setSize('100%');
-        $numero->setSize('100%');
-        $complemento->setSize('100%');
+        $pesquisa_id->setSize('100%');
+        $estabelecimento_id->setSize('100%');
+        $data->setSize('100%');
 
 
 
@@ -119,7 +83,7 @@ class EstabelecimentoForm extends TPage
             $this->form->validate(); // validate form data
             $data = $this->form->getData(); // get form data as array
             
-            $object = new Estabelecimento;  // create an empty object
+            $object = new Relacao;  // create an empty object
             $object->fromArray( (array) $data); // load the object with data
             $object->store(); // save the object
             
@@ -160,7 +124,7 @@ class EstabelecimentoForm extends TPage
             {
                 $key = $param['key'];  // get the parameter $key
                 TTransaction::open('procon_com'); // open a transaction
-                $object = new Estabelecimento($key); // instantiates the Active Record
+                $object = new Relacao($key); // instantiates the Active Record
                 $this->form->setData($object); // fill the form
                 TTransaction::close(); // close the transaction
             }

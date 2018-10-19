@@ -1,43 +1,49 @@
 CREATE TABLE pesquisa (
-    id SERIAL PRIMARY KEY,
-    nome varchar(50),
+    id INTEGER PRIMARY KEY NOT NULL,
+    nome varchar(100),
     data date);
 
 CREATE TABLE estabelecimento (
-    id SERIAL PRIMARY KEY,
-    nome varchar(50),
-    razao varchar(50),
-    cnpj varchar(50),
-    telefone varchar(50),
-    estado varchar(50),
-    municipio varchar(50),
-    logradouro varchar(50),
-    bairro varchar(50),
+    id INTEGER PRIMARY KEY NOT NULL,
+    nome varchar(100),
+    razao varchar(100),
+    cnpj varchar(100),
+    telefone varchar(100),
+    estado varchar(100),
+    municipio varchar(100),
+    logradouro varchar(100),
+    bairro varchar(100),
     numero integer,
-    complemento varchar(50),
-    cep varchar(50),
-    responsavel varchar(50),
-    email varchar(50));
+    complemento varchar(100),
+    cep varchar(100),
+    responsavel varchar(100),
+    email varchar(100));
 
 CREATE TABLE item (
-    id SERIAL PRIMARY KEY,
-    nome varchar(50),
+    id INTEGER PRIMARY KEY NOT NULL,
+    nome varchar(100),
     quantidade integer);
 
 CREATE TABLE relacao (
-    id SERIAL PRIMARY KEY,
-    preco double precision,
+    id INTEGER PRIMARY KEY NOT NULL,
     pesquisa_id int NOT NULL,
-    estabelecimento_id int NOT NULL,
-    item_id int NOT NULL);
+    estabelecimento_id int NOT NULL),
+    data date);
 
 CREATE TABLE pesquisa_item (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY NOT NULL,
     pesquisa_id int NOT NULL,
     item_id int NOT NULL);
+
+CREATE TABLE relacao_item (
+    id INTEGER PRIMARY KEY NOT NULL,
+    relacao_id int NOT NULL,
+    item_id int NOT NULL,
+    preco double precision);
 
     ALTER TABLE relacao ADD CONSTRAINT relacao_pesquisa_id_fk FOREIGN KEY (pesquisa_id) REFERENCES pesquisa (id);
     ALTER TABLE relacao ADD CONSTRAINT relacao_estabelecimento_id_fk FOREIGN KEY (estabelecimento_id) REFERENCES estabelecimento (id);
-    ALTER TABLE relacao ADD CONSTRAINT relacao_item_id_fk FOREIGN KEY (item_id) REFERENCES item (id);
     ALTER TABLE pesquisa_item ADD CONSTRAINT pesquisa_item_pesquisa_id_fk FOREIGN KEY (pesquisa_id) REFERENCES pesquisa (id);
     ALTER TABLE pesquisa_item ADD CONSTRAINT pesquisa_item_item_id_fk FOREIGN KEY (item_id) REFERENCES item (id);
+    ALTER TABLE relacao_item ADD CONSTRAINT relacao_item_relacao_id_fk FOREIGN KEY (relacao_id) REFERENCES relacao (id);
+    ALTER TABLE relacao_item ADD CONSTRAINT relacao_item_item_id_fk FOREIGN KEY (item_id) REFERENCES item (id);

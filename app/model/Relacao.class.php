@@ -12,7 +12,7 @@ class Relacao extends TRecord
     
     private $pesquisa;
     private $estabelecimento;
-    private $item;
+    private $items;
 
     /**
      * Constructor method
@@ -20,10 +20,9 @@ class Relacao extends TRecord
     public function __construct($id = NULL, $callObjectLoad = TRUE)
     {
         parent::__construct($id, $callObjectLoad);
-        parent::addAttribute('preco');
         parent::addAttribute('pesquisa_id');
         parent::addAttribute('estabelecimento_id');
-        parent::addAttribute('item_id');
+        parent::addAttribute('data_criacao');
     }
 
     
@@ -82,31 +81,101 @@ class Relacao extends TRecord
     
     
     /**
-     * Method set_item
-     * Sample of usage: $relacao->item = $object;
+     * Method addItem
+     * Add a Item to the Relacao
      * @param $object Instance of Item
      */
-    public function set_item(Item $object)
+    public function addItem(Item $object)
     {
-        $this->item = $object;
-        $this->item_id = $object->id;
+        $this->items[] = $object;
     }
     
     /**
-     * Method get_item
-     * Sample of usage: $relacao->item->attribute;
-     * @returns Item instance
+     * Method getItems
+     * Return the Relacao' Item's
+     * @return Collection of Item
      */
-    public function get_item()
+    public function getItems()
     {
-        // loads the associated object
-        if (empty($this->item))
-            $this->item = new Item($this->item_id);
-    
-        // returns the associated object
-        return $this->item;
+        return $this->items;
     }
+
+    /**
+     * Reset aggregates
+     */
+    public function clearParts()
+    {
+        $this->items = array();
+    }
+
+    /**
+     * Load the object and its aggregates
+     * @param $id object ID
+     */
+    public function load($id)
+    {
     
+        // load the related Item objects
+        $repository = new TRepository('RelacaoItem');
+        $criteria = new TCriteria;
+        $criteria->add(new TFilter('relacao_id', '=', $id));
+        $relacao_items = $repository->load($criteria);
+        if ($relacao_items)
+        {
+            foreach ($relacao_items as $relacao_item)
+            {
+                $item = new Item( $relacao_item->item_id );
+                $this->addItem($item);
+            }
+        }
+    
+        // load the object itself
+        return parent::load($id);
+    }
+
+    /**
+     * Store the object and its aggregates
+     */
+    public function store()
+    {
+        // store the object itself
+        parent::store();
+    
+        // delete the related RelacaoItem objects
+        $criteria = new TCriteria;
+        $criteria->add(new TFilter('relacao_id', '=', $this->id));
+        $repository = new TRepository('RelacaoItem');
+        $repository->delete($criteria);
+        // store the related RelacaoItem objects
+        if ($this->items)
+        {
+            foreach ($this->items as $item)
+            {
+                $relacao_item = new RelacaoItem;
+                $relacao_item->item_id = $item->id;
+                $relacao_item->relacao_id = $this->id;
+                $relacao_item->store();
+            }
+        }
+    }
+
+    /**
+     * Delete the object and its aggregates
+     * @param $id object ID
+     */
+    public function delete($id = NULL)
+    {
+        $id = isset($id) ? $id : $this->id;
+        // delete the related RelacaoItem objects
+        $repository = new TRepository('RelacaoItem');
+        $criteria = new TCriteria;
+        $criteria->add(new TFilter('relacao_id', '=', $id));
+        $repository->delete($criteria);
+        
+    
+        // delete the object itself
+        parent::delete($id);
+    }
 
 
 }

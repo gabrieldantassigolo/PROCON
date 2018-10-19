@@ -19,7 +19,7 @@ class Pesquisa extends TRecord
     {
         parent::__construct($id, $callObjectLoad);
         parent::addAttribute('nome');
-        parent::addAttribute('data');
+        parent::addAttribute('data_criacao');
     }
 
     
