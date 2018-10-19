@@ -18,6 +18,8 @@ class Item extends TRecord
         parent::__construct($id, $callObjectLoad);
         parent::addAttribute('nome');
         parent::addAttribute('quantidade');
+        parent::addAttribute('unidade');
+        parent::addAttribute('tipo');
     }
 
 

@@ -1,0 +1,11 @@
+.tfield, .tcombo, .tdate-group{
+    border: 1px solid rgba(52, 152, 219,0.2) !important;
+}
+
+/*table.table>tbody>tr>td.tdatagrid_cell.action {*/
+    /*padding: 9px 3px 7px 3px !important;*/
+/*}*/
+
+/*.table thead tr th, .table tbody tr td.tdatagrid_cell {*/
+    /*padding: 9px 3px 7px 3px;*/
+/*}*/
