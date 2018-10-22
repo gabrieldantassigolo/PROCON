@@ -26,11 +26,13 @@ class ItemList extends TPage
         
 
         // create the form fields
+        $id   = new TEntry('id');
         $nome = new TEntry('nome');
         $tipo = new TEntry('tipo');
 
 
         // add the fields
+        $this->form->addFields( [ new TLabel('ID')   ], [ $id   ] );
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
         $this->form->addFields( [ new TLabel('Tipo') ], [ $tipo ] );
 

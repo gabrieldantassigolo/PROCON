@@ -28,51 +28,56 @@ class PesquisaFormAddItem extends TPage
         new TSession;
         
         // creates the form
-        $this->form = new BootstrapFormBuilder('form_Pesquisa');
-        $this->form->setFormTitle('Selecao de Itens');
+        $this->form = new TForm('form_search_product');
         
-        $nome = new TEntry('nome');
-        $tipo = new TEntry('data');
-        
-        // add the fields
-        $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] ,
-                                [ new TLabel('Tipo') ], [ $tipo ]);
-        $this->form->addFields(  );
+        // create the form fields
+        $nome       = new TEntry('nome');        
+        $tipo       = new TEntry('tipo');
 
-        // set sizes
-        $nome->setSize('70%');
-        $tipo->setSize('100%');
-        
-        $nome->style = 'border: 1px solid red; float: left;';
-        $tipo->style = 'border: 1px solid red; float: left;';
-        
-        $btn = $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search');
-        $btn->class = 'btn btn-sm btn-primary';
-        $btn->style = 'padding: 4px;';
+
+        $nome->setSize(170);
+        $tipo->setSize(170);
 
         $nome->setValue(TSession::getValue('item_nome'));
         $tipo->setValue(TSession::getValue('item_tipo'));
+        
+        $table = new TTable;
+        
+        $row = $table->addRow();
+        $cell=$row->addCell('');
+        $cell->width= 50;
+        $row->addCell($nome);
+        $row->addCell($tipo);
+        
+        // creates the action button
+        $search=new TButton('find');
+        $search->setAction(new TAction(array($this, 'onSearch')), 'Find');
+        $search->setImage('fa:search');
+        
+        $row->addCell($search);
+        $this->form->add($table);
+        $this->form->setFields(array($nome, $tipo ,$search));
         
         // creates a DataGrid
         $this->datagrid = new TQuickGrid;
         $this->cartgrid = new TQuickGrid;
 
         // creates the datagrid columns
-        //$this->datagrid->addQuickColumn('ID', 'id', 'right', 30);
-        $this->datagrid->addQuickColumn('Nome', 'nome', 'left', 250);
-        $this->datagrid->addQuickColumn('Qtd', 'quantidade', 'center', 25);
-        $this->datagrid->addQuickColumn('Un', 'unidade', 'center', 30);
-        $this->datagrid->addQuickColumn('Tipo', 'tipo', 'left', 150);
+        $this->datagrid->addQuickColumn('ID', 'id', 'right', 30);
+        $this->datagrid->addQuickColumn('Nome', 'nome', 'right', 100);
+        $this->datagrid->addQuickColumn('Quantidade', 'quantidade', 'left', 30);
+        $this->datagrid->addQuickColumn('Unidade', 'unidade', 'left', 30);
+        $this->datagrid->addQuickColumn('Tipo', 'tipo', 'left', 100);
 
-        //$this->cartgrid->addQuickColumn('ID', 'id', 'right', 30);
-        $this->cartgrid->addQuickColumn('Nome', 'nome', 'left', 250);
-        $this->cartgrid->addQuickColumn('Qtd', 'quantidade', 'center', 25 );
-        $this->cartgrid->addQuickColumn('Un', 'Unidade', 'center', 30 );
-        $this->cartgrid->addQuickColumn('Tipo', 'tipo', 'left', 150 );
+        $this->cartgrid->addQuickColumn('ID', 'id', 'right', 30);
+        $this->cartgrid->addQuickColumn('Nome', 'nome', 'left', 100);
+        $this->cartgrid->addQuickColumn('Quantidade', 'quantidade', 'right', 30 );
+        $this->cartgrid->addQuickColumn('Unidade', 'Unidade', 'right', 30 );
+        $this->cartgrid->addQuickColumn('Tipo', 'tipo', 'right', 30 );
         
         // creates datagrid actions
-        $this->datagrid->addQuickAction('Select', new TDataGridAction(array($this, 'onSelect')), 'id', 'fa:plus-circle green');
-        $this->cartgrid->addQuickAction('Delete', new TDataGridAction(array($this, 'onDelete')), 'id', 'fa:minus-circle red');
+        $this->datagrid->addQuickAction('Select', new TDataGridAction(array($this, 'onSelect')), 'id', 'fa:check-circle-o green');
+        $this->cartgrid->addQuickAction('Delete', new TDataGridAction(array($this, 'onDelete')), 'id', 'fa:trash red');
         
         // create the datagrid model
         $this->datagrid->createModel();
@@ -84,30 +89,24 @@ class PesquisaFormAddItem extends TPage
         $this->pageNavigation->setWidth($this->datagrid->getWidth());
         
         // creates the page structure using a table
-/*        $table1 = new TTable;
-        $table1->addRow()->addCell($this->form);*/
         $table1 = new TTable;
+        $table1->addRow()->addCell($this->form)->height='50';
         $table1->addRow()->addCell($this->datagrid);
-        
-        
         
         $this->total = new TLabel('');
         $this->total->setFontStyle('b');
         
         $table2 = new TTable;
-        //$table2->addRow()->addCell($this->total);
+        $table2->addRow()->addCell($this->total)->height = '50';
         $table2->addRow()->addCell($this->cartgrid);
         
         $hbox = new THBox;
-        $hbox->add($table1)->style.='vertical-align:top; display: block; width: 50%; float: left;  white-space: pre-rap; padding: 0 8px 0 20px';
-        $hbox->add($table2)->style.='vertical-align:top; display: block; width: 50%; float: right; padding-right: 20px';
-        
+        $hbox->add($table1)->style.='vertical-align:top';
+        $hbox->add($table2)->style.='vertical-align:top';
         
         // wrap the page content using vertical box
         $vbox = new TVBox;
         //$vbox->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
-        $vbox->style = 'width: 100%; background-color: white; text-align: center';
-        $vbox->add($this->form)->style = 'padding: 20px 20px 10px 20px; width: 100%; margin-botton: 0px;';
         $vbox->add($hbox);
         $vbox->add($this->pageNavigation);
 
@@ -220,7 +219,7 @@ class PesquisaFormAddItem extends TPage
             $criteria = new TCriteria;
             $criteria->setProperties($param); // order, offset
             $criteria->setProperty('limit', $limit);
-            $criteria->setProperty('order', 'nome');
+            $criteria->setProperty('order', 'id');
             
             if (TSession::getValue('item_filter_nome'))
             {

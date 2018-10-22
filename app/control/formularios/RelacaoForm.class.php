@@ -26,12 +26,14 @@ class RelacaoList extends TPage
         
 
         // create the form fields
+        $data = new THidden('id');
         $pesquisa_id = new TDBUniqueSearch('pesquisa_id', 'procon_com', 'Pesquisa', 'id', 'nome');
         $estabelecimento_id = new TDBUniqueSearch('estabelecimento_id', 'procon_com', 'Estabelecimento', 'id', 'nome');
         $data = new TEntry('data_criacao');
 
 
         // add the fields
+        $this->form->addFields( [ new TLabel('') ], [ $id ] );
         $this->form->addFields( [ new TLabel('Pesquisa Id') ], [ $pesquisa_id ] );
         $this->form->addFields( [ new TLabel('Estabelecimento Id') ], [ $estabelecimento_id ] );
         $this->form->addFields( [ new TLabel('Data') ], [ $data ] );

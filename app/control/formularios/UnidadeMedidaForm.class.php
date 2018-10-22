@@ -20,11 +20,13 @@ class UnidadeMedidaForm extends TPage
         $this->form->setFormTitle('UnidadeMedida');
         
 
-        // create the form fields
+        // create the form fields        
+        $id = new THidden('id');
         $nome = new TEntry('nome');
 
 
         // add the fields
+        $this->form->addFields( [ new TLabel('')     ], [ $id ] );
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
 
         $nome->addValidation('Nome', new TRequiredValidator);

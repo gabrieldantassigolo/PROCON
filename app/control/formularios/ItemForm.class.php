@@ -21,7 +21,7 @@ class ItemForm extends TPage
         
 
         // create the form fields
-        $id = new TEntry('id');
+        $id = new THidden('id');
         $nome = new TEntry('nome');
         $quantidade = new TEntry('quantidade');
         $unidade = new TDBCombo('unidade');
@@ -29,7 +29,7 @@ class ItemForm extends TPage
 
 
         // add the fields
-        $this->form->addFields( [ new TLabel('Id') ], [ $id ] );
+        $this->form->addFields( [ new TLabel('') ], [ $id ] );
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
         $this->form->addFields( [ new TLabel('Quantidade') ], [ $quantidade ] );
         $this->form->addFields( [ new TLabel('Unidade') ], [ $unidade ] );
