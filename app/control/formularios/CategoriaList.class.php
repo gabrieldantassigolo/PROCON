@@ -1,9 +1,9 @@
 <?php
 /**
- * ItemList Listing
+ * CategoriaList Listing
  * @author  <your name here>
  */
-class ItemList extends TPage
+class CategoriaList extends TPage
 {
     private $form; // form
     private $datagrid; // listing
@@ -21,32 +21,29 @@ class ItemList extends TPage
         parent::__construct();
         
         // creates the form
-        $this->form = new BootstrapFormBuilder('form_Item');
-        $this->form->setFormTitle('Item');
+        $this->form = new BootstrapFormBuilder('form_Categoria');
+        $this->form->setFormTitle('Categoria');
         
 
         // create the form fields
         $nome = new TEntry('nome');
-        $tipo = new TEntry('tipo');
 
 
         // add the fields
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
-        $this->form->addFields( [ new TLabel('Tipo') ], [ $tipo ] );
 
 
         // set sizes
         $nome->setSize('100%');
-        $tipo->setSize('100%');
 
         
         // keep the form filled during navigation with session data
-        $this->form->setData( TSession::getValue('Item_filter_data') );
+        $this->form->setData( TSession::getValue('Categoria_filter_data') );
         
         // add the search form actions
         $btn = $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search');
         $btn->class = 'btn btn-sm btn-primary';
-        $this->form->addActionLink(_t('New'), new TAction(['ItemForm', 'onEdit']), 'fa:plus green');
+        $this->form->addActionLink(_t('New'), new TAction(['CategoriaForm', 'onEdit']), 'fa:plus green');
         
         // creates a Datagrid
         $this->datagrid = new BootstrapDatagridWrapper(new TDataGrid);
@@ -57,27 +54,18 @@ class ItemList extends TPage
 
         // creates the datagrid columns
         $column_check = new TDataGridColumn('check', '', 'center');
+        $column_id = new TDataGridColumn('id', 'Id', 'right');
         $column_nome = new TDataGridColumn('nome', 'Nome', 'left');
-        $column_quantidade = new TDataGridColumn('quantidade', 'Quantidade', 'right');
-        $column_unidade = new TDataGridColumn('unidade', 'Unidade', 'left');
-        $column_tipo = new TDataGridColumn('tipo', 'Tipo', 'left');
 
 
         // add the columns to the DataGrid
         $this->datagrid->addColumn($column_check);
+        $this->datagrid->addColumn($column_id);
         $this->datagrid->addColumn($column_nome);
-        $this->datagrid->addColumn($column_quantidade);
-        $this->datagrid->addColumn($column_unidade);
-        $this->datagrid->addColumn($column_tipo);
-
-
-        // creates the datagrid column actions
-        $column_nome->setAction(new TAction([$this, 'onReload']), ['order' => 'nome']);
-        $column_tipo->setAction(new TAction([$this, 'onReload']), ['order' => 'tipo']);
 
         
         // create EDIT action
-        $action_edit = new TDataGridAction(['ItemForm', 'onEdit']);
+        $action_edit = new TDataGridAction(['CategoriaForm', 'onEdit']);
         //$action_edit->setUseButton(TRUE);
         //$action_edit->setButtonClass('btn btn-default');
         $action_edit->setLabel(_t('Edit'));
@@ -149,7 +137,7 @@ class ItemList extends TPage
             $value = $param['value'];
             
             TTransaction::open('procon_com'); // open a transaction with database
-            $object = new Item($key); // instantiates the Active Record
+            $object = new Categoria($key); // instantiates the Active Record
             $object->{$field} = $value;
             $object->store(); // update the object in the database
             TTransaction::close(); // close the transaction
@@ -173,18 +161,11 @@ class ItemList extends TPage
         $data = $this->form->getData();
         
         // clear session filters
-        TSession::setValue('ItemList_filter_nome',   NULL);
-        TSession::setValue('ItemList_filter_tipo',   NULL);
+        TSession::setValue('CategoriaList_filter_nome',   NULL);
 
         if (isset($data->nome) AND ($data->nome)) {
             $filter = new TFilter('nome', 'like', "%{$data->nome}%"); // create the filter
-            TSession::setValue('ItemList_filter_nome',   $filter); // stores the filter in the session
-        }
-
-
-        if (isset($data->tipo) AND ($data->tipo)) {
-            $filter = new TFilter('tipo', 'like', "%{$data->tipo}%"); // create the filter
-            TSession::setValue('ItemList_filter_tipo',   $filter); // stores the filter in the session
+            TSession::setValue('CategoriaList_filter_nome',   $filter); // stores the filter in the session
         }
 
         
@@ -192,7 +173,7 @@ class ItemList extends TPage
         $this->form->setData($data);
         
         // keep the search data in the session
-        TSession::setValue('Item_filter_data', $data);
+        TSession::setValue('Categoria_filter_data', $data);
         
         $param = array();
         $param['offset']    =0;
@@ -210,8 +191,8 @@ class ItemList extends TPage
             // open a transaction with database 'procon_com'
             TTransaction::open('procon_com');
             
-            // creates a repository for Item
-            $repository = new TRepository('Item');
+            // creates a repository for Categoria
+            $repository = new TRepository('Categoria');
             $limit = 10;
             // creates a criteria
             $criteria = new TCriteria;
@@ -226,13 +207,8 @@ class ItemList extends TPage
             $criteria->setProperty('limit', $limit);
             
 
-            if (TSession::getValue('ItemList_filter_nome')) {
-                $criteria->add(TSession::getValue('ItemList_filter_nome')); // add the session filter
-            }
-
-
-            if (TSession::getValue('ItemList_filter_tipo')) {
-                $criteria->add(TSession::getValue('ItemList_filter_tipo')); // add the session filter
+            if (TSession::getValue('CategoriaList_filter_nome')) {
+                $criteria->add(TSession::getValue('CategoriaList_filter_nome')); // add the session filter
             }
 
             
@@ -298,7 +274,7 @@ class ItemList extends TPage
         {
             $key=$param['key']; // get the parameter $key
             TTransaction::open('procon_com'); // open a transaction with database
-            $object = new Item($key, FALSE); // instantiates the Active Record
+            $object = new Categoria($key, FALSE); // instantiates the Active Record
             $object->delete(); // deletes the object from the database
             TTransaction::close(); // close the transaction
             
@@ -365,7 +341,7 @@ class ItemList extends TPage
                 // delete each record from collection
                 foreach ($selected as $id)
                 {
-                    $object = new Item;
+                    $object = new Categoria;
                     $object->delete( $id );
                 }
                 $posAction = new TAction(array($this, 'onReload'));

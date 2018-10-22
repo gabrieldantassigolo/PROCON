@@ -1,9 +1,9 @@
 <?php
 /**
- * PesquisaForm Form
+ * CategoriaForm Form
  * @author  <your name here>
  */
-class PesquisaForm extends TPage
+class CategoriaForm extends TPage
 {
     protected $form; // form
     
@@ -16,8 +16,8 @@ class PesquisaForm extends TPage
         parent::__construct();
         
         // creates the form
-        $this->form = new BootstrapFormBuilder('form_Pesquisa');
-        $this->form->setFormTitle('Pesquisa');
+        $this->form = new BootstrapFormBuilder('form_Categoria');
+        $this->form->setFormTitle('Categoria');
         
 
         // create the form fields
@@ -55,14 +55,8 @@ class PesquisaForm extends TPage
         $container->style = 'width: 90%';
         // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $container->add($this->form);
-        $this->form->addAction('Next', new TAction(array($this, 'onNextForm')), 'fa:chevron-circle-right green');
         
         parent::add($container);
-    }
-
-    public function onNextForm(){
-    
-        AdiantiCoreApplication::loadPage('PesquisaFormAddItem', '');
     }
 
     /**
@@ -84,7 +78,7 @@ class PesquisaForm extends TPage
             $this->form->validate(); // validate form data
             $data = $this->form->getData(); // get form data as array
             
-            $object = new Pesquisa;  // create an empty object
+            $object = new Categoria;  // create an empty object
             $object->fromArray( (array) $data); // load the object with data
             $object->store(); // save the object
             
@@ -125,7 +119,7 @@ class PesquisaForm extends TPage
             {
                 $key = $param['key'];  // get the parameter $key
                 TTransaction::open('procon_com'); // open a transaction
-                $object = new Pesquisa($key); // instantiates the Active Record
+                $object = new Categoria($key); // instantiates the Active Record
                 $this->form->setData($object); // fill the form
                 TTransaction::close(); // close the transaction
             }
