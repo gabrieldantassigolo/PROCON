@@ -28,18 +28,18 @@ class ItemList extends TPage
         // create the form fields
         $id   = new TEntry('id');
         $nome = new TEntry('nome');
-        $tipo = new TEntry('tipo');
+        $categoria = new TEntry('categoria');
 
 
         // add the fields
         $this->form->addFields( [ new TLabel('ID')   ], [ $id   ] );
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
-        $this->form->addFields( [ new TLabel('Tipo') ], [ $tipo ] );
+        $this->form->addFields( [ new TLabel('Categoria') ], [ $categoria ] );
 
 
         // set sizes
         $nome->setSize('100%');
-        $tipo->setSize('100%');
+        $categoria->setSize('100%');
 
         
         // keep the form filled during navigation with session data
@@ -62,7 +62,7 @@ class ItemList extends TPage
         $column_nome = new TDataGridColumn('nome', 'Nome', 'left');
         $column_quantidade = new TDataGridColumn('quantidade', 'Quantidade', 'right');
         $column_unidade = new TDataGridColumn('unidade', 'Unidade', 'left');
-        $column_tipo = new TDataGridColumn('tipo', 'Tipo', 'left');
+        $column_categoria = new TDataGridColumn('categoria', 'Categoria', 'left');
 
 
         // add the columns to the DataGrid
@@ -70,12 +70,12 @@ class ItemList extends TPage
         $this->datagrid->addColumn($column_nome);
         $this->datagrid->addColumn($column_quantidade);
         $this->datagrid->addColumn($column_unidade);
-        $this->datagrid->addColumn($column_tipo);
+        $this->datagrid->addColumn($column_categoria);
 
 
         // creates the datagrid column actions
         $column_nome->setAction(new TAction([$this, 'onReload']), ['order' => 'nome']);
-        $column_tipo->setAction(new TAction([$this, 'onReload']), ['order' => 'tipo']);
+        $column_categoria->setAction(new TAction([$this, 'onReload']), ['order' => 'categoria']);
 
         
         // create EDIT action
@@ -176,7 +176,7 @@ class ItemList extends TPage
         
         // clear session filters
         TSession::setValue('ItemList_filter_nome',   NULL);
-        TSession::setValue('ItemList_filter_tipo',   NULL);
+        TSession::setValue('ItemList_filter_categoria',   NULL);
 
         if (isset($data->nome) AND ($data->nome)) {
             $filter = new TFilter('nome', 'like', "%{$data->nome}%"); // create the filter
@@ -184,9 +184,9 @@ class ItemList extends TPage
         }
 
 
-        if (isset($data->tipo) AND ($data->tipo)) {
-            $filter = new TFilter('tipo', 'like', "%{$data->tipo}%"); // create the filter
-            TSession::setValue('ItemList_filter_tipo',   $filter); // stores the filter in the session
+        if (isset($data->categoria) AND ($data->categoria)) {
+            $filter = new TFilter('categoria', 'like', "%{$data->categoria}%"); // create the filter
+            TSession::setValue('ItemList_filter_categoria',   $filter); // stores the filter in the session
         }
 
         
@@ -233,8 +233,8 @@ class ItemList extends TPage
             }
 
 
-            if (TSession::getValue('ItemList_filter_tipo')) {
-                $criteria->add(TSession::getValue('ItemList_filter_tipo')); // add the session filter
+            if (TSession::getValue('ItemList_filter_categoria')) {
+                $criteria->add(TSession::getValue('ItemList_filter_categoria')); // add the session filter
             }
 
             

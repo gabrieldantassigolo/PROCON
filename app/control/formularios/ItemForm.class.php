@@ -24,16 +24,16 @@ class ItemForm extends TPage
         $id = new THidden('id');
         $nome = new TEntry('nome');
         $quantidade = new TEntry('quantidade');
-        $unidade = new TDBCombo('unidade');
-        $tipo = new TDBCombo('tipo');
+        $unidade = new TDBCombo('unidade', 'procon_com', 'UnidadeMedida', 'id', 'nome');
+        $categoria = new TDBCombo('categoria', 'procon_com', 'categoria', 'id', 'nome');
 
 
         // add the fields
         $this->form->addFields( [ new TLabel('') ], [ $id ] );
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
         $this->form->addFields( [ new TLabel('Quantidade') ], [ $quantidade ] );
-        $this->form->addFields( [ new TLabel('Unidade') ], [ $unidade ] );
-        $this->form->addFields( [ new TLabel('Tipo') ], [ $tipo ] );
+        $this->form->addFields( [ new TLabel('Un. de medida') ], [ $unidade ] );
+        $this->form->addFields( [ new TLabel('Categoria') ], [ $categoria ] );
 
 
 
@@ -42,7 +42,7 @@ class ItemForm extends TPage
         $nome->setSize('100%');
         $quantidade->setSize('100%');
         $unidade->setSize('100%');
-        $tipo->setSize('100%');
+        $categoria->setSize('100%');
 
 
 

@@ -9,7 +9,7 @@ class Item extends TRecord
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'max'; // {max, serial}
     
-    
+   
     /**
      * Constructor method
      */
@@ -19,8 +19,11 @@ class Item extends TRecord
         parent::addAttribute('nome');
         parent::addAttribute('quantidade');
         parent::addAttribute('unidade');
-        parent::addAttribute('tipo');
+        parent::addAttribute('categoria');
     }
+    
 
+
+   
 
 }

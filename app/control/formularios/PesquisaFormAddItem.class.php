@@ -32,26 +32,26 @@ class PesquisaFormAddItem extends TPage
         $this->form->setFormTitle('Selecao de Itens');
         
         $nome = new TEntry('nome');
-        $tipo = new TEntry('data');
+        $categoria = new TEntry('data');
         
         // add the fields
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] ,
-                                [ new TLabel('Tipo') ], [ $tipo ]);
+                                [ new TLabel('categoria') ], [ $categoria ]);
         $this->form->addFields(  );
 
         // set sizes
         $nome->setSize('70%');
-        $tipo->setSize('100%');
+        $categoria->setSize('100%');
         
         $nome->style = 'border: 1px solid red; float: left;';
-        $tipo->style = 'border: 1px solid red; float: left;';
+        $categoria->style = 'border: 1px solid red; float: left;';
         
         $btn = $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search');
         $btn->class = 'btn btn-sm btn-primary';
         $btn->style = 'padding: 4px;';
 
         $nome->setValue(TSession::getValue('item_nome'));
-        $tipo->setValue(TSession::getValue('item_tipo'));
+        $categoria->setValue(TSession::getValue('item_categoria'));
         
         // creates a DataGrid
         $this->datagrid = new TQuickGrid;
@@ -63,13 +63,13 @@ class PesquisaFormAddItem extends TPage
         $this->datagrid->addQuickColumn('Nome', 'nome', 'left', 250);
         $this->datagrid->addQuickColumn('Qtd', 'quantidade', 'center', 25);
         $this->datagrid->addQuickColumn('Un', 'unidade', 'center', 30);
-        $this->datagrid->addQuickColumn('Tipo', 'tipo', 'left', 150);
+        $this->datagrid->addQuickColumn('categoria', 'categoria', 'left', 150);
 
         //$this->cartgrid->addQuickColumn('ID', 'id', 'right', 30);
         $this->cartgrid->addQuickColumn('Nome', 'nome', 'left', 250);
         $this->cartgrid->addQuickColumn('Qtd', 'quantidade', 'center', 25 );
         $this->cartgrid->addQuickColumn('Un', 'Unidade', 'center', 30 );
-        $this->cartgrid->addQuickColumn('Tipo', 'tipo', 'left', 150 );
+        $this->cartgrid->addQuickColumn('categoria', 'categoria', 'left', 150 );
         
         // creates datagrid actions
         $this->datagrid->addQuickAction('Select', new TDataGridAction(array($this, 'onSelect')), 'id', 'fa:plus-circle green');
@@ -158,7 +158,7 @@ class PesquisaFormAddItem extends TPage
         $data = $this->form->getData();
         
         TSession::setValue('item_filter_nome', NULL);
-        TSession::setValue('item_filter_tipo', NULL);
+        TSession::setValue('item_filter_categoria', NULL);
 
         // check if the user has filled the form
         if ($data->nome)
@@ -177,20 +177,20 @@ class PesquisaFormAddItem extends TPage
             TSession::setValue('item_nome',   '');
         }
 
-        if ($data->tipo)
+        if ($data->categoria)
         {
             // creates a filter using what the user has typed
-            $filter = new TFilter('nome', 'like', "%{$data->tipo}%");
+            $filter = new TFilter('nome', 'like', "%{$data->categoria}%");
             
             // stores the filter in the session
-            TSession::setValue('item_filter_tipo', $filter);
-            TSession::setValue('item_tipo',   $data->tipo);
+            TSession::setValue('item_filter_categoria', $filter);
+            TSession::setValue('item_categoria',   $data->categoria);
             
         }
         else
         {
-            TSession::setValue('item_filter_tipo', NULL);
-            TSession::setValue('item_tipo',   '');
+            TSession::setValue('item_filter_categoria', NULL);
+            TSession::setValue('item_categoria',   '');
         }
         
         // fill the form with data again
@@ -229,10 +229,10 @@ class PesquisaFormAddItem extends TPage
                 $criteria->add(TSession::getValue('item_filter_nome'));
             }
 
-            if (TSession::getValue('item_filter_tipo'))
+            if (TSession::getValue('item_filter_categoria'))
             {
                 // add the filter stored in the session to the criteria
-                $criteria->add(TSession::getValue('item_filter_tipo'));
+                $criteria->add(TSession::getValue('item_filter_categoria'));
             }
             
             // load the objects according to criteria
