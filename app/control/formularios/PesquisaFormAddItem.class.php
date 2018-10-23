@@ -1,22 +1,17 @@
 <?php
-/**
- * CheckoutFormView
- *
- * @version    1.0
- * @package    samples
- * @subpackage tutor
- * @author     Pablo Dall'Oglio
- * @copyright  Copyright (c) 2006 Adianti Solutions Ltd. (http://www.adianti.com.br)
- * @license    http://www.adianti.com.br/framework-license
- */
+
+
+
 class PesquisaFormAddItem extends TPage
 {
-    private $form;      // search form
-    private $datagrid;  // listing
-    private $total;
-    private $cartgrid;
-    private $pageNavigation;
-    private $loaded;
+    protected $form;      // search form
+    protected $datagrid;  // listing
+    protected $total;
+    protected $cartgrid;
+    protected $pageNavigation;
+    protected $loaded;
+    
+    use Adianti\base\AdiantiStandardListTrait;
     
     /**
      * Class constructor
@@ -25,28 +20,36 @@ class PesquisaFormAddItem extends TPage
     public function __construct()
     {
         parent::__construct();
-       
         new TSession;
+        
+        $this->setDatabase('procon_com');            // defines the database
+        $this->setActiveRecord('Item');   // defines the active record
+        $this->setDefaultOrder('nome', 'asc');         // defines the default order
+        // $this->setCriteria($criteria) // define a standard filter
+              
+        $this->addFilterField('categoria_id', 'ilike', 'categoria_id'); // filterField, operator, formField
         
         // creates the form
         $this->form = new BootstrapFormBuilder('form_buscaItem');
         $this->form->setFormTitle('Filtro de Itens');
         
-        $nome = new TEntry('nome');
-        $categoria = new TEntry('data');
+        
+        
         $pesquisa = new TDBCombo('pesquisa', 'procon_com', 'pesquisa', 'id', 'nome');
+        $nome = new TEntry('nome');
+        $categoria_id = new TDBCombo('categoria_id', 'procon_com', 'categoria', 'id', 'nome');
         
         $buscacep = new TAction(array($this, 'onChangePesquisa'));
         
         // add the fields
         $this->form->addFields( [ new TLabel('Pesquisa')  ], [ $pesquisa]);
         $this->form->addFields( [ new TLabel('Nome')      ], [ $nome ] ,
-                                [ new TLabel('Categoria') ], [ $categoria ]);
+                                [ new TLabel('Categoria') ], [ $categoria_id ]);
 
         // set sizes
         $pesquisa->setSize('25%');
         $nome->setSize('100%');
-        $categoria->setSize('100%');
+        $categoria_id->setSize('100%');
         
         //Botao Form Search Itens
         $btn = $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search');
@@ -55,7 +58,7 @@ class PesquisaFormAddItem extends TPage
         
 
         $nome->setValue(TSession::getValue('item_nome'));
-        $categoria->setValue(TSession::getValue('item_categoria'));
+        $categoria_id->setValue(TSession::getValue('item_categoria_id'));
         $pesquisa->setValue(TSession::getValue('item_pesquisa'));
         
         // creates a DataGrid
@@ -67,13 +70,13 @@ class PesquisaFormAddItem extends TPage
         $this->datagrid->addQuickColumn('Nome', 'nome', 'left', 250);
         $this->datagrid->addQuickColumn('Qtd', 'quantidade', 'center', 25);
         $this->datagrid->addQuickColumn('Un', 'unidadeMedida->nome', 'center', 30);
-        $this->datagrid->addQuickColumn('categoria', 'categoria->nome', 'left', 150);
+        $this->datagrid->addQuickColumn('categoria_id', 'categoria->nome', 'left', 150);
 
         //$this->cartgrid->addQuickColumn('ID', 'id', 'right', 30);
         $this->cartgrid->addQuickColumn('Nome', 'nome', 'left', 250);
         $this->cartgrid->addQuickColumn('Qtd', 'quantidade', 'center', 25 );
         $this->cartgrid->addQuickColumn('Un', 'unidadeMedida->nome', 'center', 30 );
-        $this->cartgrid->addQuickColumn('categoria', 'categoria->nome', 'left', 150 );
+        $this->cartgrid->addQuickColumn('categoria_id', 'categoria->nome', 'left', 150 );
         
         // creates datagrid actions
         $this->datagrid->addQuickAction('Select', new TDataGridAction(array($this, 'onSelect')), 'id', 'fa:plus-circle green');
@@ -180,7 +183,7 @@ class PesquisaFormAddItem extends TPage
         $data = $this->form->getData();
         
         TSession::setValue('item_filter_nome', NULL);
-        TSession::setValue('item_filter_categoria', NULL);
+        TSession::setValue('item_filter_categoria_id', NULL);
 
         // check if the user has filled the form
         if ($data->nome)
@@ -199,20 +202,20 @@ class PesquisaFormAddItem extends TPage
             TSession::setValue('item_nome',   '');
         }
 
-        if ($data->categoria)
+        if ($data->categoria_id)
         {
             // creates a filter using what the user has typed
-            $filter = new TFilter('nome', 'like', "%{$data->categoria}%");
+            $filter = new TFilter('categoria_id', '=', "$data->categoria_id");
             
             // stores the filter in the session
-            TSession::setValue('item_filter_categoria', $filter);
-            TSession::setValue('item_categoria',   $data->categoria);
+            TSession::setValue('item_filter_categoria_id', $filter);
+            TSession::setValue('item_categoria_id',   $data->categoria_id);
             
         }
         else
         {
-            TSession::setValue('item_filter_categoria', NULL);
-            TSession::setValue('item_categoria',   '');
+            TSession::setValue('item_filter_categoria_id', NULL);
+            TSession::setValue('item_categoria_id',   '');
         }
         
         // fill the form with data again
@@ -251,10 +254,10 @@ class PesquisaFormAddItem extends TPage
                 $criteria->add(TSession::getValue('item_filter_nome'));
             }
 
-            if (TSession::getValue('item_filter_categoria'))
+            if (TSession::getValue('item_filter_categoria_id'))
             {
                 // add the filter stored in the session to the criteria
-                $criteria->add(TSession::getValue('item_filter_categoria'));
+                $criteria->add(TSession::getValue('item_filter_categoria_id'));
             }
             
             // load the objects according to criteria
