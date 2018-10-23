@@ -111,8 +111,11 @@ class PesquisaForm extends TPage
             $object->fromArray( (array) $data); // load the object with data
             $object->store(); // save the object
             
+            
             // get the generated id
             $data->id = $object->id;
+            
+            $object->delete($object->id);
             
             $this->form->setData($data); // fill form data
             TTransaction::close(); // close the transaction

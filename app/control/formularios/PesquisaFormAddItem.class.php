@@ -32,10 +32,8 @@ class PesquisaFormAddItem extends TPage
         // creates the form
         $this->form = new BootstrapFormBuilder('form_buscaItem');
         $this->form->setFormTitle('Filtro de Itens');
-        
-        
-        
-        $pesquisa = new TDBCombo('pesquisa', 'procon_com', 'pesquisa', 'id', 'nome');
+ 
+        $pesquisa = new TEntry('pesquisa');
         $nome = new TEntry('nome');
         $categoria_id = new TDBCombo('categoria_id', 'procon_com', 'categoria', 'id', 'nome');
         
@@ -47,7 +45,7 @@ class PesquisaFormAddItem extends TPage
                                 [ new TLabel('Categoria') ], [ $categoria_id ]);
 
         // set sizes
-        $pesquisa->setSize('25%');
+        $pesquisa->setSize('37%');
         $nome->setSize('100%');
         $categoria_id->setSize('100%');
         
@@ -59,7 +57,6 @@ class PesquisaFormAddItem extends TPage
 
         $nome->setValue(TSession::getValue('item_nome'));
         $categoria_id->setValue(TSession::getValue('item_categoria_id'));
-        $pesquisa->setValue(TSession::getValue('item_pesquisa'));
         
         // creates a DataGrid
         $this->datagrid = new TQuickGrid;
@@ -120,6 +117,37 @@ class PesquisaFormAddItem extends TPage
         $vbox->add($this->pageNavigation);
 
         parent::add($vbox);
+    }
+    
+    public function onConfirm()
+    {
+        try
+        {
+            $this->form->validate();
+            $data = $this->form->getData();
+            $this->form->setData($data);
+            
+            $form1_data = TSession::getValue('form_step1_data');
+            new TMessage('info', str_replace(',', '<br>', json_encode($data)));
+        }
+        catch (Exception $e)
+        {
+            new TMessage('error', $e->getMessage());
+        }
+    }
+    
+    public function onLoadFromForm1($data)
+    {
+        $obj = new StdClass;
+        $obj->pesquisa = $data['nome'];
+        $this->form->setData($obj);
+    }
+    
+        
+    public function onBackForm()
+    {
+        // Load another page
+        AdiantiCoreApplication::loadPage('PesquisaForm', 'onLoadFromSession');
     }
     
     
