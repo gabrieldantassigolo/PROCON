@@ -66,14 +66,14 @@ class PesquisaFormAddItem extends TPage
         //$this->datagrid->addQuickColumn('ID', 'id', 'right', 30);
         $this->datagrid->addQuickColumn('Nome', 'nome', 'left', 250);
         $this->datagrid->addQuickColumn('Qtd', 'quantidade', 'center', 25);
-        $this->datagrid->addQuickColumn('Un', 'unidade', 'center', 30);
-        $this->datagrid->addQuickColumn('categoria', 'categoria', 'left', 150);
+        $this->datagrid->addQuickColumn('Un', 'unidadeMedida->nome', 'center', 30);
+        $this->datagrid->addQuickColumn('categoria', 'categoria->nome', 'left', 150);
 
         //$this->cartgrid->addQuickColumn('ID', 'id', 'right', 30);
         $this->cartgrid->addQuickColumn('Nome', 'nome', 'left', 250);
         $this->cartgrid->addQuickColumn('Qtd', 'quantidade', 'center', 25 );
-        $this->cartgrid->addQuickColumn('Un', 'Unidade', 'center', 30 );
-        $this->cartgrid->addQuickColumn('categoria', 'categoria', 'left', 150 );
+        $this->cartgrid->addQuickColumn('Un', 'unidadeMedida->nome', 'center', 30 );
+        $this->cartgrid->addQuickColumn('categoria', 'categoria->nome', 'left', 150 );
         
         // creates datagrid actions
         $this->datagrid->addQuickAction('Select', new TDataGridAction(array($this, 'onSelect')), 'id', 'fa:plus-circle green');
