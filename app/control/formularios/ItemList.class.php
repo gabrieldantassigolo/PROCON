@@ -61,8 +61,8 @@ class ItemList extends TPage
         $column_check = new TDataGridColumn('check', '', 'center');
         $column_nome = new TDataGridColumn('nome', 'Nome', 'left');
         $column_quantidade = new TDataGridColumn('quantidade', 'Quantidade', 'right');
-        $column_unidade = new TDataGridColumn('unidade', 'Unidade', 'left');
-        $column_categoria = new TDataGridColumn('categoria', 'Categoria', 'left');
+        $column_unidade = new TDataGridColumn('unidadeMedida->nome', 'Unidade', 'left');
+        $column_categoria = new TDataGridColumn('categoria->nome', 'Categoria', 'left');
 
 
         // add the columns to the DataGrid

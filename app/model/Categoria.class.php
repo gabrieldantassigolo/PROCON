@@ -18,6 +18,13 @@ class Categoria extends TRecord
         parent::__construct($id, $callObjectLoad);
         parent::addAttribute('nome');
     }
-
+    
+    public function load($id)
+    {
+        $this->items = parent::loadComposite('Item', 'categoria_id', $id);
+    
+        // load the object itself
+        return parent::load($id);
+    }
 
 }
