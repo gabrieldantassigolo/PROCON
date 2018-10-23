@@ -29,7 +29,7 @@ class PesquisaForm extends TPage
         $this->form->addFields( [ new TLabel('') ], [ $id ] );
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
 
-        $nome->addValidation('Nome', new TRequiredValidator);
+        //$nome->addValidation('Nome', new TRequiredValidator);
 
 
         // set sizes
@@ -57,14 +57,35 @@ class PesquisaForm extends TPage
         $container->style = 'width: 90%';
         // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $container->add($this->form);
-        //$this->form->addAction('Next', new TAction(array($this, 'onNextForm')), 'fa:chevron-circle-right green');
+        $this->form->addAction('Next', new TAction(array($this, 'onNextForm')), 'fa:chevron-circle-right green');
         
         parent::add($container);
     }
+    
+    public function onLoadFromSession()
+    {
+        $data = TSession::getValue('form_step1_data');
+        $this->form->setData($data);
+    }
 
     public function onNextForm(){
+        try
+        {
+            //$this->form->validate();
+            $data = $this->form->getData();
+            // store data in the session
+            TSession::setValue('form_step1_data', $data);
+            
+            // Load another page
+            AdiantiCoreApplication::loadPage('PesquisaFormAddItem', 'onLoadFromForm1', (array) $data);
+            
+        }
+        catch (Exception $e)
+        {
+            new TMessage('error', $e->getMessage());
+        }
     
-        AdiantiCoreApplication::loadPage('PesquisaFormAddItem', '');
+        //AdiantiCoreApplication::loadPage('PesquisaFormAddItem', 'onChangePesquisa', $param['key']);
     }
 
     /**
