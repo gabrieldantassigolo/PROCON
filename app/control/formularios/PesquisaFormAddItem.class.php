@@ -25,39 +25,43 @@ class PesquisaFormAddItem extends TPage
     public function __construct()
     {
         parent::__construct();
+       
         new TSession;
         
         // creates the form
-        $this->form = new BootstrapFormBuilder('form_Pesquisa');
-        $this->form->setFormTitle('Selecao de Itens');
+        $this->form = new BootstrapFormBuilder('form_buscaItem');
+        $this->form->setFormTitle('Filtro de Itens');
         
         $nome = new TEntry('nome');
         $categoria = new TEntry('data');
+        $pesquisa = new TDBCombo('pesquisa', 'procon_com', 'pesquisa', 'id', 'nome');
+        
+        $buscacep = new TAction(array($this, 'onChangePesquisa'));
         
         // add the fields
-        $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] ,
-                                [ new TLabel('categoria') ], [ $categoria ]);
-        $this->form->addFields(  );
+        $this->form->addFields( [ new TLabel('Pesquisa')  ], [ $pesquisa]);
+        $this->form->addFields( [ new TLabel('Nome')      ], [ $nome ] ,
+                                [ new TLabel('Categoria') ], [ $categoria ]);
 
         // set sizes
-        $nome->setSize('70%');
+        $pesquisa->setSize('25%');
+        $nome->setSize('100%');
         $categoria->setSize('100%');
         
-        $nome->style = 'border: 1px solid red; float: left;';
-        $categoria->style = 'border: 1px solid red; float: left;';
-        
+        //Botao Form Search Itens
         $btn = $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search');
         $btn->class = 'btn btn-sm btn-primary';
         $btn->style = 'padding: 4px;';
+        
 
         $nome->setValue(TSession::getValue('item_nome'));
         $categoria->setValue(TSession::getValue('item_categoria'));
+        $pesquisa->setValue(TSession::getValue('item_pesquisa'));
         
         // creates a DataGrid
         $this->datagrid = new TQuickGrid;
         $this->cartgrid = new TQuickGrid;
 
-//
         // creates the datagrid columns
         //$this->datagrid->addQuickColumn('ID', 'id', 'right', 30);
         $this->datagrid->addQuickColumn('Nome', 'nome', 'left', 250);
@@ -114,6 +118,24 @@ class PesquisaFormAddItem extends TPage
 
         parent::add($vbox);
     }
+    
+    
+    public static function onChangePesquisa($param)
+    {
+		/*try {
+        $obj = new StdClass;
+		TTransaction::open('procon_com');
+		$vemcep = new BuscaPesquisa($param['pesquisa']);
+        TTransaction::close();
+        TForm::sendData('form_Posto', $obj);
+        
+		} catch (Exception $e) // in case of exception
+        {
+            #new TMessage('error', $e->getMessage());
+			new TMessage('error', 'O CEP '.$param['cep'].' não foi localizado.<br>Verifique se foi digitado de maneira correta e tente novamente.<br>Em caso de dúvidas, ligue para (67)34117295 das 07h30 às 13h30.<br>Departamento de Tecnologia da Informação.');
+            TTransaction::rollback(); // undo all pending operations
+        */
+        }
     
     
     /**
