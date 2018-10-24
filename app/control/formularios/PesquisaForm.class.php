@@ -30,13 +30,15 @@ class PesquisaForm extends TPage
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
 
         //$nome->addValidation('Nome', new TRequiredValidator);
-
+        
+        $nome->addValidation('nome', new TMinLengthValidator, array(3));
 
         // set sizes
         $nome->setSize('100%');
-
-
-
+        
+        
+        
+        
         if (!empty($id))
         {
             $id->setEditable(FALSE);
@@ -55,7 +57,7 @@ class PesquisaForm extends TPage
         // vertical box container
         $container = new TVBox;
         $container->style = 'width: 90%';
-        // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
+        //$container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $container->add($this->form);
         $this->form->addAction('Next', new TAction(array($this, 'onNextForm')), 'fa:chevron-circle-right green');
         
@@ -69,8 +71,11 @@ class PesquisaForm extends TPage
     }
 
     public function onNextForm(){
+        
+        
         try
         {
+            $this->form->validate();
             //$this->form->validate();
             $data = $this->form->getData();
             // store data in the session
@@ -78,6 +83,8 @@ class PesquisaForm extends TPage
             
             // Load another page
             AdiantiCoreApplication::loadPage('PesquisaFormAddItem', 'onLoadFromForm1', (array) $data);
+    
+         
             
         }
         catch (Exception $e)

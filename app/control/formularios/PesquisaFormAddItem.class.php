@@ -10,6 +10,7 @@ class PesquisaFormAddItem extends TPage
     protected $cartgrid;
     protected $pageNavigation;
     protected $loaded;
+    //protected $button;
     
     use Adianti\base\AdiantiStandardListTrait;
     
@@ -58,6 +59,12 @@ class PesquisaFormAddItem extends TPage
         $nome->setValue(TSession::getValue('item_nome'));
         $categoria_id->setValue(TSession::getValue('item_categoria_id'));
         
+        
+        if (!empty($pesquisa))
+        {
+            $pesquisa->setEditable(FALSE);
+        }
+        
         // creates a DataGrid
         $this->datagrid = new TQuickGrid;
         $this->cartgrid = new TQuickGrid;
@@ -103,10 +110,18 @@ class PesquisaFormAddItem extends TPage
         //$table2->addRow()->addCell($this->total);
         $table2->addRow()->addCell($this->cartgrid);
         
+        
+        //$table3 = new TTable;
+        $button = new TButton('action1'); 
+        $button->setAction(new TAction(array($this, 'onConfirm')), 'Confirma'); 
+        $button->setImage('ico_save.png'); 
+        //$table3->addRow()->addCell($button1);
+        
         $hbox = new THBox;
         $hbox->add($table1)->style.='vertical-align:top; display: block; width: 50%; float: left;  white-space: pre-rap; padding: 0 8px 0 20px';
         $hbox->add($table2)->style.='vertical-align:top; display: block; width: 50%; float: right; padding-right: 20px';
         
+       // $hbox->addRowSet($button);
         
         // wrap the page content using vertical box
         $vbox = new TVBox;
@@ -114,7 +129,9 @@ class PesquisaFormAddItem extends TPage
         $vbox->style = 'width: 100%; background-color: white; text-align: center';
         $vbox->add($this->form)->style = 'padding: 20px 20px 10px 20px; width: 100%; margin-botton: 0px;';
         $vbox->add($hbox);
+        //$vbox->add($this->button);
         $vbox->add($this->pageNavigation);
+        
 
         parent::add($vbox);
     }
