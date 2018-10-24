@@ -22,19 +22,19 @@ class PesquisaForm extends TPage
 
         // create the form fields
         $id = new THidden('id');
-        $nome = new TEntry('nome');
+        $pesquisa = new TEntry('pesquisa');
 
 
         // add the fields
         $this->form->addFields( [ new TLabel('') ], [ $id ] );
-        $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
+        $this->form->addFields( [ new TLabel('Nome') ], [ $pesquisa ] );
 
         //$nome->addValidation('Nome', new TRequiredValidator);
         
-        $nome->addValidation('nome', new TMinLengthValidator, array(3));
+        $pesquisa->addValidation('pesquisa', new TMinLengthValidator, array(3));
 
         // set sizes
-        $nome->setSize('100%');
+        $pesquisa->setSize('100%');
         
         
         

@@ -5,11 +5,13 @@
 class PesquisaFormAddItem extends TPage
 {
     protected $form;      // search form
+    protected $form2;
     protected $datagrid;  // listing
     protected $total;
     protected $cartgrid;
     protected $pageNavigation;
     protected $loaded;
+    
     //protected $button;
     
     use Adianti\base\AdiantiStandardListTrait;
@@ -30,9 +32,12 @@ class PesquisaFormAddItem extends TPage
               
         $this->addFilterField('categoria_id', 'ilike', 'categoria_id'); // filterField, operator, formField
         
-        // creates the form
-        $this->form = new BootstrapFormBuilder('form_buscaItem');
+        // creates the forms
+        $this->form = new BootstrapFormBuilder('form_SearchItens');
         $this->form->setFormTitle('Filtro de Itens');
+        
+        $this->form2 = new BootstrapFormBuilder('form_ListItens');
+        
  
         $pesquisa = new TEntry('pesquisa');
         $nome = new TEntry('nome');
@@ -44,6 +49,8 @@ class PesquisaFormAddItem extends TPage
         $this->form->addFields( [ new TLabel('Pesquisa')  ], [ $pesquisa]);
         $this->form->addFields( [ new TLabel('Nome')      ], [ $nome ] ,
                                 [ new TLabel('Categoria') ], [ $categoria_id ]);
+                                
+        $this->form2->addFields( [ new THidden('Pesquisa')  ], [ $this->total]);
 
         // set sizes
         $pesquisa->setSize('37%');
@@ -55,7 +62,10 @@ class PesquisaFormAddItem extends TPage
         $btn->class = 'btn btn-sm btn-primary';
         $btn->style = 'padding: 4px;';
         
-
+        $btn1 = $this->form2->addAction('Confirmar', new TAction([$this, 'onSearch']), 'fa:check green');
+        $btn1->class = 'btn btn-sm btn';
+        $btn1->style = 'padding: 4px;';
+        
         $nome->setValue(TSession::getValue('item_nome'));
         $categoria_id->setValue(TSession::getValue('item_categoria_id'));
         
@@ -100,9 +110,7 @@ class PesquisaFormAddItem extends TPage
         $table1->addRow()->addCell($this->form);*/
         $table1 = new TTable;
         $table1->addRow()->addCell($this->datagrid);
-        
-        
-        
+      
         $this->total = new TLabel('');
         $this->total->setFontStyle('b');
         
@@ -121,14 +129,17 @@ class PesquisaFormAddItem extends TPage
         $hbox->add($table1)->style.='vertical-align:top; display: block; width: 50%; float: left;  white-space: pre-rap; padding: 0 8px 0 20px';
         $hbox->add($table2)->style.='vertical-align:top; display: block; width: 50%; float: right; padding-right: 20px';
         
-       // $hbox->addRowSet($button);
+        $this->form2->add($hbox);
+        $this->form2->style = 'padding: 10px; border: none; text-decoration: none';
+        //$hbox->addRowSet($button);
         
         // wrap the page content using vertical box
         $vbox = new TVBox;
         //$vbox->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $vbox->style = 'width: 100%; background-color: white; text-align: center';
         $vbox->add($this->form)->style = 'padding: 20px 20px 10px 20px; width: 100%; margin-botton: 0px;';
-        $vbox->add($hbox);
+        $vbox->add($this->form2)->style = '';
+        //$vbox->add($hbox);
         //$vbox->add($this->button);
         $vbox->add($this->pageNavigation);
         
@@ -156,7 +167,7 @@ class PesquisaFormAddItem extends TPage
     public function onLoadFromForm1($data)
     {
         $obj = new StdClass;
-        $obj->pesquisa = $data['nome'];
+        $obj->pesquisa = $data['pesquisa'];
         $this->form->setData($obj);
     }
     
@@ -190,7 +201,7 @@ class PesquisaFormAddItem extends TPage
      * Put a product inside the cart
      */
     public function onSelect($param)
-    {
+    {    
         // get the cart objects from session 
         $cart_objects = TSession::getValue('cart_objects');
         
@@ -202,6 +213,9 @@ class PesquisaFormAddItem extends TPage
         
         // reload datagrids
         $this->onReload( func_get_arg(0) );
+        
+        
+        
     }
     
     /**
@@ -277,7 +291,8 @@ class PesquisaFormAddItem extends TPage
      * Load the datagrid with the database objects
      */
     function onReload($param = NULL)
-    {
+    {   //$this->form->setData($obj);
+    
         try
         {
             // open a transaction with database 'samples'
@@ -305,6 +320,12 @@ class PesquisaFormAddItem extends TPage
                 $criteria->add(TSession::getValue('item_filter_categoria_id'));
             }
             
+           /* if (TSession::getValue('form_step1_data'))
+            {
+                // add the filter stored in the session to the criteria
+                $criteria->add(TSession::getValue('item_filter_categoria_id'));
+            }*/
+            
             // load the objects according to criteria
             $items = $repository->load($criteria);
             $this->datagrid->clear();
@@ -328,8 +349,15 @@ class PesquisaFormAddItem extends TPage
                     //$total += $object->sale_price;
                 }
             }
-            //$this->total->setValue(number_format($total));
             
+            //$this->total->setValue(number_format($total));   
+            
+            
+            
+            $form_step1 = TSession::getValue('form_step1_data');
+            $this->form->setData($form_step1);
+            
+              
             // reset the criteria for record count
             $criteria->resetProperties();
             $count= $repository->count($criteria);
@@ -339,6 +367,7 @@ class PesquisaFormAddItem extends TPage
             $this->pageNavigation->setLimit($limit); // limit
             
             // close the transaction
+            //    $this->form->setData($obj2);
             TTransaction::close();
             $this->loaded = true;
         }
