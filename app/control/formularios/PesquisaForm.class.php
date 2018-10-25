@@ -21,20 +21,20 @@ class PesquisaForm extends TPage
         
 
         // create the form fields
-        $id = new THidden('id');
-        $pesquisa = new TEntry('pesquisa');
+        $id = new TEntry('id');
+        $nome = new TEntry('nome');
 
 
         // add the fields
         $this->form->addFields( [ new TLabel('') ], [ $id ] );
-        $this->form->addFields( [ new TLabel('Nome') ], [ $pesquisa ] );
+        $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
 
         //$nome->addValidation('Nome', new TRequiredValidator);
         
-        $pesquisa->addValidation('pesquisa', new TMinLengthValidator, array(3));
+        $nome->addValidation('nome', new TMinLengthValidator, array(3));
 
         // set sizes
-        $pesquisa->setSize('100%');
+        $nome->setSize('100%');
         
         
         
@@ -75,9 +75,28 @@ class PesquisaForm extends TPage
         
         try
         {
-            $this->form->validate();
-            //$this->form->validate();
-            $data = $this->form->getData();
+            TTransaction::open('procon_com'); // open a transaction
+            
+            /**
+            // Enable Debug logger for SQL operations inside the transaction
+            TTransaction::setLogger(new TLoggerSTD); // standard output
+            TTransaction::setLogger(new TLoggerTXT('log.txt')); // file
+            **/
+            
+            $this->form->validate(); // validate form data
+            $data = $this->form->getData(); // get form data as array
+            
+            $object = new Pesquisa;  // create an empty object
+            $object->fromArray( (array) $data); // load the object with data
+            $object->store(); // save the object
+            
+            
+            // get the generated id
+            $data->id = $object->id;
+                                    
+            $this->form->setData($data); // fill form data
+            TTransaction::close(); // close the transaction
+                        
             // store data in the session
             TSession::setValue('form_step1_data', $data);
             

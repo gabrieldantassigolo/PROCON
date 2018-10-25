@@ -30,6 +30,7 @@ class PesquisaFormAddItem extends TPage
         $this->setDefaultOrder('nome', 'asc');         // defines the default order
         // $this->setCriteria($criteria) // define a standard filter
               
+        $this->addFilterField('nome', 'ilike', 'nome');
         $this->addFilterField('categoria_id', 'ilike', 'categoria_id'); // filterField, operator, formField
         
         // creates the forms
@@ -38,19 +39,20 @@ class PesquisaFormAddItem extends TPage
         
         $this->form2 = new BootstrapFormBuilder('form_ListItens');
         
- 
+        $pesquisa_id = new TEntry('pesquisa_id');
         $pesquisa = new TEntry('pesquisa');
         $nome = new TEntry('nome');
         $categoria_id = new TDBCombo('categoria_id', 'procon_com', 'categoria', 'id', 'nome');
         
-        $buscacep = new TAction(array($this, 'onChangePesquisa'));
+        
         
         // add the fields
+        $this->form->addFields( [ new TLabel('')          ], [ $pesquisa_id]);
         $this->form->addFields( [ new TLabel('Pesquisa')  ], [ $pesquisa]);
         $this->form->addFields( [ new TLabel('Nome')      ], [ $nome ] ,
                                 [ new TLabel('Categoria') ], [ $categoria_id ]);
                                 
-        $this->form2->addFields( [ new THidden('Pesquisa')  ], [ $this->total]);
+        $this->form2->addFields( [ new THidden('asd')  ], [ $this->total]);
 
         // set sizes
         $pesquisa->setSize('37%');
@@ -62,7 +64,7 @@ class PesquisaFormAddItem extends TPage
         $btn->class = 'btn btn-sm btn-primary';
         $btn->style = 'padding: 4px;';
         
-        $btn1 = $this->form2->addAction('Confirmar', new TAction([$this, 'onSearch']), 'fa:check green');
+        $btn1 = $this->form2->addAction('Confirmar', new TAction([$this, 'onConfirm']), 'fa:check green');
         $btn1->class = 'btn btn-sm btn';
         $btn1->style = 'padding: 4px;';
         
@@ -119,11 +121,7 @@ class PesquisaFormAddItem extends TPage
         $table2->addRow()->addCell($this->cartgrid);
         
         
-        //$table3 = new TTable;
-        $button = new TButton('action1'); 
-        $button->setAction(new TAction(array($this, 'onConfirm')), 'Confirma'); 
-        $button->setImage('ico_save.png'); 
-        //$table3->addRow()->addCell($button1);
+        
         
         $hbox = new THBox;
         $hbox->add($table1)->style.='vertical-align:top; display: block; width: 50%; float: left;  white-space: pre-rap; padding: 0 8px 0 20px';
@@ -150,52 +148,53 @@ class PesquisaFormAddItem extends TPage
     public function onConfirm()
     {
         try
-        {
-            $this->form->validate();
-            $data = $this->form->getData();
-            $this->form->setData($data);
+        {              
+            TTransaction::open('procon_com');              
             
-            $form1_data = TSession::getValue('form_step1_data');
-            new TMessage('info', str_replace(',', '<br>', json_encode($data)));
+            //pega informação da sessão do form anterior, armazena em objeto
+            $form_step1 = TSession::getValue('form_step1_data');                        
+            $data = new StdClass;
+            $data->pesquisa = $form_step1->nome;
+            $data->pesquisa_id = $form_step1->id;
+            
+            //
+            $pesquisa = new Pesquisa($data->pesquisa_id);
+            
+            $cart_objects = TSession::getValue('cart_objects');
+            foreach($cart_objects as $item) 
+            {
+                $pesquisa->addItem(new Item($item->id));
+            }
+            
+            $pesquisa->store();
+            TTransaction::close();
+            $this->form->setData($data);
+            new TMessage('info', TAdiantiCoreTranslator::translate('Record saved'));
         }
         catch (Exception $e)
         {
             new TMessage('error', $e->getMessage());
-        }
+            TTransaction::rollback();
+        }        
     }
     
     public function onLoadFromForm1($data)
     {
         $obj = new StdClass;
-        $obj->pesquisa = $data['pesquisa'];
-        $this->form->setData($obj);
-    }
-    
+        $obj->pesquisa = $data['nome'];
+        $obj->pesquisa_id = $data['id'];
         
+        
+        $this->form->setData($obj);
+    }    
+    
+    
+    
     public function onBackForm()
     {
         // Load another page
         AdiantiCoreApplication::loadPage('PesquisaForm', 'onLoadFromSession');
     }
-    
-    
-    public static function onChangePesquisa($param)
-    {
-		/*try {
-        $obj = new StdClass;
-		TTransaction::open('procon_com');
-		$vemcep = new BuscaPesquisa($param['pesquisa']);
-        TTransaction::close();
-        TForm::sendData('form_Posto', $obj);
-        
-		} catch (Exception $e) // in case of exception
-        {
-            #new TMessage('error', $e->getMessage());
-			new TMessage('error', 'O CEP '.$param['cep'].' não foi localizado.<br>Verifique se foi digitado de maneira correta e tente novamente.<br>Em caso de dúvidas, ligue para (67)34117295 das 07h30 às 13h30.<br>Departamento de Tecnologia da Informação.');
-            TTransaction::rollback(); // undo all pending operations
-        */
-        }
-    
     
     /**
      * Put a product inside the cart
@@ -248,7 +247,7 @@ class PesquisaFormAddItem extends TPage
         if ($data->nome)
         {
             // creates a filter using what the user has typed
-            $filter = new TFilter('nome', 'like', "%{$data->nome}%");
+            $filter = new TFilter('nome', 'ilike', "%{$data->nome}%");
             
             // stores the filter in the session
             TSession::setValue('item_filter_nome', $filter);
@@ -350,13 +349,15 @@ class PesquisaFormAddItem extends TPage
                 }
             }
             
-            //$this->total->setValue(number_format($total));   
+            //$this->total->setValue(number_format($total));    
             
             
-            
-            $form_step1 = TSession::getValue('form_step1_data');
-            $this->form->setData($form_step1);
-            
+            //captura informação do form anterior e insere em pesquisa e pesquisa_id
+            $form_step1 = TSession::getValue('form_step1_data');            
+            $obj = new StdClass;
+            $obj->pesquisa = $form_step1->nome;
+            $obj->pesquisa_id = $form_step1->id;
+            $this->form->setData($obj);            
               
             // reset the criteria for record count
             $criteria->resetProperties();
