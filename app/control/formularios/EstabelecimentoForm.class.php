@@ -34,8 +34,32 @@ class EstabelecimentoForm extends TPage
         $bairro = new TEntry('bairro');
         $numero = new TEntry('numero');
         $complemento = new TEntry('complemento');
-
-
+        
+        // Fields Mask
+        $nome->maxlength = 50;
+        $razao->maxlength = 50;
+        $telefone->setMask('(99)9999-9999');
+        //$bandeira->maxlength = 50;
+        $cep->setMask('99999-999');
+		$buscacep = new TAction(array($this, 'onChangeCep'));
+		$cep->setExitAction($buscacep);
+        $numero->setMask('9999');
+        $complemento->forceUpperCase();
+		/*$nome_municipio->setValue($vemcep->municipio_nome);
+		$nome_logradouro->setValue($vemcep->nome);
+		$nome_bairro->setValue($vemcep->bairro);
+		$nome_estado->setValue($vemcep->estado_nome);*/
+		$complemento->forceUpperCase();
+		
+					
+	    $logradouro->setEditable(FALSE);
+		$bairro->setEditable(FALSE);
+		$municipio->setEditable(FALSE);
+		$estado->setEditable(FALSE);
+        
+        // Validation
+        $nome->addValidation('Nome', new TMaxLengthValidator, array(50));
+        
         // add the fields
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
         $this->form->addFields( [ new TLabel('Razao') ], [ $razao ] );
@@ -58,23 +82,21 @@ class EstabelecimentoForm extends TPage
         $cep->addValidation('Cep', new TRequiredValidator);
         $numero->addValidation('Numero', new TRequiredValidator);
 
-
+        
         // set sizes
-        $nome->setSize('100%');
-        $razao->setSize('100%');
-        $cnpj->setSize('100%');
-        $responsavel->setSize('100%');
-        $email->setSize('100%');
-        $telefone->setSize('100%');
-        $cep->setSize('100%');
-        $estado->setSize('100%');
-        $municipio->setSize('100%');
-        $logradouro->setSize('100%');
-        $bairro->setSize('100%');
-        $numero->setSize('100%');
-        $complemento->setSize('100%');
-
-
+        $nome->setSize('70%');
+        $razao->setSize('70%');
+        $cnpj->setSize('70%');
+        $responsavel->setSize('70%');
+        $email->setSize('70%');
+        $telefone->setSize('35%');
+        
+        $cep->setSize('35%');
+        $logradouro->setSize('35%');
+        $estado->setSize('70%');
+        $municipio->setSize('70%');
+        $numero->setSize('10%');
+        $complemento->setSize('70%');
 
         if (!empty($id))
         {
@@ -98,6 +120,31 @@ class EstabelecimentoForm extends TPage
         $container->add($this->form);
         
         parent::add($container);
+    }
+    
+    public static function onChangeCep($param)
+    {
+		try {
+        $obj = new StdClass;
+		TTransaction::open('esicbd');
+		$vemcep = new CepBusca($param['cep']);
+        $obj->logradouro = $vemcep->nome;	
+		$obj->id_logradouro = $vemcep->id;	
+        $obj->bairro = $vemcep->bairro;	
+		$obj->municipio = $vemcep->municipio_nome;
+		$obj->id_municipio = $vemcep->id_municipio;
+		$obj->estado = $vemcep->estado_sigla;
+		$obj->id_estado = $vemcep->id_estado;
+        TTransaction::close();
+        TForm::sendData('form_Estabelecimento', $obj);
+        
+		} catch (Exception $e) // in case of exception
+        {
+            #new TMessage('error', $e->getMessage());
+			new TMessage('error', 'O CEP '.$param['cep'].' não foi localizado.<br>Verifique se foi digitado de maneira correta e tente novamente.<br>Em caso de dúvidas, ligue para (67)34117295 das 07h30 às 13h30.<br>Departamento de Tecnologia da Informação.');
+            TTransaction::rollback(); // undo all pending operations
+        }
+        
     }
 
     /**

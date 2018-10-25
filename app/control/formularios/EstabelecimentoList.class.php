@@ -28,49 +28,22 @@ class EstabelecimentoList extends TPage
         // create the form fields
         $nome = new TEntry('nome');
         $razao = new TEntry('razao');
-        $cnpj = new TEntry('cnpj');
-        $responsavel = new TEntry('responsavel');
-        $email = new TEntry('email');
-        $telefone = new TEntry('telefone');
-        $cep = new TEntry('cep');
-        $estado = new TEntry('estado');
-        $municipio = new TEntry('municipio');
         $logradouro = new TEntry('logradouro');
         $bairro = new TEntry('bairro');
-        $numero = new TEntry('numero');
-        $complemento = new TEntry('complemento');
 
 
         // add the fields
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
         $this->form->addFields( [ new TLabel('Razao') ], [ $razao ] );
-        $this->form->addFields( [ new TLabel('Cnpj') ], [ $cnpj ] );
-        $this->form->addFields( [ new TLabel('Responsavel') ], [ $responsavel ] );
-        $this->form->addFields( [ new TLabel('Email') ], [ $email ] );
-        $this->form->addFields( [ new TLabel('Telefone') ], [ $telefone ] );
-        $this->form->addFields( [ new TLabel('Cep') ], [ $cep ] );
-        $this->form->addFields( [ new TLabel('Estado') ], [ $estado ] );
-        $this->form->addFields( [ new TLabel('Municipio') ], [ $municipio ] );
         $this->form->addFields( [ new TLabel('Logradouro') ], [ $logradouro ] );
         $this->form->addFields( [ new TLabel('Bairro') ], [ $bairro ] );
-        $this->form->addFields( [ new TLabel('Numero') ], [ $numero ] );
-        $this->form->addFields( [ new TLabel('Complemento') ], [ $complemento ] );
 
 
         // set sizes
-        $nome->setSize('100%');
-        $razao->setSize('100%');
-        $cnpj->setSize('100%');
-        $responsavel->setSize('100%');
-        $email->setSize('100%');
-        $telefone->setSize('100%');
-        $cep->setSize('100%');
-        $estado->setSize('100%');
-        $municipio->setSize('100%');
-        $logradouro->setSize('100%');
-        $bairro->setSize('100%');
-        $numero->setSize('100%');
-        $complemento->setSize('100%');
+        $nome->setSize('70%');
+        $razao->setSize('70%');    
+        $logradouro->setSize('70%');
+        $bairro->setSize('70%');
 
         
         // keep the form filled during navigation with session data
@@ -90,45 +63,28 @@ class EstabelecimentoList extends TPage
 
         // creates the datagrid columns
         $column_check = new TDataGridColumn('check', '', 'center');
-        $column_nome = new TDataGridColumn('nome', 'Nome', 'left');
-        $column_razao = new TDataGridColumn('razao', 'Razao', 'left');
-        $column_cnpj = new TDataGridColumn('cnpj', 'Cnpj', 'left');
+        $column_nome = new TDataGridColumn('nome', 'Nome', 'left');        
         $column_responsavel = new TDataGridColumn('responsavel', 'Responsavel', 'left');
         $column_email = new TDataGridColumn('email', 'Email', 'left');
         $column_telefone = new TDataGridColumn('telefone', 'Telefone', 'left');
-        $column_cep = new TDataGridColumn('cep', 'Cep', 'left');
-        $column_estado = new TDataGridColumn('estado', 'Estado', 'left');
-        $column_municipio = new TDataGridColumn('municipio', 'Municipio', 'left');
-        $column_logradouro = new TDataGridColumn('logradouro', 'Logradouro', 'left');
-        $column_bairro = new TDataGridColumn('bairro', 'Bairro', 'left');
-        $column_numero = new TDataGridColumn('numero', 'Numero', 'right');
-        $column_complemento = new TDataGridColumn('complemento', 'Complemento', 'left');
-
+        
 
         // add the columns to the DataGrid
         $this->datagrid->addColumn($column_check);
         $this->datagrid->addColumn($column_nome);
-        $this->datagrid->addColumn($column_razao);
-        $this->datagrid->addColumn($column_cnpj);
         $this->datagrid->addColumn($column_responsavel);
         $this->datagrid->addColumn($column_email);
         $this->datagrid->addColumn($column_telefone);
-        $this->datagrid->addColumn($column_cep);
-        $this->datagrid->addColumn($column_estado);
-        $this->datagrid->addColumn($column_municipio);
-        $this->datagrid->addColumn($column_logradouro);
-        $this->datagrid->addColumn($column_bairro);
-        $this->datagrid->addColumn($column_numero);
-        $this->datagrid->addColumn($column_complemento);
+
 
 
         // creates the datagrid column actions
         $column_nome->setAction(new TAction([$this, 'onReload']), ['order' => 'nome']);
         $column_responsavel->setAction(new TAction([$this, 'onReload']), ['order' => 'responsavel']);
-        $column_estado->setAction(new TAction([$this, 'onReload']), ['order' => 'estado']);
-        $column_municipio->setAction(new TAction([$this, 'onReload']), ['order' => 'municipio']);
-        $column_logradouro->setAction(new TAction([$this, 'onReload']), ['order' => 'logradouro']);
-        $column_bairro->setAction(new TAction([$this, 'onReload']), ['order' => 'bairro']);
+        //$column_estado->setAction(new TAction([$this, 'onReload']), ['order' => 'estado']);
+        //$column_municipio->setAction(new TAction([$this, 'onReload']), ['order' => 'municipio']);
+        //$column_logradouro->setAction(new TAction([$this, 'onReload']), ['order' => 'logradouro']);
+        //$column_bairro->setAction(new TAction([$this, 'onReload']), ['order' => 'bairro']);
 
         // define the transformer method over image
         $column_nome->setTransformer( function($value, $object, $row) {
