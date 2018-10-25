@@ -26,8 +26,8 @@ class RelacaoList extends TPage
         
 
         // create the form fields
-        $pesquisa_id = new TDBUniqueSearch('pesquisa_id', 'procon_com', 'Pesquisa', 'id', 'nome');
-        $estabelecimento_id = new TDBUniqueSearch('estabelecimento_id', 'procon_com', 'Estabelecimento', 'id', 'nome');
+        $pesquisa_id = new TDBCombo('pesquisa_id', 'procon_com', 'Pesquisa', 'id', 'nome');
+        $estabelecimento_id = new TDBCombo('estabelecimento_id', 'procon_com', 'Estabelecimento', 'id', 'nome');
         $data = new TEntry('data_criacao');
 
 
@@ -60,21 +60,21 @@ class RelacaoList extends TPage
 
         // creates the datagrid columns
         $column_check = new TDataGridColumn('check', '', 'center');
-        $column_pesquisa_id = new TDataGridColumn('pesquisa_id', 'Pesquisa Id', 'right');
-        $column_estabelecimento_id = new TDataGridColumn('estabelecimento_id', 'Estabelecimento Id', 'right');
+        $column_pesquisa = new TDataGridColumn('pesquisa->nome', 'Pesquisa Id', 'right');
+        $column_estabelecimento = new TDataGridColumn('estabelecimento->nome', 'Estabelecimento Id', 'right');
         $column_data = new TDataGridColumn('data', 'Data', 'left');
 
 
         // add the columns to the DataGrid
         $this->datagrid->addColumn($column_check);
-        $this->datagrid->addColumn($column_pesquisa_id);
-        $this->datagrid->addColumn($column_estabelecimento_id);
+        $this->datagrid->addColumn($column_pesquisa);
+        $this->datagrid->addColumn($column_estabelecimento);
         $this->datagrid->addColumn($column_data);
 
 
         // creates the datagrid column actions
-        $column_pesquisa_id->setAction(new TAction([$this, 'onReload']), ['order' => 'pesquisa_id']);
-        $column_estabelecimento_id->setAction(new TAction([$this, 'onReload']), ['order' => 'estabelecimento_id']);
+        $column_pesquisa->setAction(new TAction([$this, 'onReload']), ['order' => 'pesquisa_id']);
+        $column_estabelecimento->setAction(new TAction([$this, 'onReload']), ['order' => 'estabelecimento_id']);
         $column_data->setAction(new TAction([$this, 'onReload']), ['order' => 'data']);
 
         

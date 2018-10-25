@@ -1,7 +1,5 @@
 <?php
 
-
-
 class PesquisaFormAddItem extends TPage
 {
     protected $form;      // search form
@@ -157,7 +155,7 @@ class PesquisaFormAddItem extends TPage
             $data->pesquisa = $form_step1->nome;
             $data->pesquisa_id = $form_step1->id;
             
-            //
+            //cria um objeto para associar informações
             $pesquisa = new Pesquisa($data->pesquisa_id);
             
             $cart_objects = TSession::getValue('cart_objects');

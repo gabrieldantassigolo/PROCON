@@ -1,22 +1,17 @@
 <?php
 /**
- * RelacaoList Listing
+ * RelacaoForm Form
  * @author  <your name here>
  */
-class RelacaoList extends TPage
+class RelacaoForm extends TPage
 {
-    private $form; // form
-    private $datagrid; // listing
-    private $pageNavigation;
-    private $formgrid;
-    private $loaded;
-    private $deleteButton;
+    protected $form; // form
     
     /**
-     * Class constructor
-     * Creates the page, the form and the listing
+     * Form constructor
+     * @param $param Request
      */
-    public function __construct()
+    public function __construct( $param )
     {
         parent::__construct();
         
@@ -26,420 +21,125 @@ class RelacaoList extends TPage
         
 
         // create the form fields
-        $data = new THidden('id');
-        $pesquisa_id = new TDBUniqueSearch('pesquisa_id', 'procon_com', 'Pesquisa', 'id', 'nome');
-        $estabelecimento_id = new TDBUniqueSearch('estabelecimento_id', 'procon_com', 'Estabelecimento', 'id', 'nome');
-        $data = new TEntry('data_criacao');
+        $id = new TEntry('id');
+        $pesquisa_id = new TDBCombo('pesquisa_id', 'procon_com', 'Pesquisa', 'id', 'nome');
+        $estabelecimento_id = new TDBCombo('estabelecimento_id', 'procon_com', 'Estabelecimento', 'id', 'nome');
+        $data_criacao = new TDate('data_criacao');
 
 
         // add the fields
-        $this->form->addFields( [ new TLabel('') ], [ $id ] );
+        $this->form->addFields( [ new TLabel('Id') ], [ $id ] );
         $this->form->addFields( [ new TLabel('Pesquisa Id') ], [ $pesquisa_id ] );
         $this->form->addFields( [ new TLabel('Estabelecimento Id') ], [ $estabelecimento_id ] );
-        $this->form->addFields( [ new TLabel('Data') ], [ $data ] );
+        $this->form->addFields( [ new TLabel('Data Criacao') ], [ $data_criacao ] );
+
 
 
         // set sizes
+        $id->setSize('100%');
         $pesquisa_id->setSize('100%');
         $estabelecimento_id->setSize('100%');
-        $data->setSize('100%');
+        $data_criacao->setSize('100%');
 
+
+
+        if (!empty($id))
+        {
+            $id->setEditable(FALSE);
+        }
         
-        // keep the form filled during navigation with session data
-        $this->form->setData( TSession::getValue('Relacao_filter_data') );
-        
-        // add the search form actions
-        $btn = $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search');
+        /** samples
+         $fieldX->addValidation( 'Field X', new TRequiredValidator ); // add validation
+         $fieldX->setSize( '100%' ); // set size
+         **/
+         
+        // create the form actions
+        $btn = $this->form->addAction(_t('Save'), new TAction([$this, 'onSave']), 'fa:floppy-o');
         $btn->class = 'btn btn-sm btn-primary';
-        $this->form->addActionLink(_t('New'), new TAction(['RelacaoForm', 'onEdit']), 'fa:plus green');
+        $this->form->addAction(_t('New'),  new TAction([$this, 'onEdit']), 'fa:eraser red');
         
-        // creates a Datagrid
-        $this->datagrid = new BootstrapDatagridWrapper(new TDataGrid);
-        $this->datagrid->style = 'width: 100%';
-        $this->datagrid->datatable = 'true';
-        // $this->datagrid->enablePopover('Popover', 'Hi <b> {name} </b>');
-        
-
-        // creates the datagrid columns
-        $column_check = new TDataGridColumn('check', '', 'center');
-        $column_pesquisa_id = new TDataGridColumn('pesquisa_id', 'Pesquisa Id', 'right');
-        $column_estabelecimento_id = new TDataGridColumn('estabelecimento_id', 'Estabelecimento Id', 'right');
-        $column_data = new TDataGridColumn('data', 'Data', 'left');
-
-
-        // add the columns to the DataGrid
-        $this->datagrid->addColumn($column_check);
-        $this->datagrid->addColumn($column_pesquisa_id);
-        $this->datagrid->addColumn($column_estabelecimento_id);
-        $this->datagrid->addColumn($column_data);
-
-
-        // creates the datagrid column actions
-        $column_pesquisa_id->setAction(new TAction([$this, 'onReload']), ['order' => 'pesquisa_id']);
-        $column_estabelecimento_id->setAction(new TAction([$this, 'onReload']), ['order' => 'estabelecimento_id']);
-        $column_data->setAction(new TAction([$this, 'onReload']), ['order' => 'data']);
-
-        
-        // create EDIT action
-        $action_edit = new TDataGridAction(['RelacaoForm', 'onEdit']);
-        //$action_edit->setUseButton(TRUE);
-        //$action_edit->setButtonClass('btn btn-default');
-        $action_edit->setLabel(_t('Edit'));
-        $action_edit->setImage('fa:pencil-square-o blue fa-lg');
-        $action_edit->setField('pesquisa_id');
-        $this->datagrid->addAction($action_edit);
-        
-        // create DELETE action
-        $action_del = new TDataGridAction(array($this, 'onDelete'));
-        //$action_del->setUseButton(TRUE);
-        //$action_del->setButtonClass('btn btn-default');
-        $action_del->setLabel(_t('Delete'));
-        $action_del->setImage('fa:trash-o red fa-lg');
-        $action_del->setField('pesquisa_id');
-        $this->datagrid->addAction($action_del);
-        
-        // create the datagrid model
-        $this->datagrid->createModel();
-        
-        // creates the page navigation
-        $this->pageNavigation = new TPageNavigation;
-        $this->pageNavigation->setAction(new TAction([$this, 'onReload']));
-        $this->pageNavigation->setWidth($this->datagrid->getWidth());
-        
-        $this->datagrid->disableDefaultClick();
-        
-        // put datagrid inside a form
-        $this->formgrid = new TForm;
-        $this->formgrid->add($this->datagrid);
-        
-        // creates the delete collection button
-        $this->deleteButton = new TButton('delete_collection');
-        $this->deleteButton->setAction(new TAction(array($this, 'onDeleteCollection')), AdiantiCoreTranslator::translate('Delete selected'));
-        $this->deleteButton->setImage('fa:remove red');
-        $this->formgrid->addField($this->deleteButton);
-        
-        $gridpack = new TVBox;
-        $gridpack->style = 'width: 100%';
-        $gridpack->add($this->formgrid);
-        $gridpack->add($this->deleteButton)->style = 'background:whiteSmoke;border:1px solid #cccccc; padding: 3px;padding: 5px;';
-        
-        $this->transformCallback = array($this, 'onBeforeLoad');
-
-
         // vertical box container
         $container = new TVBox;
         $container->style = 'width: 90%';
         // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $container->add($this->form);
-        $container->add(TPanelGroup::pack('', $gridpack, $this->pageNavigation));
         
         parent::add($container);
     }
-    
+
     /**
-     * Inline record editing
-     * @param $param Array containing:
-     *              key: object ID value
-     *              field name: object attribute to be updated
-     *              value: new attribute content 
+     * Save form data
+     * @param $param Request
      */
-    public function onInlineEdit($param)
+    public function onSave( $param )
     {
         try
         {
-            // get the parameter $key
-            $field = $param['field'];
-            $key   = $param['key'];
-            $value = $param['value'];
+            TTransaction::open('procon_com'); // open a transaction
             
-            TTransaction::open('procon_com'); // open a transaction with database
-            $object = new Relacao($key); // instantiates the Active Record
-            $object->{$field} = $value;
-            $object->store(); // update the object in the database
+            /**
+            // Enable Debug logger for SQL operations inside the transaction
+            TTransaction::setLogger(new TLoggerSTD); // standard output
+            TTransaction::setLogger(new TLoggerTXT('log.txt')); // file
+            **/
+            
+            $this->form->validate(); // validate form data
+            $data = $this->form->getData(); // get form data as array
+            
+            $object = new Relacao;  // create an empty object
+            $object->fromArray( (array) $data); // load the object with data
+            $object->store(); // save the object
+            
+            // get the generated id
+            $data->id = $object->id;
+            
+            $this->form->setData($data); // fill form data
             TTransaction::close(); // close the transaction
             
-            $this->onReload($param); // reload the listing
-            new TMessage('info', "Record Updated");
+            new TMessage('info', TAdiantiCoreTranslator::translate('Record saved'));
         }
         catch (Exception $e) // in case of exception
         {
             new TMessage('error', $e->getMessage()); // shows the exception error message
+            $this->form->setData( $this->form->getData() ); // keep form data
             TTransaction::rollback(); // undo all pending operations
         }
     }
     
     /**
-     * Register the filter in the session
+     * Clear form data
+     * @param $param Request
      */
-    public function onSearch()
+    public function onClear( $param )
     {
-        // get the search form data
-        $data = $this->form->getData();
-        
-        // clear session filters
-        TSession::setValue('RelacaoList_filter_pesquisa_id',   NULL);
-        TSession::setValue('RelacaoList_filter_estabelecimento_id',   NULL);
-        TSession::setValue('RelacaoList_filter_data',   NULL);
-
-        if (isset($data->pesquisa_id) AND ($data->pesquisa_id)) {
-            $filter = new TFilter('pesquisa_id', '=', "$data->pesquisa_id"); // create the filter
-            TSession::setValue('RelacaoList_filter_pesquisa_id',   $filter); // stores the filter in the session
-        }
-
-
-        if (isset($data->estabelecimento_id) AND ($data->estabelecimento_id)) {
-            $filter = new TFilter('estabelecimento_id', '=', "$data->estabelecimento_id"); // create the filter
-            TSession::setValue('RelacaoList_filter_estabelecimento_id',   $filter); // stores the filter in the session
-        }
-
-
-        if (isset($data->data) AND ($data->data)) {
-            $filter = new TFilter('data', 'like', "%{$data->data}%"); // create the filter
-            TSession::setValue('RelacaoList_filter_data',   $filter); // stores the filter in the session
-        }
-
-        
-        // fill the form with data again
-        $this->form->setData($data);
-        
-        // keep the search data in the session
-        TSession::setValue('Relacao_filter_data', $data);
-        
-        $param = array();
-        $param['offset']    =0;
-        $param['first_page']=1;
-        $this->onReload($param);
+        $this->form->clear(TRUE);
     }
     
     /**
-     * Load the datagrid with data
+     * Load object to form data
+     * @param $param Request
      */
-    public function onReload($param = NULL)
+    public function onEdit( $param )
     {
         try
         {
-            // open a transaction with database 'procon_com'
-            TTransaction::open('procon_com');
-            
-            // creates a repository for Relacao
-            $repository = new TRepository('Relacao');
-            $limit = 10;
-            // creates a criteria
-            $criteria = new TCriteria;
-            
-            // default order
-            if (empty($param['order']))
+            if (isset($param['key']))
             {
-                $param['order'] = 'pesquisa_id';
-                $param['direction'] = 'asc';
-            }
-            $criteria->setProperties($param); // order, offset
-            $criteria->setProperty('limit', $limit);
-            
-
-            if (TSession::getValue('RelacaoList_filter_pesquisa_id')) {
-                $criteria->add(TSession::getValue('RelacaoList_filter_pesquisa_id')); // add the session filter
-            }
-
-
-            if (TSession::getValue('RelacaoList_filter_estabelecimento_id')) {
-                $criteria->add(TSession::getValue('RelacaoList_filter_estabelecimento_id')); // add the session filter
-            }
-
-
-            if (TSession::getValue('RelacaoList_filter_data')) {
-                $criteria->add(TSession::getValue('RelacaoList_filter_data')); // add the session filter
-            }
-
-            
-            // load the objects according to criteria
-            $objects = $repository->load($criteria, FALSE);
-            
-            if (is_callable($this->transformCallback))
-            {
-                call_user_func($this->transformCallback, $objects, $param);
-            }
-            
-            $this->datagrid->clear();
-            if ($objects)
-            {
-                // iterate the collection of active records
-                foreach ($objects as $object)
-                {
-                    // add the object inside the datagrid
-                    $this->datagrid->addItem($object);
-                }
-            }
-            
-            // reset the criteria for record count
-            $criteria->resetProperties();
-            $count= $repository->count($criteria);
-            
-            $this->pageNavigation->setCount($count); // count of records
-            $this->pageNavigation->setProperties($param); // order, page
-            $this->pageNavigation->setLimit($limit); // limit
-            
-            // close the transaction
-            TTransaction::close();
-            $this->loaded = true;
-        }
-        catch (Exception $e) // in case of exception
-        {
-            // shows the exception error message
-            new TMessage('error', $e->getMessage());
-            // undo all pending operations
-            TTransaction::rollback();
-        }
-    }
-    
-    /**
-     * Ask before deletion
-     */
-    public static function onDelete($param)
-    {
-        // define the delete action
-        $action = new TAction([__CLASS__, 'Delete']);
-        $action->setParameters($param); // pass the key parameter ahead
-        
-        // shows a dialog to the user
-        new TQuestion(TAdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
-    }
-    
-    /**
-     * Delete a record
-     */
-    public static function Delete($param)
-    {
-        try
-        {
-            $key=$param['key']; // get the parameter $key
-            TTransaction::open('procon_com'); // open a transaction with database
-            $object = new Relacao($key, FALSE); // instantiates the Active Record
-            $object->delete(); // deletes the object from the database
-            TTransaction::close(); // close the transaction
-            
-            $pos_action = new TAction([__CLASS__, 'onReload']);
-            new TMessage('info', TAdiantiCoreTranslator::translate('Record deleted'), $pos_action); // success message
-        }
-        catch (Exception $e) // in case of exception
-        {
-            new TMessage('error', $e->getMessage()); // shows the exception error message
-            TTransaction::rollback(); // undo all pending operations
-        }
-    }
-    
-    /**
-     * Ask before delete record collection
-     */
-    public function onDeleteCollection( $param )
-    {
-        $data = $this->formgrid->getData(); // get selected records from datagrid
-        $this->formgrid->setData($data); // keep form filled
-        
-        if ($data)
-        {
-            $selected = array();
-            
-            // get the record id's
-            foreach ($data as $index => $check)
-            {
-                if ($check == 'on')
-                {
-                    $selected[] = substr($index,5);
-                }
-            }
-            
-            if ($selected)
-            {
-                // encode record id's as json
-                $param['selected'] = json_encode($selected);
-                
-                // define the delete action
-                $action = new TAction(array($this, 'deleteCollection'));
-                $action->setParameters($param); // pass the key parameter ahead
-                
-                // shows a dialog to the user
-                new TQuestion(AdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
-            }
-        }
-    }
-    
-    /**
-     * method deleteCollection()
-     * Delete many records
-     */
-    public function deleteCollection($param)
-    {
-        // decode json with record id's
-        $selected = json_decode($param['selected']);
-        
-        try
-        {
-            TTransaction::open('procon_com');
-            if ($selected)
-            {
-                // delete each record from collection
-                foreach ($selected as $id)
-                {
-                    $object = new Relacao;
-                    $object->delete( $id );
-                }
-                $posAction = new TAction(array($this, 'onReload'));
-                $posAction->setParameters( $param );
-                new TMessage('info', AdiantiCoreTranslator::translate('Records deleted'), $posAction);
-            }
-            TTransaction::close();
-        }
-        catch (Exception $e)
-        {
-            new TMessage('error', $e->getMessage());
-            TTransaction::rollback();
-        }
-    }
-
-
-    /**
-     * Transform datagrid objects
-     * Create the checkbutton as datagrid element
-     */
-    public function onBeforeLoad($objects, $param)
-    {
-        // update the action parameters to pass the current page to action
-        // without this, the action will only work for the first page
-        $deleteAction = $this->deleteButton->getAction();
-        $deleteAction->setParameters($param); // important!
-        
-        $gridfields = array( $this->deleteButton );
-        
-        foreach ($objects as $object)
-        {
-            $object->check = new TCheckButton('check' . $object->pesquisa_id);
-            $object->check->setIndexValue('on');
-            $gridfields[] = $object->check; // important
-        }
-        
-        $this->formgrid->setFields($gridfields);
-    }
-
-    
-    /**
-     * method show()
-     * Shows the page
-     */
-    public function show()
-    {
-        // check if the datagrid is already loaded
-        if (!$this->loaded AND (!isset($_GET['method']) OR !(in_array($_GET['method'],  array('onReload', 'onSearch')))) )
-        {
-            if (func_num_args() > 0)
-            {
-                $this->onReload( func_get_arg(0) );
+                $key = $param['key'];  // get the parameter $key
+                TTransaction::open('procon_com'); // open a transaction
+                $object = new Relacao($key); // instantiates the Active Record
+                $this->form->setData($object); // fill the form
+                TTransaction::close(); // close the transaction
             }
             else
             {
-                $this->onReload();
+                $this->form->clear(TRUE);
             }
         }
-        parent::show();
+        catch (Exception $e) // in case of exception
+        {
+            new TMessage('error', $e->getMessage()); // shows the exception error message
+            TTransaction::rollback(); // undo all pending operations
+        }
     }
 }
