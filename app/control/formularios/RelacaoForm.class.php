@@ -93,6 +93,17 @@ class RelacaoForm extends TPage
             // get the generated id
             $data->id = $object->id;
             
+           //IMPORTANTE
+           //define o RelacaoItem utilizando as informações do formulário de relação
+            $pesquisa = new Pesquisa($data->pesquisa_id);
+            $items = $pesquisa->getItems();
+            foreach($items as $item){
+                $object = new RelacaoItem;
+                $object->relacao_id = $data->id;
+                $object->item_id = $item->id;
+                $object->store();
+            }
+            
             $this->form->setData($data); // fill form data
             TTransaction::close(); // close the transaction
             
