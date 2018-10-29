@@ -60,22 +60,23 @@ class RelacaoList extends TPage
 
         // creates the datagrid columns
         $column_check = new TDataGridColumn('check', '', 'center');
+        $column_id = new TDataGridColumn('id', 'Id', 'right');
         $column_pesquisa = new TDataGridColumn('pesquisa->nome', 'Pesquisa Id', 'right');
         $column_estabelecimento = new TDataGridColumn('estabelecimento->nome', 'Estabelecimento Id', 'right');
-        $column_data = new TDataGridColumn('data', 'Data', 'left');
-
-
+        $column_data = new TDataGridColumn('data_criacao', 'Data', 'left');
+    
+    
         // add the columns to the DataGrid
         $this->datagrid->addColumn($column_check);
+        $this->datagrid->addColumn($column_id);
         $this->datagrid->addColumn($column_pesquisa);
         $this->datagrid->addColumn($column_estabelecimento);
         $this->datagrid->addColumn($column_data);
 
 
         // creates the datagrid column actions
-        $column_pesquisa->setAction(new TAction([$this, 'onReload']), ['order' => 'pesquisa_id']);
-        $column_estabelecimento->setAction(new TAction([$this, 'onReload']), ['order' => 'estabelecimento_id']);
-        $column_data->setAction(new TAction([$this, 'onReload']), ['order' => 'data']);
+        $column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
+        $column_data->setAction(new TAction([$this, 'onReload']), ['order' => 'data_criacao']);
 
         
         // create EDIT action
@@ -221,17 +222,18 @@ class RelacaoList extends TPage
             
             // creates a repository for Relacao
             $repository = new TRepository('Relacao');
-            $limit = 10;
+            $limit = 5;
             // creates a criteria
             $criteria = new TCriteria;
             
             // default order
             if (empty($param['order']))
             {
-                $param['order'] = 'pesquisa_id';
+                $param['order'] = 'id';
                 $param['direction'] = 'asc';
             }
             $criteria->setProperties($param); // order, offset
+            
             $criteria->setProperty('limit', $limit);
             
 
@@ -411,7 +413,7 @@ class RelacaoList extends TPage
         
         foreach ($objects as $object)
         {
-            $object->check = new TCheckButton('check' . $object->pesquisa_id);
+            $object->check = new TCheckButton('check' . $object->id);
             $object->check->setIndexValue('on');
             $gridfields[] = $object->check; // important
         }
