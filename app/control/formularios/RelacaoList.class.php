@@ -78,6 +78,13 @@ class RelacaoList extends TPage
         $column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
         $column_data->setAction(new TAction([$this, 'onReload']), ['order' => 'data_criacao']);
 
+
+        $action_view = new TDataGridAction(array($this, 'onUpdateItens'));
+        $action_view->setLabel('Definir preços dos Itens');        
+        $action_view->setImage('fa:dollar blue');
+        $action_view->setField('id');
+        $action_view->setField('pesquisa_id');     
+        $this->datagrid->addAction($action_view);
         
         // create EDIT action
         $action_edit = new TDataGridAction(['RelacaoForm', 'onEdit']);
@@ -133,6 +140,13 @@ class RelacaoList extends TPage
         $container->add(TPanelGroup::pack('', $gridpack, $this->pageNavigation));
         
         parent::add($container);
+    }
+    
+    public function onUpdateItens($data)
+    {
+        //TSession::setValue('Cotacao_filter_data', NULL);
+        //new TMessage('info', $param->id);
+        AdiantiCoreApplication::loadPage('RelacaoItemUpdateList', 'PegaID', $data);
     }
     
     /**

@@ -35,17 +35,17 @@ class RelacaoItemUpdateList extends TPage
 
         // create the form fields
         $item_id = new TDBUniqueSearch('item_id', 'procon_com', 'Item', 'id', 'nome');
-        $preco = new TEntry('preco');
+        //$preco = new TEntry('preco');
 
 
         // add the fields
         $this->form->addFields( [ new TLabel('Item') ], [ $item_id ] );
-        $this->form->addFields( [ new TLabel('Preco') ], [ $preco ] );
+        //$this->form->addFields( [ new TLabel('Preco') ], [ $preco ] );
 
 
         // set sizes
         $item_id->setSize('100%');
-        $preco->setSize('100%');
+        //$preco->setSize('100%');
 
         
         // keep the form filled during navigation with session data
@@ -62,7 +62,7 @@ class RelacaoItemUpdateList extends TPage
         
 
         // creates the datagrid columns
-        $column_item_id = new TDataGridColumn('item_id', 'Item', 'right');
+        $column_item_id = new TDataGridColumn('item->nome', 'Item', 'right');
         $column_preco = new TDataGridColumn('preco_widget', 'Preco', 'left');
 
 
@@ -108,6 +108,12 @@ class RelacaoItemUpdateList extends TPage
         $container->add(TPanelGroup::pack('', $gridpack, $this->pageNavigation));
         
         parent::add($container);
+    }
+    
+    public function pegaID($data){
+        $pesquisa_item = new PesquisaItem();
+        $pesquisa_item->pesquisa_id = $data['pesquisa_id'];
+        
     }
     
     /**
