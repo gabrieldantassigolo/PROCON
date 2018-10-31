@@ -63,6 +63,36 @@
         </menu>
     </menuitem>
     
+    <menuitem label='PROCON'>
+        <icon>fa:file-text-o fa-fw orange</icon>
+        <menu>
+              <menuitem label='Adicionar Preço'>
+                  <icon>fa:dollar orange</icon>
+                  <action>RelacaoList</action>
+              </menuitem>
+              <menuitem label='Cadastrar Produtos'>
+                  <icon>fa:archive orange</icon>
+                  <action>ItemList</action>
+              </menuitem>
+              <menuitem label='Cadastrar Pesquisa'>
+                  <icon>fa:search orange</icon>
+                  <action>PesquisaList</action>
+              </menuitem>
+              <menuitem label='Cadastrar Estabelecimento'>
+                  <icon>fa:building orange</icon>
+                  <action>EstabelecimentoList</action>
+              </menuitem>
+              <menuitem label='Cadastrar Unidade de medida'>
+                  <icon>fa:percent orange</icon>
+                  <action>UnidadeMedidaList</action>
+              </menuitem>
+              <menuitem label='Cadastrar Categoria'>
+                  <icon>fa:copyright orange</icon>
+                  <action>CategoriaList</action>
+              </menuitem>
+        </menu>
+    </menuitem>
+    
     <menuitem label='Logs'>
         <icon>fa:desktop fa-fw</icon>
         <menu>
@@ -105,6 +135,8 @@
             </menuitem>
         </menu>
     </menuitem>
+    
+
     
     <menuitem label='Logout'>
         <icon>fa:sign-out fa-fw</icon>
