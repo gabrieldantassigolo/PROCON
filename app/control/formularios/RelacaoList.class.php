@@ -112,7 +112,7 @@ class RelacaoList extends TPage
         $this->pageNavigation->setAction(new TAction([$this, 'onReload']));
         $this->pageNavigation->setWidth($this->datagrid->getWidth());
         
-        $this->datagrid->disableDefaultClick();
+        //$this->datagrid->disableDefaultClick();
         
         // put datagrid inside a form
         $this->formgrid = new TForm;
@@ -143,10 +143,15 @@ class RelacaoList extends TPage
     }
     
     public function onUpdateItens($data)
-    {
+    {            
         //TSession::setValue('Cotacao_filter_data', NULL);
         //new TMessage('info', $param->id);
-        AdiantiCoreApplication::loadPage('RelacaoItemUpdateList', 'PegaID', $data);
+        $obj = new StdClass;
+        $obj->relacao_id = $data['id'];
+        //$key = $data['id'];
+
+        TSession::setValue('RelacaoItem_relacao_id', $obj);
+        AdiantiCoreApplication::loadPage('RelacaoItemUpdateList', 'pegaID', $data);
     }
     
     /**
