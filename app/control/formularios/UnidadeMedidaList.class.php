@@ -19,26 +19,21 @@ class UnidadeMedidaList extends TPage
     public function __construct()
     {
         parent::__construct();
-        
+        parent::include_css('app/resources/estiloformcampo.css'); 
         $this->setDatabase('procon_com');            // defines the database
         $this->setActiveRecord('UnidadeMedida');   // defines the active record
-        $this->setDefaultOrder('id', 'asc');         // defines the default order
+        //$this->setDefaultOrder('id', 'asc');         // defines the default order
         // $this->setCriteria($criteria) // define a standard filter
 
-
-        
         // creates the form
         $this->form = new BootstrapFormBuilder('form_UnidadeMedida');
         $this->form->setFormTitle('UnidadeMedida');
         
 
         
-        $teste		= new THidden('teste');
+        $teste = new THidden('teste');
         $this->form->addFields( [ new TLabel('') ], [ $teste ] );
         
-        // add the search form actions
-        $btn = $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search');
-        $btn->class = 'btn btn-sm btn-primary';
         $this->form->addActionLink(_t('New'), new TAction(['UnidadeMedidaForm', 'onEdit']), 'fa:plus green');
         
         // creates a DataGrid
@@ -49,12 +44,12 @@ class UnidadeMedidaList extends TPage
         
 
         // creates the datagrid columns
-        $column_id = new TDataGridColumn('id', 'Id', 'right');
+        //$column_id = new TDataGridColumn('id', 'Id', 'right', '20%');
         $column_nome = new TDataGridColumn('nome', 'Nome', 'left');
 
 
         // add the columns to the DataGrid
-        $this->datagrid->addColumn($column_id);
+        //$this->datagrid->addColumn($column_id);
         $this->datagrid->addColumn($column_nome);
 
         

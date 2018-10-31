@@ -19,7 +19,7 @@ class CategoriaList extends TPage
     public function __construct()
     {
         parent::__construct();
-        
+        parent::include_css('app/resources/estiloformcampo.css'); 
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Categoria');
         $this->form->setFormTitle('Categoria');
@@ -34,7 +34,7 @@ class CategoriaList extends TPage
 
 
         // set sizes
-        $nome->setSize('100%');
+        $nome->setSize('70%');
 
         
         // keep the form filled during navigation with session data
@@ -53,14 +53,14 @@ class CategoriaList extends TPage
         
 
         // creates the datagrid columns
-        $column_check = new TDataGridColumn('check', '', 'center');
-        $column_id = new TDataGridColumn('id', 'Id', 'right');
+        $column_check = new TDataGridColumn('check', '', 'left', '20');
+        //$column_id = new TDataGridColumn('id', 'Id', 'left', '5%');
         $column_nome = new TDataGridColumn('nome', 'Nome', 'left');
 
 
         // add the columns to the DataGrid
         $this->datagrid->addColumn($column_check);
-        $this->datagrid->addColumn($column_id);
+        //$this->datagrid->addColumn($column_id);
         $this->datagrid->addColumn($column_nome);
 
         

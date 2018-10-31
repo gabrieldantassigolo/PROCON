@@ -19,7 +19,7 @@ class EstabelecimentoList extends TPage
     public function __construct()
     {
         parent::__construct();
-        
+        parent::include_css('app/resources/estiloformcampo.css'); 
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Estabelecimento');
         $this->form->setFormTitle('Estabelecimento');

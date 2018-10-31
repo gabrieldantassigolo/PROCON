@@ -21,6 +21,7 @@ class PesquisaFormAddItem extends TPage
     public function __construct()
     {
         parent::__construct();
+        parent::include_css('app/resources/estiloformcampo.css'); 
         new TSession;
         
         $this->setDatabase('procon_com');            // defines the database
@@ -45,7 +46,7 @@ class PesquisaFormAddItem extends TPage
         
         
         // add the fields
-        $this->form->addFields( [ new TLabel('')          ], [ $pesquisa_id]);
+       // $this->form->addFields( [ new TLabel('')          ], [ $pesquisa_id]);
         $this->form->addFields( [ new TLabel('Pesquisa')  ], [ $pesquisa]);
         $this->form->addFields( [ new TLabel('Nome')      ], [ $nome ] ,
                                 [ new TLabel('Categoria') ], [ $categoria_id ]);
@@ -53,9 +54,9 @@ class PesquisaFormAddItem extends TPage
         $this->form2->addFields( [ new THidden('asd')  ], [ $this->total]);
 
         // set sizes
-        $pesquisa->setSize('37%');
-        $nome->setSize('100%');
-        $categoria_id->setSize('100%');
+        $pesquisa->setSize('35%');
+        $nome->setSize('70%');
+        $categoria_id->setSize('70%');
         
         //Botao Form Search Itens
         $btn = $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search');
@@ -104,6 +105,8 @@ class PesquisaFormAddItem extends TPage
         $this->pageNavigation = new TPageNavigation;
         $this->pageNavigation->setAction(new TAction(array($this, 'onReload')));
         $this->pageNavigation->setWidth($this->datagrid->getWidth());
+        
+        $this->form->addAction(_t('Back'), new TAction(array('PesquisaForm','onReload')),'fa:arrow-circle-o-left blue');
         
         // creates the page structure using a table
 /*        $table1 = new TTable;

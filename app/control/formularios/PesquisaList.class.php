@@ -19,7 +19,7 @@ class PesquisaList extends TPage
     public function __construct()
     {
         parent::__construct();
-        
+        parent::include_css('app/resources/estiloformcampo.css'); 
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Pesquisa');
         $this->form->setFormTitle('Pesquisa');
@@ -36,8 +36,8 @@ class PesquisaList extends TPage
 
 
         // set sizes
-        $nome->setSize('100%');
-        $data->setSize('100%');
+        $nome->setSize('70%');
+        $data->setSize('35%');
 
         
         // keep the form filled during navigation with session data

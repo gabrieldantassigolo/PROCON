@@ -14,7 +14,7 @@ class PesquisaForm extends TPage
     public function __construct( $param )
     {
         parent::__construct();
-        
+        parent::include_css('app/resources/estiloformcampo.css'); 
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Pesquisa');
         $this->form->setFormTitle('Pesquisa');
@@ -26,7 +26,7 @@ class PesquisaForm extends TPage
 
 
         // add the fields
-        $this->form->addFields( [ new TLabel('') ], [ $id ] );
+        //$this->form->addFields( [ new TLabel('') ], [ $id ] );
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
 
         //$nome->addValidation('Nome', new TRequiredValidator);
@@ -34,7 +34,7 @@ class PesquisaForm extends TPage
         $nome->addValidation('nome', new TMinLengthValidator, array(3));
 
         // set sizes
-        $nome->setSize('100%');
+        $nome->setSize('70%');
         
         
         

@@ -14,7 +14,7 @@ class EstabelecimentoForm extends TPage
     public function __construct( $param )
     {
         parent::__construct();
-        
+        parent::include_css('app/resources/estiloformcampo.css'); 
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Estabelecimento');
         $this->form->setFormTitle('Estabelecimento');
@@ -108,10 +108,13 @@ class EstabelecimentoForm extends TPage
          $fieldX->setSize( '100%' ); // set size
          **/
          
+         //Back List
+        $this->form->addAction(_t('Back'), new TAction(array('EstabelecimentoList','onReload')),'fa:arrow-circle-o-left blue');
         // create the form actions
+        $this->form->addAction(_t('New'),  new TAction([$this, 'onEdit']), 'fa:eraser red');
         $btn = $this->form->addAction(_t('Save'), new TAction([$this, 'onSave']), 'fa:floppy-o');
         $btn->class = 'btn btn-sm btn-primary';
-        $this->form->addAction(_t('New'),  new TAction([$this, 'onEdit']), 'fa:eraser red');
+        
         
         // vertical box container
         $container = new TVBox;

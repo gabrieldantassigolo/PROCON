@@ -1,4 +1,4 @@
-<?php
+    <?php
 /**
  * ItemForm Form
  * @author  <your name here>
@@ -14,7 +14,7 @@ class ItemForm extends TPage
     public function __construct( $param )
     {
         parent::__construct();
-        
+        parent::include_css('app/resources/estiloformcampo.css'); 
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Item');
         $this->form->setFormTitle('Item');
@@ -29,7 +29,7 @@ class ItemForm extends TPage
 
 
         // add the fields
-        $this->form->addFields( [ new TLabel('') ], [ $id ] );
+        //$this->form->addFields( [ new TLabel('') ], [ $id ] );
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
         $this->form->addFields( [ new TLabel('Quantidade') ], [ $quantidade ] );
         $this->form->addFields( [ new TLabel('Un. de medida') ], [ $unidade] );
@@ -38,11 +38,11 @@ class ItemForm extends TPage
 
 
         // set sizes
-        $id->setSize('100%');
-        $nome->setSize('100%');
-        $quantidade->setSize('100%');
-        $unidade->setSize('100%');
-        $categoria->setSize('100%');
+        $id->setSize('10%');
+        $nome->setSize('70%');
+        $quantidade->setSize('35%');
+        $unidade->setSize('35%');
+        $categoria->setSize('70%');
 
 
 
@@ -55,11 +55,16 @@ class ItemForm extends TPage
          $fieldX->addValidation( 'Field X', new TRequiredValidator ); // add validation
          $fieldX->setSize( '100%' ); // set size
          **/
+        
+        //Back List
+        $this->form->addAction(_t('Back'), new TAction(array('ItemList','onReload')),'fa:arrow-circle-o-left blue');
          
         // create the form actions
+         $this->form->addAction(_t('New'),  new TAction([$this, 'onEdit']), 'fa:eraser red');
         $btn = $this->form->addAction(_t('Save'), new TAction([$this, 'onSave']), 'fa:floppy-o');
         $btn->class = 'btn btn-sm btn-primary';
-        $this->form->addAction(_t('New'),  new TAction([$this, 'onEdit']), 'fa:eraser red');
+       
+        
         
         // vertical box container
         $container = new TVBox;
@@ -68,6 +73,15 @@ class ItemForm extends TPage
         $container->add($this->form);
         
         parent::add($container);
+    }
+    
+    /*
+    * Back on List
+    */
+    public function onBackForm()
+    {
+        // Load another page
+        AdiantiCoreApplication::loadPage('PesquisaForm', 'onLoadFromSession');
     }
 
     /**

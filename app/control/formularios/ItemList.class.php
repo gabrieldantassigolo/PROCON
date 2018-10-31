@@ -19,7 +19,7 @@ class ItemList extends TPage
     public function __construct()
     {
         parent::__construct();
-        
+        parent::include_css('app/resources/estiloformcampo.css'); 
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Item');
         $this->form->setFormTitle('Item');
@@ -32,14 +32,14 @@ class ItemList extends TPage
 
 
         // add the fields
-        $this->form->addFields( [ new TLabel('ID')   ], [ $id   ] );
+        //$this->form->addFields( [ new TLabel('ID')   ], [ $id   ] );
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
         $this->form->addFields( [ new TLabel('Categoria') ], [ $categoria ] );
 
 
         // set sizes
-        $nome->setSize('100%');
-        $categoria->setSize('100%');
+        $nome->setSize('70%');
+        $categoria->setSize('70%');
 
         
         // keep the form filled during navigation with session data
@@ -60,8 +60,8 @@ class ItemList extends TPage
         // creates the datagrid columns
         $column_check = new TDataGridColumn('check', '', 'center');
         $column_nome = new TDataGridColumn('nome', 'Nome', 'left');
-        $column_quantidade = new TDataGridColumn('quantidade', 'Quantidade', 'right');
-        $column_unidade = new TDataGridColumn('unidadeMedida->nome', 'Unidade', 'left');
+        $column_quantidade = new TDataGridColumn('quantidade', 'Qtde', 'center');
+        $column_unidade = new TDataGridColumn('unidadeMedida->nome', 'Un.', 'left');
         $column_categoria = new TDataGridColumn('categoria->nome', 'Categoria', 'left');
 
 

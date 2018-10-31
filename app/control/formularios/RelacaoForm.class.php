@@ -14,7 +14,7 @@ class RelacaoForm extends TPage
     public function __construct( $param )
     {
         parent::__construct();
-        
+        parent::include_css('app/resources/estiloformcampo.css'); 
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Relacao');
         $this->form->setFormTitle('Relacao');
@@ -36,10 +36,10 @@ class RelacaoForm extends TPage
 
 
         // set sizes
-        $id->setSize('100%');
-        $pesquisa_id->setSize('100%');
-        $estabelecimento_id->setSize('100%');
-        $data_criacao->setSize('100%');
+        $id->setSize('70%');
+        $pesquisa_id->setSize('700%');
+        $estabelecimento_id->setSize('70%');
+        $data_criacao->setSize('35%');
 
 
 
