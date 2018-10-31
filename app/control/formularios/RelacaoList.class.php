@@ -32,8 +32,8 @@ class RelacaoList extends TPage
 
 
         // add the fields
-        $this->form->addFields( [ new TLabel('Pesquisa Id') ], [ $pesquisa_id ] );
-        $this->form->addFields( [ new TLabel('Estabelecimento Id') ], [ $estabelecimento_id ] );
+        $this->form->addFields( [ new TLabel('Pesquisa') ], [ $pesquisa_id ] );
+        $this->form->addFields( [ new TLabel('Estabelecimento') ], [ $estabelecimento_id ] );
         $this->form->addFields( [ new TLabel('Data') ], [ $data ] );
 
 
@@ -60,22 +60,22 @@ class RelacaoList extends TPage
 
         // creates the datagrid columns
         $column_check = new TDataGridColumn('check', '', 'center');
-        $column_id = new TDataGridColumn('id', 'Id', 'right');
-        $column_pesquisa = new TDataGridColumn('pesquisa->nome', 'Pesquisa Id', 'right');
-        $column_estabelecimento = new TDataGridColumn('estabelecimento->nome', 'Estabelecimento Id', 'right');
+        //$column_id = new TDataGridColumn('id', 'Id', 'right');
+        $column_pesquisa = new TDataGridColumn('pesquisa->nome', 'Pesquisa', 'left');
+        $column_estabelecimento = new TDataGridColumn('estabelecimento->nome', 'Estabelecimento', 'left');
         $column_data = new TDataGridColumn('data_criacao', 'Data', 'left');
     
     
         // add the columns to the DataGrid
         $this->datagrid->addColumn($column_check);
-        $this->datagrid->addColumn($column_id);
+        //$this->datagrid->addColumn($column_id);
         $this->datagrid->addColumn($column_pesquisa);
         $this->datagrid->addColumn($column_estabelecimento);
         $this->datagrid->addColumn($column_data);
 
 
         // creates the datagrid column actions
-        $column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
+        //$column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
         $column_data->setAction(new TAction([$this, 'onReload']), ['order' => 'data_criacao']);
 
 
@@ -143,12 +143,15 @@ class RelacaoList extends TPage
     }
     
     public function onUpdateItens($data)
-    {            
-        //TSession::setValue('Cotacao_filter_data', NULL);
-        //new TMessage('info', $param->id);
+    {     
+        TTransaction::open('procon_com');       
         $obj = new StdClass;
         $obj->relacao_id = $data['id'];
-        //$key = $data['id'];
+        
+        $pesquisa = new Pesquisa($data['pesquisa_id']);
+        $obj->pesquisa_id = $pesquisa->nome;
+       
+        TTransaction::close();
 
         TSession::setValue('RelacaoItem_relacao_id', $obj);
         AdiantiCoreApplication::loadPage('RelacaoItemUpdateList', 'pegaID', $data);
