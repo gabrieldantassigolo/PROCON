@@ -127,12 +127,9 @@ class RelacaoItemUpdateList extends TPage
 
         parent::add($container);
 
-        echo('construct');
-        //$this->onSearch();
     }
 
-    public function pegaID($data){
-        echo('pegaid');
+    public function pegaID($data){        
         
         TSession::setValue('RelacaoItemList_filter_relacao_id',   NULL);
 
@@ -208,10 +205,8 @@ class RelacaoItemUpdateList extends TPage
             
         // get the search form data
         $data = $this->form->getData();
-        echo(' search '); 
-        echo $this->filtrado;
-        var_dump($data);
-        //echo($key);
+        
+        
 
         // clear session filters
         TSession::setValue('RelacaoItemList_filter_item_id',   NULL);
@@ -233,8 +228,7 @@ class RelacaoItemUpdateList extends TPage
         {
             $filter = new TFilter('relacao_id', '=', "$obj->relacao_id"); // create the filter
             TSession::setValue('RelacaoItemList_filter_relacao_id',   $filter);
-            $this->filtrado = 1; 
-            echo 'FILTRO';           
+            $this->filtrado = 1;          
         }
         
         /*if(TSession::getValue('RelacaoItem_relacao_id')){
@@ -258,16 +252,8 @@ class RelacaoItemUpdateList extends TPage
     {
         try
         {    
-            
-            
-            
-            $data = $this->form->getData();
-            if($data->relacao_id) {
-               // $this->pegaID($data);
-                //echo('entrou if');
-            }
+            $data = $this->form->getData();           
 
-            echo(' reload ');
             // open a transaction with database 'procon_com'
             TTransaction::open('procon_com');
 
@@ -358,7 +344,6 @@ class RelacaoItemUpdateList extends TPage
 
     public function onBeforeLoad($objects, $param)
     {
-        echo(' onbeforeload ');
         // update the action parameters to pass the current page to action
         // without this, the action will only work for the first page
         $saveAction = $this->saveButton->getAction();
@@ -460,7 +445,6 @@ class RelacaoItemUpdateList extends TPage
      */
     public function show()
     {
-        echo(' show ');
         // check if the datagrid is already loaded
         if (!$this->loaded AND (!isset($_GET['method']) OR !(in_array($_GET['method'],  array('onReload', 'onSearch')))) )
         {
