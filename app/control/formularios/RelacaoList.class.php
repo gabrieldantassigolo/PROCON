@@ -28,7 +28,9 @@ class RelacaoList extends TPage
         // create the form fields
         $pesquisa_id = new TDBCombo('pesquisa_id', 'procon_com', 'Pesquisa', 'id', 'nome');
         $estabelecimento_id = new TDBCombo('estabelecimento_id', 'procon_com', 'Estabelecimento', 'id', 'nome');
-        $data = new TEntry('data_criacao');
+        $data = new TDate('data_criacao');
+        
+        
 
 
         // add the fields
@@ -38,10 +40,11 @@ class RelacaoList extends TPage
 
 
         // set sizes
-        $pesquisa_id->setSize('100%');
-        $estabelecimento_id->setSize('100%');
-        $data->setSize('100%');
-
+        $pesquisa_id->setSize('70%');
+        $estabelecimento_id->setSize('70%');
+        $data->setSize('70%');
+        
+        $data->setMask('dd/mm/yyyy');
         
         // keep the form filled during navigation with session data
         $this->form->setData( TSession::getValue('Relacao_filter_data') );
@@ -64,6 +67,22 @@ class RelacaoList extends TPage
         $column_pesquisa = new TDataGridColumn('pesquisa->nome', 'Pesquisa', 'left');
         $column_estabelecimento = new TDataGridColumn('estabelecimento->nome', 'Estabelecimento', 'left');
         $column_data = new TDataGridColumn('data_criacao', 'Data', 'left');
+        
+        $column_data->setTransformer( function($value, $object, $row) {
+            if ($value)
+            {
+                try
+                {
+                    $date = new DateTime($value);
+                    return $date->format('d/m/Y');
+                }
+                catch (Exception $e)
+                {
+                    return $value;
+                }
+            }
+            return $value;
+        });
     
     
         // add the columns to the DataGrid

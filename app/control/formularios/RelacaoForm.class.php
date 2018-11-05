@@ -37,11 +37,12 @@ class RelacaoForm extends TPage
 
         // set sizes
         $id->setSize('70%');
-        $pesquisa_id->setSize('700%');
+        $pesquisa_id->setSize('70%');
         $estabelecimento_id->setSize('70%');
         $data_criacao->setSize('35%');
 
-
+        //mask
+        $data_criacao->setMask('dd/mm/yyyy');
 
         if (!empty($id))
         {

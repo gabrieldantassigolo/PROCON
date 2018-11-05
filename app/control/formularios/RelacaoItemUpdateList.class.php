@@ -69,21 +69,21 @@ class RelacaoItemUpdateList extends TPage
 
 
         // creates the datagrid columns
-        $column_id = new TDataGridColumn('id', 'Cód.', 'right');
-        $column_relacao_id = new TDataGridColumn('relacao_id', 'Relacao', 'left');
-        $column_item_id = new TDataGridColumn('item->nome', 'Item', 'left');
-        $column_preco = new TDataGridColumn('preco_widget', 'Preco', 'left');
+        //$column_id = new TDataGridColumn('id', 'Cód.', 'right');
+        //$column_relacao_id = new TDataGridColumn('relacao_id', 'Relacao', 'left');
+        $column_item_id = new TDataGridColumn('item->nome', 'Item', 'left', '50%');
+        $column_preco = new TDataGridColumn('preco_widget', 'Preco', 'left', '50%');
 
 
-        // add the columns to the DataGrid
-        //$this->datagrid->addColumn($column_id);
+       // add the columns to the DataGrid
+       //$this->datagrid->addColumn($column_id);
        // $this->datagrid->addColumn($column_relacao_id);
-        $this->datagrid->addColumn($column_item_id);
-        $this->datagrid->addColumn($column_preco);
+       $this->datagrid->addColumn($column_item_id);
+       $this->datagrid->addColumn($column_preco);
 
 
         // creates the datagrid column actions
-        $column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
+        //$column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
 
 
         // create EDIT action

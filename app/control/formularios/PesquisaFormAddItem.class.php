@@ -106,7 +106,7 @@ class PesquisaFormAddItem extends TPage
         $this->pageNavigation->setAction(new TAction(array($this, 'onReload')));
         $this->pageNavigation->setWidth($this->datagrid->getWidth());
         
-        $this->form->addAction(_t('Back'), new TAction(array('PesquisaForm','onReload')),'fa:arrow-circle-o-left blue');
+        //$this->form->addAction(_t('Back'), new TAction(array('PesquisaForm','onReload')),'fa:arrow-circle-o-left blue');
         
         // creates the page structure using a table
 /*        $table1 = new TTable;
