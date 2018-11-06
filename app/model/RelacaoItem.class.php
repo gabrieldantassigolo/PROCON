@@ -63,24 +63,5 @@ class RelacaoItem extends TRecord
         return $this->pesquisa;
     }
     
-    public function set_item(Item $object)
-    {
-        $this->item = $object;
-        $this->item_id = $object->id;
-    }
-    
-    /**
-     * Method get_distribuidor
-     * Sample of usage: $filme->distribuidor->attribute;
-     * @returns Distribuidor instance
-     */
-    public function get_item()
-    {
-        // loads the associated object
-        if (empty($this->item))
-            $this->item = new item($this->item_id);
-    
-        // returns the associated object
-        return $this->item;
-    }
+
 }

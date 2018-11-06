@@ -1,9 +1,9 @@
-<?php
+    <?php
 /**
- * ItemList Listing
+ * RelacaoList Listing
  * @author  <your name here>
  */
-class ItemList extends TPage
+class RelacaoListUser extends TPage
 {
     private $form; // form
     private $datagrid; // listing
@@ -19,128 +19,168 @@ class ItemList extends TPage
     public function __construct()
     {
         parent::__construct();
-        parent::include_css('app/resources/estiloformcampo.css'); 
         
         // creates the form
-        $this->form = new BootstrapFormBuilder('form_Item');
-        $this->form->setFormTitle('Item');
+        $this->form = new BootstrapFormBuilder('form_Relacao');
+        $this->form->setFormTitle('Relacao');
         
 
-        // create the form fields
-        $nome = new TEntry('nome');
-        $quantidade = new TEntry('quantidade');
-        $unidade_id = new TEntry('unidade_id');
-        $categoria_id = new TDBCombo('categoria_id', 'procon_com', 'Categoria', 'id', 'nome');
+        // create the form fields       
+        $cnpj = new TEntry('cnpj');
 
 
         // add the fields
-        $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
-        //$this->form->addFields( [ new TLabel('Qtd.') ], [ $quantidade ] );
-        //$this->form->addFields( [ new TLabel('Un.') ], [ $unidade_id ] );
-        $this->form->addFields( [ new TLabel('Categoria') ], [ $categoria_id ] );
+        $this->form->addFields( [ new TLabel('') ], [ $cnpj ] );
 
 
         // set sizes
-        $nome->setSize('70%');
-        $categoria_id->setSize('70%');
+        $cnpj->setSize('70%');
+        $cnpj->setValue(TSession::getValue('login'));
+        $cnpj->setValue('');
 
-        
         // keep the form filled during navigation with session data
-        $this->form->setData( TSession::getValue('Item_filter_data') );
-        
+        $this->form->setData( TSession::getValue('Relacao_filter_data') );
+
         // add the search form actions
         $btn = $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search');
         $btn->class = 'btn btn-sm btn-primary';
-        $this->form->addActionLink(_t('New'), new TAction(['ItemForm', 'onEdit']), 'fa:plus green');
-        
+        $this->form->addActionLink(_t('New'), new TAction(['RelacaoForm', 'onEdit']), 'fa:plus green');
+
         // creates a Datagrid
         $this->datagrid = new BootstrapDatagridWrapper(new TDataGrid);
         $this->datagrid->style = 'width: 100%';
         $this->datagrid->datatable = 'true';
         // $this->datagrid->enablePopover('Popover', 'Hi <b> {name} </b>');
-        
+
 
         // creates the datagrid columns
-        $column_check = new TDataGridColumn('check', '', 'center' , '5%');
-        $column_nome = new TDataGridColumn('nome', 'Nome', 'left', '50%');
-        $column_quantidade = new TDataGridColumn('quantidade', 'Qtd.', 'center', '10%');
-        $column_unidade_id = new TDataGridColumn('unidadeMedida->nome', 'Un.', 'center', '15%');
-        $column_categoria_id = new TDataGridColumn('categoria->nome', 'Categoria', 'left', '20');
+        $column_check = new TDataGridColumn('check', '', 'center');
+        //$column_id = new TDataGridColumn('id', 'Id', 'right');
+        $column_pesquisa = new TDataGridColumn('pesquisa->nome', 'Pesquisa', 'left');
+        $column_estabelecimento = new TDataGridColumn('estabelecimento->nome', 'Estabelecimento', 'left');
+        $column_cnpj = new TDataGridColumn('estabelecimento->cnpj', 'CNPJ', 'left');
+        $column_data = new TDataGridColumn('data_criacao', 'Data', 'left');
+
+        $column_data->setTransformer( function($value, $object, $row) {
+            if ($value)
+            {
+                try
+                {
+                    $date = new DateTime($value);
+                    return $date->format('d/m/Y');
+                }
+                catch (Exception $e)
+                {
+                    return $value;
+                }
+            }
+            return $value;
+        });
 
 
         // add the columns to the DataGrid
         $this->datagrid->addColumn($column_check);
-        $this->datagrid->addColumn($column_nome);
-        $this->datagrid->addColumn($column_quantidade);
-        $this->datagrid->addColumn($column_unidade_id);
-        $this->datagrid->addColumn($column_categoria_id);
+        //$this->datagrid->addColumn($column_id);
+        $this->datagrid->addColumn($column_pesquisa);
+        $this->datagrid->addColumn($column_estabelecimento);
+        $this->datagrid->addColumn($column_cnpj);
+        $this->datagrid->addColumn($column_data);
+
 
         // creates the datagrid column actions
-        $column_nome->setAction(new TAction([$this, 'onReload']), ['order' => 'nome']);
-        $column_categoria_id->setAction(new TAction([$this, 'onReload']), ['order' => 'categoria->nome']);
-        
+        //$column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
+        $column_data->setAction(new TAction([$this, 'onReload']), ['order' => 'data_criacao']);
+
+
+        $action_view = new TDataGridAction(array($this, 'onUpdateItens'));
+        $action_view->setLabel('Definir preços dos Itens');
+        $action_view->setImage('fa:dollar blue');
+        $action_view->setField('id');
+        $action_view->setField('pesquisa_id');
+        $this->datagrid->addAction($action_view);
+
         // create EDIT action
-        $action_edit = new TDataGridAction(['ItemForm', 'onEdit']);
+        $action_edit = new TDataGridAction(['RelacaoForm', 'onEdit']);
         //$action_edit->setUseButton(TRUE);
         //$action_edit->setButtonClass('btn btn-default');
         $action_edit->setLabel(_t('Edit'));
         $action_edit->setImage('fa:pencil-square-o blue fa-lg');
-        $action_edit->setField('id');
+        $action_edit->setField('pesquisa_id');
         $this->datagrid->addAction($action_edit);
-        
+
         // create DELETE action
         $action_del = new TDataGridAction(array($this, 'onDelete'));
         //$action_del->setUseButton(TRUE);
         //$action_del->setButtonClass('btn btn-default');
         $action_del->setLabel(_t('Delete'));
         $action_del->setImage('fa:trash-o red fa-lg');
-        $action_del->setField('id');
+        $action_del->setField('pesquisa_id');
         $this->datagrid->addAction($action_del);
-        
+
         // create the datagrid model
         $this->datagrid->createModel();
-        
+
         // creates the page navigation
         $this->pageNavigation = new TPageNavigation;
         $this->pageNavigation->setAction(new TAction([$this, 'onReload']));
         $this->pageNavigation->setWidth($this->datagrid->getWidth());
-        
-        $this->datagrid->disableDefaultClick();
-        
+
+        //$this->datagrid->disableDefaultClick();
+
         // put datagrid inside a form
         $this->formgrid = new TForm;
         $this->formgrid->add($this->datagrid);
-        
+
         // creates the delete collection button
         $this->deleteButton = new TButton('delete_collection');
         $this->deleteButton->setAction(new TAction(array($this, 'onDeleteCollection')), AdiantiCoreTranslator::translate('Delete selected'));
         $this->deleteButton->setImage('fa:remove red');
         $this->formgrid->addField($this->deleteButton);
-        
+
         $gridpack = new TVBox;
         $gridpack->style = 'width: 100%';
         $gridpack->add($this->formgrid);
         $gridpack->add($this->deleteButton)->style = 'background:whiteSmoke;border:1px solid #cccccc; padding: 3px;padding: 5px;';
-        
+
         $this->transformCallback = array($this, 'onBeforeLoad');
 
+        if (!empty($cnpj))
+        {
+            $cnpj->setEditable(FALSE);
+        }
 
         // vertical box container
         $container = new TVBox;
-        $container->style = 'width: 90%';
+        $container->style = 'width: 100%';
         // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $container->add($this->form);
         $container->add(TPanelGroup::pack('', $gridpack, $this->pageNavigation));
-        
+
         parent::add($container);
     }
-    
+
+    public function onUpdateItens($data)
+    {
+        TTransaction::open('procon_com');
+
+        $obj = new StdClass;
+        $obj->relacao_id = $data['id'];
+
+        $pesquisa = new Pesquisa($data['pesquisa_id']);
+        $obj->pesquisa_id = $pesquisa->nome;
+
+        TTransaction::close();
+
+        TSession::setValue('RelacaoItem_relacao_id', $obj);
+        AdiantiCoreApplication::loadPage('RelacaoItemUpdateList', 'pegaID', $data);
+    }
+
     /**
      * Inline record editing
      * @param $param Array containing:
      *              key: object ID value
      *              field name: object attribute to be updated
-     *              value: new attribute content 
+     *              value: new attribute content
      */
     public function onInlineEdit($param)
     {
@@ -150,13 +190,13 @@ class ItemList extends TPage
             $field = $param['field'];
             $key   = $param['key'];
             $value = $param['value'];
-            
+
             TTransaction::open('procon_com'); // open a transaction with database
-            $object = new Item($key); // instantiates the Active Record
+            $object = new Relacao($key); // instantiates the Active Record
             $object->{$field} = $value;
             $object->store(); // update the object in the database
             TTransaction::close(); // close the transaction
-            
+
             $this->onReload($param); // reload the listing
             new TMessage('info', "Record Updated");
         }
@@ -166,7 +206,7 @@ class ItemList extends TPage
             TTransaction::rollback(); // undo all pending operations
         }
     }
-    
+
     /**
      * Register the filter in the session
      */
@@ -174,49 +214,27 @@ class ItemList extends TPage
     {
         // get the search form data
         $data = $this->form->getData();
-        
+
         // clear session filters
-        TSession::setValue('ItemList_filter_nome',   NULL);
-        TSession::setValue('ItemList_filter_quantidade',   NULL);
-        TSession::setValue('ItemList_filter_unidade_id',   NULL);
-        TSession::setValue('ItemList_filter_categoria_id',   NULL);
+        TSession::setValue('RelacaoList_filter_cnpj',   NULL);
 
-        if (isset($data->nome) AND ($data->nome)) {
-            $filter = new TFilter('nome', 'ilike', "%{$data->nome}%"); // create the filter
-            TSession::setValue('ItemList_filter_nome',   $filter); // stores the filter in the session
+        if (isset($data->cnpj) AND ($data->cnpj)) {
+            $filter = new TFilter('(SELECT cnpj from estabelecimento where id =estabelecimento_id)', 'like', "$data->cnpj"); // create the filter
+            TSession::setValue('RelacaoList_filter_cnpj',   $filter); // stores the filter in the session
+            echo 'teste ';
         }
-
-
-        if (isset($data->quantidade) AND ($data->quantidade)) {
-            $filter = new TFilter('quantidade', 'ilike', "%{$data->quantidade}%"); // create the filter
-            TSession::setValue('ItemList_filter_quantidade',   $filter); // stores the filter in the session
-        }
-
-
-        if (isset($data->unidade_id) AND ($data->unidade_id)) {
-            $filter = new TFilter('unidade_id', 'ilike', "%{$data->unidade_id}%"); // create the filter
-            TSession::setValue('ItemList_filter_unidade_id',   $filter); // stores the filter in the session
-        }
-
-
-        if (isset($data->categoria_id) AND ($data->categoria_id)) {
-            $filter = new TFilter('categoria_id', '=', "$data->categoria_id"); // create the filter
-            TSession::setValue('ItemList_filter_categoria_id',   $filter); // stores the filter in the session
-        }
-
-        
         // fill the form with data again
         $this->form->setData($data);
-        
+
         // keep the search data in the session
-        TSession::setValue('Item_filter_data', $data);
-        
+        TSession::setValue('Relacao_filter_data', $data);
+
         $param = array();
         $param['offset']    =0;
         $param['first_page']=1;
         $this->onReload($param);
     }
-    
+
     /**
      * Load the datagrid with data
      */
@@ -226,57 +244,38 @@ class ItemList extends TPage
         {
             // open a transaction with database 'procon_com'
             TTransaction::open('procon_com');
-            
-            // creates a repository for Item
-            $repository = new TRepository('Item');
-            $limit = 10;
+
+            // creates a repository for Relacao
+            $repository = new TRepository('Relacao');
+            $limit = 5;
             // creates a criteria
             $criteria = new TCriteria;
-            
-            $newparam = $param; // define new parameters
-            if (isset($newparam['order']) AND $newparam['order'] == 'categoria->nome')
-            {
-                $newparam['order'] = '(select nome from public.categoria where item.categoria_id = categoria.id)';
-            }
-            
+
             // default order
             if (empty($param['order']))
             {
                 $param['order'] = 'id';
                 $param['direction'] = 'asc';
             }
-            $criteria->setProperties($newparam); // order, offset
+            $criteria->setProperties($param); // order, offset
+
             $criteria->setProperty('limit', $limit);
-            
 
-            if (TSession::getValue('ItemList_filter_nome')) {
-                $criteria->add(TSession::getValue('ItemList_filter_nome')); // add the session filter
+
+            if (TSession::getValue('RelacaoList_filter_cnpj')) {
+                $criteria->add(TSession::getValue('RelacaoList_filter_cnpj')); // add the session filter
+                echo 'teste1';
             }
 
 
-            if (TSession::getValue('ItemList_filter_quantidade')) {
-                $criteria->add(TSession::getValue('ItemList_filter_quantidade')); // add the session filter
-            }
-
-
-            if (TSession::getValue('ItemList_filter_unidade_id')) {
-                $criteria->add(TSession::getValue('ItemList_filter_unidade_id')); // add the session filter
-            }
-
-
-            if (TSession::getValue('ItemList_filter_categoria_id')) {
-                $criteria->add(TSession::getValue('ItemList_filter_categoria_id')); // add the session filter
-            }
-
-            
             // load the objects according to criteria
             $objects = $repository->load($criteria, FALSE);
-            
+
             if (is_callable($this->transformCallback))
             {
                 call_user_func($this->transformCallback, $objects, $param);
             }
-            
+
             $this->datagrid->clear();
             if ($objects)
             {
@@ -287,15 +286,20 @@ class ItemList extends TPage
                     $this->datagrid->addItem($object);
                 }
             }
-            
+
             // reset the criteria for record count
             $criteria->resetProperties();
             $count= $repository->count($criteria);
-            
+
             $this->pageNavigation->setCount($count); // count of records
             $this->pageNavigation->setProperties($param); // order, page
             $this->pageNavigation->setLimit($limit); // limit
-            
+
+            //seta o campo CNPJ baseado no login da sessão
+            //$obj = new StdClass;
+            //$obj->cnpj = TSession::getValue('login');
+            //$this->form->setData($obj);
+
             // close the transaction
             TTransaction::close();
             $this->loaded = true;
@@ -331,7 +335,7 @@ class ItemList extends TPage
         {
             $key=$param['key']; // get the parameter $key
             TTransaction::open('procon_com'); // open a transaction with database
-            $object = new Item($key, FALSE); // instantiates the Active Record
+            $object = new Relacao($key, FALSE); // instantiates the Active Record
             $object->delete(); // deletes the object from the database
             TTransaction::close(); // close the transaction
             
@@ -398,7 +402,7 @@ class ItemList extends TPage
                 // delete each record from collection
                 foreach ($selected as $id)
                 {
-                    $object = new Item;
+                    $object = new Relacao;
                     $object->delete( $id );
                 }
                 $posAction = new TAction(array($this, 'onReload'));
