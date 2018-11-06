@@ -75,6 +75,9 @@ class ItemList extends TPage
         $this->datagrid->addColumn($column_unidade_id);
         $this->datagrid->addColumn($column_categoria_id);
 
+        // creates the datagrid column actions
+        $column_nome->setAction(new TAction([$this, 'onReload']), ['order' => 'nome']);
+        $column_categoria_id->setAction(new TAction([$this, 'onReload']), ['order' => 'categoria->nome']);
         
         // create EDIT action
         $action_edit = new TDataGridAction(['ItemForm', 'onEdit']);

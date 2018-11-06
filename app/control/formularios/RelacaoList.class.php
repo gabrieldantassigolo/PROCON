@@ -19,6 +19,7 @@ class RelacaoList extends TPage
     public function __construct()
     {
         parent::__construct();
+        parent::include_css('app/resources/estiloformcampo.css');
         
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Relacao');
@@ -62,11 +63,11 @@ class RelacaoList extends TPage
         
 
         // creates the datagrid columns
-        $column_check = new TDataGridColumn('check', '', 'center');
+        $column_check = new TDataGridColumn('check', '', 'center', '5%' );
         //$column_id = new TDataGridColumn('id', 'Id', 'right');
-        $column_pesquisa = new TDataGridColumn('pesquisa->nome', 'Pesquisa', 'left');
-        $column_estabelecimento = new TDataGridColumn('estabelecimento->nome', 'Estabelecimento', 'left');
-        $column_data = new TDataGridColumn('data_criacao', 'Data', 'left');
+        $column_pesquisa = new TDataGridColumn('pesquisa->nome', 'Pesquisa', 'left', '40%');
+        $column_estabelecimento = new TDataGridColumn('estabelecimento->nome', 'Estabelecimento', 'left', '40%');
+        $column_data = new TDataGridColumn('data_criacao', 'Data', 'left', '15%');
         
         $column_data->setTransformer( function($value, $object, $row) {
             if ($value)
