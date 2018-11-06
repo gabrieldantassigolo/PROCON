@@ -62,7 +62,7 @@ class EstabelecimentoList extends TPage
         
 
         // creates the datagrid columns
-        $column_check = new TDataGridColumn('check', '', 'center');
+        $column_check = new TDataGridColumn('check', '', 'left', '5%');
         $column_nome = new TDataGridColumn('nome', 'Nome', 'left');        
         $column_responsavel = new TDataGridColumn('responsavel', 'Responsavel', 'left');
         $column_email = new TDataGridColumn('email', 'Email', 'left');
@@ -87,9 +87,9 @@ class EstabelecimentoList extends TPage
         //$column_bairro->setAction(new TAction([$this, 'onReload']), ['order' => 'bairro']);
 
         // define the transformer method over image
-        $column_nome->setTransformer( function($value, $object, $row) {
+        /*$column_nome->setTransformer( function($value, $object, $row) {
             return strtoupper($value);
-        });
+        });*/
 
         
         // create EDIT action
@@ -187,6 +187,7 @@ class EstabelecimentoList extends TPage
     {
         // get the search form data
         $data = $this->form->getData();
+        new TMessage('info', $data->nome);
         
         // clear session filters
         TSession::setValue('EstabelecimentoList_filter_nome',   NULL);
@@ -204,13 +205,13 @@ class EstabelecimentoList extends TPage
         TSession::setValue('EstabelecimentoList_filter_complemento',   NULL);
 
         if (isset($data->nome) AND ($data->nome)) {
-            $filter = new TFilter('nome', 'like', "%{$data->nome}%"); // create the filter
+            $filter = new TFilter('nome', 'ilike', "%{$data->nome}%"); // create the filter
             TSession::setValue('EstabelecimentoList_filter_nome',   $filter); // stores the filter in the session
         }
 
 
         if (isset($data->razao) AND ($data->razao)) {
-            $filter = new TFilter('razao', 'like', "%{$data->razao}%"); // create the filter
+            $filter = new TFilter('razao', 'ilike', "%{$data->razao}%"); // create the filter
             TSession::setValue('EstabelecimentoList_filter_razao',   $filter); // stores the filter in the session
         }
 
@@ -258,13 +259,13 @@ class EstabelecimentoList extends TPage
 
 
         if (isset($data->logradouro) AND ($data->logradouro)) {
-            $filter = new TFilter('logradouro', 'like', "%{$data->logradouro}%"); // create the filter
+            $filter = new TFilter('logradouro', 'ilike', "%{$data->logradouro}%"); // create the filter
             TSession::setValue('EstabelecimentoList_filter_logradouro',   $filter); // stores the filter in the session
         }
 
 
         if (isset($data->bairro) AND ($data->bairro)) {
-            $filter = new TFilter('bairro', 'like', "%{$data->bairro}%"); // create the filter
+            $filter = new TFilter('bairro', 'ilike', "%{$data->bairro}%"); // create the filter
             TSession::setValue('EstabelecimentoList_filter_bairro',   $filter); // stores the filter in the session
         }
 

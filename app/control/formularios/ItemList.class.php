@@ -20,26 +20,29 @@ class ItemList extends TPage
     {
         parent::__construct();
         parent::include_css('app/resources/estiloformcampo.css'); 
+        
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Item');
         $this->form->setFormTitle('Item');
         
 
         // create the form fields
-        $id   = new TEntry('id');
         $nome = new TEntry('nome');
-        $categoria = new TEntry('categoria');
+        $quantidade = new TEntry('quantidade');
+        $unidade_id = new TEntry('unidade_id');
+        $categoria_id = new TDBCombo('categoria_id', 'procon_com', 'Categoria', 'id', 'nome');
 
 
         // add the fields
-        //$this->form->addFields( [ new TLabel('ID')   ], [ $id   ] );
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
-        $this->form->addFields( [ new TLabel('Categoria') ], [ $categoria ] );
+        //$this->form->addFields( [ new TLabel('Qtd.') ], [ $quantidade ] );
+        //$this->form->addFields( [ new TLabel('Un.') ], [ $unidade_id ] );
+        $this->form->addFields( [ new TLabel('Categoria') ], [ $categoria_id ] );
 
 
         // set sizes
         $nome->setSize('70%');
-        $categoria->setSize('70%');
+        $categoria_id->setSize('70%');
 
         
         // keep the form filled during navigation with session data
@@ -58,24 +61,19 @@ class ItemList extends TPage
         
 
         // creates the datagrid columns
-        $column_check = new TDataGridColumn('check', '', 'center');
-        $column_nome = new TDataGridColumn('nome', 'Nome', 'left');
-        $column_quantidade = new TDataGridColumn('quantidade', 'Qtde', 'center');
-        $column_unidade = new TDataGridColumn('unidadeMedida->nome', 'Un.', 'left');
-        $column_categoria = new TDataGridColumn('categoria->nome', 'Categoria', 'left');
+        $column_check = new TDataGridColumn('check', '', 'center' , '5%');
+        $column_nome = new TDataGridColumn('nome', 'Nome', 'left', '50%');
+        $column_quantidade = new TDataGridColumn('quantidade', 'Qtd.', 'center', '10%');
+        $column_unidade_id = new TDataGridColumn('unidadeMedida->nome', 'Un.', 'center', '15%');
+        $column_categoria_id = new TDataGridColumn('categoria->nome', 'Categoria', 'left', '20');
 
 
         // add the columns to the DataGrid
         $this->datagrid->addColumn($column_check);
         $this->datagrid->addColumn($column_nome);
         $this->datagrid->addColumn($column_quantidade);
-        $this->datagrid->addColumn($column_unidade);
-        $this->datagrid->addColumn($column_categoria);
-
-
-        // creates the datagrid column actions
-        $column_nome->setAction(new TAction([$this, 'onReload']), ['order' => 'nome']);
-        $column_categoria->setAction(new TAction([$this, 'onReload']), ['order' => 'categoria']);
+        $this->datagrid->addColumn($column_unidade_id);
+        $this->datagrid->addColumn($column_categoria_id);
 
         
         // create EDIT action
@@ -176,17 +174,31 @@ class ItemList extends TPage
         
         // clear session filters
         TSession::setValue('ItemList_filter_nome',   NULL);
-        TSession::setValue('ItemList_filter_categoria',   NULL);
+        TSession::setValue('ItemList_filter_quantidade',   NULL);
+        TSession::setValue('ItemList_filter_unidade_id',   NULL);
+        TSession::setValue('ItemList_filter_categoria_id',   NULL);
 
         if (isset($data->nome) AND ($data->nome)) {
-            $filter = new TFilter('nome', 'like', "%{$data->nome}%"); // create the filter
+            $filter = new TFilter('nome', 'ilike', "%{$data->nome}%"); // create the filter
             TSession::setValue('ItemList_filter_nome',   $filter); // stores the filter in the session
         }
 
 
-        if (isset($data->categoria) AND ($data->categoria)) {
-            $filter = new TFilter('categoria', 'like', "%{$data->categoria}%"); // create the filter
-            TSession::setValue('ItemList_filter_categoria',   $filter); // stores the filter in the session
+        if (isset($data->quantidade) AND ($data->quantidade)) {
+            $filter = new TFilter('quantidade', 'ilike', "%{$data->quantidade}%"); // create the filter
+            TSession::setValue('ItemList_filter_quantidade',   $filter); // stores the filter in the session
+        }
+
+
+        if (isset($data->unidade_id) AND ($data->unidade_id)) {
+            $filter = new TFilter('unidade_id', 'ilike', "%{$data->unidade_id}%"); // create the filter
+            TSession::setValue('ItemList_filter_unidade_id',   $filter); // stores the filter in the session
+        }
+
+
+        if (isset($data->categoria_id) AND ($data->categoria_id)) {
+            $filter = new TFilter('categoria_id', '=', "$data->categoria_id"); // create the filter
+            TSession::setValue('ItemList_filter_categoria_id',   $filter); // stores the filter in the session
         }
 
         
@@ -233,8 +245,18 @@ class ItemList extends TPage
             }
 
 
-            if (TSession::getValue('ItemList_filter_categoria')) {
-                $criteria->add(TSession::getValue('ItemList_filter_categoria')); // add the session filter
+            if (TSession::getValue('ItemList_filter_quantidade')) {
+                $criteria->add(TSession::getValue('ItemList_filter_quantidade')); // add the session filter
+            }
+
+
+            if (TSession::getValue('ItemList_filter_unidade_id')) {
+                $criteria->add(TSession::getValue('ItemList_filter_unidade_id')); // add the session filter
+            }
+
+
+            if (TSession::getValue('ItemList_filter_categoria_id')) {
+                $criteria->add(TSession::getValue('ItemList_filter_categoria_id')); // add the session filter
             }
 
             

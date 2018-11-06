@@ -56,9 +56,9 @@ class PesquisaList extends TPage
         
 
         // creates the datagrid columns
-        $column_check = new TDataGridColumn('check', '', 'center');
-        $column_nome = new TDataGridColumn('nome', 'Nome', 'left');
-        $column_data = new TDataGridColumn('data', 'Data', 'left');
+        $column_check = new TDataGridColumn('check', '', 'left', '5%');
+        $column_nome = new TDataGridColumn('nome', 'Nome', 'left', '75%');
+        $column_data = new TDataGridColumn('data', 'Data', 'left', '20%');
 
 
         // add the columns to the DataGrid
