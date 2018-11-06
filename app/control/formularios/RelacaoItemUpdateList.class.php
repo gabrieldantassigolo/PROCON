@@ -71,14 +71,20 @@ class RelacaoItemUpdateList extends TPage
         // creates the datagrid columns
         //$column_id = new TDataGridColumn('id', 'Cód.', 'right');
         //$column_relacao_id = new TDataGridColumn('relacao_id', 'Relacao', 'left');
-        $column_item_id = new TDataGridColumn('item->nome', 'Item', 'left', '50%');
-        $column_preco = new TDataGridColumn('preco_widget', 'Preco', 'left', '50%');
+        $column_item_id = new TDataGridColumn('item->nome', 'Item', 'left', '40%');
+        $column_item_quantidade = new TDataGridColumn('item->quantidade', 'Un.', 'left', '5%');
+        $column_item_unidadeMedida = new TDataGridColumn('item->unidadeMedida->nome', 'Un.', 'left', '15%');
+        $column_item_categoria = new TDataGridColumn('item->categoria->nome', 'Categoria', 'left', '20%');
+        $column_preco = new TDataGridColumn('preco_widget', 'Preco', 'left', '20%');
 
 
        // add the columns to the DataGrid
        //$this->datagrid->addColumn($column_id);
        // $this->datagrid->addColumn($column_relacao_id);
        $this->datagrid->addColumn($column_item_id);
+       $this->datagrid->addColumn($column_item_quantidade);
+       $this->datagrid->addColumn($column_item_unidadeMedida);
+       $this->datagrid->addColumn($column_item_categoria);
        $this->datagrid->addColumn($column_preco);
 
 
