@@ -1,4 +1,4 @@
-    <?php
+<?php
 /**
  * RelacaoList Listing
  * @author  <your name here>
@@ -11,7 +11,8 @@ class RelacaoListUser extends TPage
     private $formgrid;
     private $loaded;
     private $deleteButton;
-    
+    private $first =0;
+
     /**
      * Class constructor
      * Creates the page, the form and the listing
@@ -19,15 +20,14 @@ class RelacaoListUser extends TPage
     public function __construct()
     {
         parent::__construct();
-        
+
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Relacao');
         $this->form->setFormTitle('Relacao');
-        
 
-        // create the form fields       
-        $cnpj = new TEntry('cnpj');
 
+        // create the form fields
+        $cnpj = new THidden('cnpj');
 
         // add the fields
         $this->form->addFields( [ new TLabel('') ], [ $cnpj ] );
@@ -35,8 +35,7 @@ class RelacaoListUser extends TPage
 
         // set sizes
         $cnpj->setSize('70%');
-        $cnpj->setValue(TSession::getValue('login'));
-        $cnpj->setValue('');
+        // $cnpj->setValue(TSession::getValue('login'));
 
         // keep the form filled during navigation with session data
         $this->form->setData( TSession::getValue('Relacao_filter_data') );
@@ -83,7 +82,7 @@ class RelacaoListUser extends TPage
         //$this->datagrid->addColumn($column_id);
         $this->datagrid->addColumn($column_pesquisa);
         $this->datagrid->addColumn($column_estabelecimento);
-        $this->datagrid->addColumn($column_cnpj);
+        //$this->datagrid->addColumn($column_cnpj);
         $this->datagrid->addColumn($column_data);
 
 
@@ -153,10 +152,11 @@ class RelacaoListUser extends TPage
         $container = new TVBox;
         $container->style = 'width: 100%';
         // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
-        $container->add($this->form);
+        //$container->add($this->form);
         $container->add(TPanelGroup::pack('', $gridpack, $this->pageNavigation));
 
         parent::add($container);
+
     }
 
     public function onUpdateItens($data)
@@ -210,7 +210,7 @@ class RelacaoListUser extends TPage
     /**
      * Register the filter in the session
      */
-    public function onSearch()
+    public function onSearch($obj)
     {
         // get the search form data
         $data = $this->form->getData();
@@ -218,10 +218,9 @@ class RelacaoListUser extends TPage
         // clear session filters
         TSession::setValue('RelacaoList_filter_cnpj',   NULL);
 
-        if (isset($data->cnpj) AND ($data->cnpj)) {
-            $filter = new TFilter('(SELECT cnpj from estabelecimento where id =estabelecimento_id)', 'like', "$data->cnpj"); // create the filter
+        if (isset($obj->cnpj) AND ($obj->cnpj)) {
+            $filter = new TFilter('(SELECT cnpj from estabelecimento where id =relacao.estabelecimento_id)', 'like', "$obj->cnpj"); // create the filter
             TSession::setValue('RelacaoList_filter_cnpj',   $filter); // stores the filter in the session
-            echo 'teste ';
         }
         // fill the form with data again
         $this->form->setData($data);
@@ -264,7 +263,6 @@ class RelacaoListUser extends TPage
 
             if (TSession::getValue('RelacaoList_filter_cnpj')) {
                 $criteria->add(TSession::getValue('RelacaoList_filter_cnpj')); // add the session filter
-                echo 'teste1';
             }
 
 
@@ -295,14 +293,17 @@ class RelacaoListUser extends TPage
             $this->pageNavigation->setProperties($param); // order, page
             $this->pageNavigation->setLimit($limit); // limit
 
-            //seta o campo CNPJ baseado no login da sessão
-            //$obj = new StdClass;
-            //$obj->cnpj = TSession::getValue('login');
-            //$this->form->setData($obj);
+            //verifica se primeiro load
+            if(!($this->first))
+                $this->filtra();
 
             // close the transaction
             TTransaction::close();
             $this->loaded = true;
+
+            $obj = new StdClass;
+            $obj->cnpj = TSession::getValue('login');
+            $this->form->setData($obj);
         }
         catch (Exception $e) // in case of exception
         {
@@ -312,7 +313,16 @@ class RelacaoListUser extends TPage
             TTransaction::rollback();
         }
     }
-    
+
+    public function filtra(){
+        //executa somente no primeiro load
+        $this->first = 1;
+
+        //seta login / cnpj e executa search
+        $obj = new StdClass;
+        $obj->cnpj = TSession::getValue('login');
+        $this->onSearch($obj);
+    }
     /**
      * Ask before deletion
      */
@@ -321,11 +331,11 @@ class RelacaoListUser extends TPage
         // define the delete action
         $action = new TAction([__CLASS__, 'Delete']);
         $action->setParameters($param); // pass the key parameter ahead
-        
+
         // shows a dialog to the user
         new TQuestion(TAdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
     }
-    
+
     /**
      * Delete a record
      */
@@ -338,7 +348,7 @@ class RelacaoListUser extends TPage
             $object = new Relacao($key, FALSE); // instantiates the Active Record
             $object->delete(); // deletes the object from the database
             TTransaction::close(); // close the transaction
-            
+
             $pos_action = new TAction([__CLASS__, 'onReload']);
             new TMessage('info', TAdiantiCoreTranslator::translate('Record deleted'), $pos_action); // success message
         }
@@ -348,7 +358,7 @@ class RelacaoListUser extends TPage
             TTransaction::rollback(); // undo all pending operations
         }
     }
-    
+
     /**
      * Ask before delete record collection
      */
@@ -356,11 +366,11 @@ class RelacaoListUser extends TPage
     {
         $data = $this->formgrid->getData(); // get selected records from datagrid
         $this->formgrid->setData($data); // keep form filled
-        
+
         if ($data)
         {
             $selected = array();
-            
+
             // get the record id's
             foreach ($data as $index => $check)
             {
@@ -369,22 +379,22 @@ class RelacaoListUser extends TPage
                     $selected[] = substr($index,5);
                 }
             }
-            
+
             if ($selected)
             {
                 // encode record id's as json
                 $param['selected'] = json_encode($selected);
-                
+
                 // define the delete action
                 $action = new TAction(array($this, 'deleteCollection'));
                 $action->setParameters($param); // pass the key parameter ahead
-                
+
                 // shows a dialog to the user
                 new TQuestion(AdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
             }
         }
     }
-    
+
     /**
      * method deleteCollection()
      * Delete many records
@@ -393,7 +403,7 @@ class RelacaoListUser extends TPage
     {
         // decode json with record id's
         $selected = json_decode($param['selected']);
-        
+
         try
         {
             TTransaction::open('procon_com');
@@ -429,20 +439,20 @@ class RelacaoListUser extends TPage
         // without this, the action will only work for the first page
         $deleteAction = $this->deleteButton->getAction();
         $deleteAction->setParameters($param); // important!
-        
+
         $gridfields = array( $this->deleteButton );
-        
+
         foreach ($objects as $object)
         {
             $object->check = new TCheckButton('check' . $object->id);
             $object->check->setIndexValue('on');
             $gridfields[] = $object->check; // important
         }
-        
+
         $this->formgrid->setFields($gridfields);
     }
 
-    
+
     /**
      * method show()
      * Shows the page
