@@ -67,7 +67,7 @@ class RelacaoItemUpdateList extends TPage
         
         //$this->datagrid->disableDefaultClick();
 
-
+        
         // creates the datagrid columns
         //$column_id = new TDataGridColumn('id', 'Cód.', 'right');
         //$column_relacao_id = new TDataGridColumn('relacao_id', 'Relacao', 'left');
@@ -76,9 +76,16 @@ class RelacaoItemUpdateList extends TPage
         $column_item_unidadeMedida = new TDataGridColumn('item->unidadeMedida->nome', 'Un.', 'left', '15%');
         $column_item_categoria = new TDataGridColumn('item->categoria->nome', 'Categoria', 'left', '20%');
         $column_preco = new TDataGridColumn('preco_widget', 'Preco', 'left', '20%');
-
-
-       // add the columns to the DataGrid
+        
+        $format_value = function($value) {
+            if (is_numeric($value)) {
+                return number_format($value, 2, ',', '.');
+            }
+            return $value;
+        };
+        
+       $column_preco->setTransformer($format_value); 
+        // add the columns to the DataGrid
        //$this->datagrid->addColumn($column_id);
        // $this->datagrid->addColumn($column_relacao_id);
        $this->datagrid->addColumn($column_item_id);
@@ -87,12 +94,10 @@ class RelacaoItemUpdateList extends TPage
        $this->datagrid->addColumn($column_item_categoria);
        $this->datagrid->addColumn($column_preco);
 
-
+        
         // creates the datagrid column actions
         //$column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
-
-
-        // create EDIT action
+       // create EDIT action
         //$action_edit = new TDataGridAction(['RelacaoItemForm', 'onEdit']);
         //$action_edit->setUseButton(TRUE);
         //$action_edit->setButtonClass('btn btn-default');
@@ -100,9 +105,6 @@ class RelacaoItemUpdateList extends TPage
         //$action_edit->setImage('fa:pencil-square-o blue fa-lg');
         //$action_edit->setField('id');
         //$this->datagrid->addAction($action_edit);
-
-
-
 
         // create the datagrid model
         $this->datagrid->createModel();
@@ -119,8 +121,6 @@ class RelacaoItemUpdateList extends TPage
         $this->saveButton->setAction(new TAction(array($this, 'onSaveCollection')), AdiantiCoreTranslator::translate('Save'));
         $this->saveButton->setImage('fa:save green');
         $this->formgrid->addField($this->saveButton);
-        
-        
 
         // vertical box container
         $gridpack = new TVBox;
@@ -267,10 +267,7 @@ class RelacaoItemUpdateList extends TPage
     {
         try
         {    
-            
-            
-            
-            $data = $this->form->getData();
+           $data = $this->form->getData();
             if($data->relacao_id) {
                // $this->pegaID($data);
                 //echo('entrou if');
@@ -371,12 +368,17 @@ class RelacaoItemUpdateList extends TPage
         $saveAction->setParameters($param); // important!
 
         $gridfields = array( $this->saveButton );
+        
 
+       
+       //$column_preco->setTransformer($format_value);
         foreach ($objects as $object)
-        {
+        {   
             $object->preco_widget = new TEntry('preco' . '_' . $object->id);
             $object->preco_widget->setValue( $object->preco );
             $object->preco_widget->setSize('100%');
+            $object->preco_widget->setNumericMask(2, ',', '.', true);
+          
             $gridfields[] = $object->preco_widget; // important
         }
 

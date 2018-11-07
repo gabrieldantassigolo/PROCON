@@ -98,24 +98,6 @@ class RelacaoListUser extends TPage
         $action_view->setField('pesquisa_id');
         $this->datagrid->addAction($action_view);
 
-        // create EDIT action
-        $action_edit = new TDataGridAction(['RelacaoForm', 'onEdit']);
-        //$action_edit->setUseButton(TRUE);
-        //$action_edit->setButtonClass('btn btn-default');
-        $action_edit->setLabel(_t('Edit'));
-        $action_edit->setImage('fa:pencil-square-o blue fa-lg');
-        $action_edit->setField('pesquisa_id');
-        $this->datagrid->addAction($action_edit);
-
-        // create DELETE action
-        $action_del = new TDataGridAction(array($this, 'onDelete'));
-        //$action_del->setUseButton(TRUE);
-        //$action_del->setButtonClass('btn btn-default');
-        $action_del->setLabel(_t('Delete'));
-        $action_del->setImage('fa:trash-o red fa-lg');
-        $action_del->setField('pesquisa_id');
-        $this->datagrid->addAction($action_del);
-
         // create the datagrid model
         $this->datagrid->createModel();
 
@@ -130,18 +112,12 @@ class RelacaoListUser extends TPage
         $this->formgrid = new TForm;
         $this->formgrid->add($this->datagrid);
 
-        // creates the delete collection button
-        $this->deleteButton = new TButton('delete_collection');
-        $this->deleteButton->setAction(new TAction(array($this, 'onDeleteCollection')), AdiantiCoreTranslator::translate('Delete selected'));
-        $this->deleteButton->setImage('fa:remove red');
-        $this->formgrid->addField($this->deleteButton);
-
         $gridpack = new TVBox;
         $gridpack->style = 'width: 100%';
         $gridpack->add($this->formgrid);
-        $gridpack->add($this->deleteButton)->style = 'background:whiteSmoke;border:1px solid #cccccc; padding: 3px;padding: 5px;';
-
-        $this->transformCallback = array($this, 'onBeforeLoad');
+        
+        
+        //        $this->transformCallback = array($this, 'onBeforeLoad');
 
         if (!empty($cnpj))
         {
@@ -150,10 +126,11 @@ class RelacaoListUser extends TPage
 
         // vertical box container
         $container = new TVBox;
+        $container->title = 'ES';
         $container->style = 'width: 100%';
         // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         //$container->add($this->form);
-        $container->add(TPanelGroup::pack('', $gridpack, $this->pageNavigation));
+        $container->add(TPanelGroup::pack(TSession::getValue('username'), $gridpack, $this->pageNavigation));
 
         parent::add($container);
 
@@ -437,7 +414,7 @@ class RelacaoListUser extends TPage
     {
         // update the action parameters to pass the current page to action
         // without this, the action will only work for the first page
-        $deleteAction = $this->deleteButton->getAction();
+        //$deleteAction = $this->deleteButton->getAction();
         $deleteAction->setParameters($param); // important!
 
         $gridfields = array( $this->deleteButton );
