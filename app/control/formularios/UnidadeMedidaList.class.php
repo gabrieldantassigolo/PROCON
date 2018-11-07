@@ -27,12 +27,12 @@ class UnidadeMedidaList extends TPage
 
         // creates the form
         $this->form = new BootstrapFormBuilder('form_UnidadeMedida');
-        $this->form->setFormTitle('UnidadeMedida');
+        $this->form->setFormTitle('Adicionar Unidade de Medida');
         
 
         
-        $teste = new THidden('teste');
-        $this->form->addFields( [ new TLabel('') ], [ $teste ] );
+        $UnidadeMedida = new THidden('teste');
+        $this->form->addFields( [ new TLabel('') ], [ $UnidadeMedida ] );
         
         $this->form->addActionLink(_t('New'), new TAction(['UnidadeMedidaForm', 'onEdit']), 'fa:plus green');
         
@@ -83,10 +83,10 @@ class UnidadeMedidaList extends TPage
 
         // vertical box container
         $container = new TVBox;
-        $container->style = 'width: 90%';
+        $container->style = 'width: 100%';
         // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
-        $container->add($this->form);
-        $container->add(TPanelGroup::pack('', $this->datagrid, $this->pageNavigation));
+        $container->add($this->form)->style = 'width: 100%;';
+        $container->add(TPanelGroup::pack('Unidade de Medida', $this->datagrid, $this->pageNavigation));
         
         parent::add($container);
     }

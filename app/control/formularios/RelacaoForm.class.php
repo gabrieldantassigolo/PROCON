@@ -28,9 +28,9 @@ class RelacaoForm extends TPage
 
 
         // add the fields
-        $this->form->addFields( [ new TLabel('Id') ], [ $id ] );
-        $this->form->addFields( [ new TLabel('Pesquisa Id') ], [ $pesquisa_id ] );
-        $this->form->addFields( [ new TLabel('Estabelecimento Id') ], [ $estabelecimento_id ] );
+        //$this->form->addFields( [ new TLabel('Id') ], [ $id ] );
+        $this->form->addFields( [ new TLabel('Pesquisa') ], [ $pesquisa_id ] );
+        $this->form->addFields( [ new TLabel('Estabelecimento') ], [ $estabelecimento_id ] );
         $this->form->addFields( [ new TLabel('Data Criacao') ], [ $data_criacao ] );
 
 
@@ -53,7 +53,9 @@ class RelacaoForm extends TPage
          $fieldX->addValidation( 'Field X', new TRequiredValidator ); // add validation
          $fieldX->setSize( '100%' ); // set size
          **/
-         
+        //Back List
+        $this->form->addAction(_t('Back'), new TAction(array('RelacaoList','onReload')),'fa:arrow-circle-o-left blue');
+        
         // create the form actions
         $btn = $this->form->addAction(_t('Save'), new TAction([$this, 'onSave']), 'fa:floppy-o');
         $btn->class = 'btn btn-sm btn-primary';

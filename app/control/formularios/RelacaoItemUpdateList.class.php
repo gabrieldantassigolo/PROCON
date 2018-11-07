@@ -53,7 +53,8 @@ class RelacaoItemUpdateList extends TPage
         {
             $pesquisa_id->setEditable(FALSE);
         }
-
+        //Back List
+        $this->form->addAction(_t('Back'), new TAction(array('RelacaoList','onReload')),'fa:arrow-circle-o-left blue');
         // add the search form actions
         $btn = $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search');
         $btn->class = 'btn btn-sm btn-primary';
@@ -307,7 +308,7 @@ class RelacaoItemUpdateList extends TPage
             {
                 call_user_func($this->transformCallback, $objects, $param);
             }
-
+           
 
             $this->datagrid->clear();
             if ($objects)
@@ -484,3 +485,5 @@ class RelacaoItemUpdateList extends TPage
     }
 }
 
+
+            
