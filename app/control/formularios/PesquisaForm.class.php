@@ -18,7 +18,7 @@ class PesquisaForm extends TPage
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Pesquisa');
         $this->form->setFormTitle('Pesquisa');
-        
+       
 
         // create the form fields
         $id = new TEntry('id');
@@ -93,13 +93,16 @@ class PesquisaForm extends TPage
             
             // get the generated id
             $data->id = $object->id;
-                                    
+
+            TTransaction::rollback();
+
             $this->form->setData($data); // fill form data
-            TTransaction::close(); // close the transaction
                         
             // store data in the session
             TSession::setValue('form_step1_data', $data);
             
+            //reseta valor de sessão antes de entrar no proximo form
+            TSession::setValue('cart_objects'   , NULL);
             // Load another page
             AdiantiCoreApplication::loadPage('PesquisaFormAddItem', 'onLoadFromForm1', (array) $data);
     

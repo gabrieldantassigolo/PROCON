@@ -54,7 +54,7 @@ class PesquisaList extends TPage
         $this->datagrid->datatable = 'true';
         // $this->datagrid->enablePopover('Popover', 'Hi <b> {name} </b>');
         
-
+        TTransaction::rollback();
         // creates the datagrid columns
         $column_check = new TDataGridColumn('check', '', 'left', '5%');
         $column_nome = new TDataGridColumn('nome', 'Nome', 'left', '75%');
@@ -72,7 +72,7 @@ class PesquisaList extends TPage
 
         
         // create EDIT action
-        $action_edit = new TDataGridAction(['PesquisaForm', 'onEdit']);
+        $action_edit = new TDataGridAction(['PesquisaFormEdit', 'onEdit']);
         //$action_edit->setUseButton(TRUE);
         //$action_edit->setButtonClass('btn btn-default');
         $action_edit->setLabel(_t('Edit'));

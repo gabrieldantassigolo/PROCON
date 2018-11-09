@@ -1,6 +1,6 @@
 <?php
 
-class PesquisaFormAddItem extends TPage
+class PesquisaFormEdit extends TPage
 {
     protected $form;      // search form
     protected $form2;
@@ -9,7 +9,7 @@ class PesquisaFormAddItem extends TPage
     protected $cartgrid;
     protected $pageNavigation;
     protected $loaded;
-    protected $editando = 0;
+    protected $editando;
     
     //protected $button;
     
@@ -143,6 +143,9 @@ class PesquisaFormAddItem extends TPage
             {
                 //Limpar a sessão de items do cart
                 TSession::setValue('cart_objects'   , NULL);
+                //Limpar a sessão do form anterior, é carregado abaixo
+                TSession::setValue('form_step1_data', NULL);
+                
                 $this->editando = 1; //global para garantir que estamos editando (utiliza no onConfirma)
 
                 $key = $param['key'];  // get the parameter $key
@@ -177,16 +180,16 @@ class PesquisaFormAddItem extends TPage
             {
                 TTransaction::open('procon_com');
                 $pesquisa  = new Pesquisa($param['key']);
-                $items = $pesquisa->getItems(); //pega items da pesquisa
-                echo "<pre>"; print_r($items); echo "</pre>";
+                $items = $pesquisa->getItems();
 
-                //adicionar items ao cart
-                foreach($items as $item){
-                    $obj = new Item($item->id);
-                    $cart_objects[$item->id] = $obj;
+                if(isset($items)){
+                    foreach($items as $item){
+                        $obj = new Item($item->id);
+                        $cart_objects[$item->id] = $obj;
+                    }
+                    
+                    TSession::setValue('cart_objects', $cart_objects);
                 }
-
-                TSession::setValue('cart_objects', $cart_objects);
                 TTransaction::close();
 
                 // reload datagrids
@@ -202,20 +205,38 @@ class PesquisaFormAddItem extends TPage
     public function onConfirm()
     {
         try
-        {              
-            TTransaction::open('procon_com');              
-
-            if(editando == 1){
-
-            }
-            //pega informação da sessão do form anterior, armazena em objeto
-            $form_step1 = TSession::getValue('form_step1_data');                        
-
-            //cria um objeto para associar informações
-            $pesquisa = new Pesquisa();
-            $pesquisa->pesquisa_id = $form_step1->id;
-            $pesquisa->nome = $form_step1->nome;
+        {        
             
+            //Salva a informação da pesquisa em sessão
+            //pega informação da sessão do form anterior, armazena em objeto
+            $form_step1 = TSession::getValue('form_step1_data');
+
+            //Exclui a pesquisa
+            try
+            {
+                $key=$form_step1->pesquisa_id; // get the parameter $key
+                TTransaction::open('procon_com');
+                $object = new Pesquisa($key, FALSE); // instantiates the Active Record
+                $object->delete(); // deletes the object from the database
+                TTransaction::close(); // close the transaction
+                
+                $pos_action = new TAction([__CLASS__, 'onReload']);
+                //new TMessage('info', TAdiantiCoreTranslator::translate('Record deleted'), $pos_action); // success message
+                echo 'deletado ';
+            }
+            catch (Exception $e) // in case of exception
+            {
+                new TMessage('error', $e->getMessage()); // shows the exception error message
+                TTransaction::rollback(); // undo all pending operations
+            }
+                
+            TTransaction::open('procon_com');
+            //Puxa info dos campos (sessão) e insere no objeto pesquisa
+            $pesquisa = new Pesquisa();
+            $pesquisa->id = $form_step1->pesquisa_id;
+            $pesquisa->nome = $form_step1->pesquisa;
+
+            //Adiciona os items (atualizados) a pesquisa.
             $cart_objects = TSession::getValue('cart_objects');            
             foreach($cart_objects as $item) 
             {
@@ -224,8 +245,8 @@ class PesquisaFormAddItem extends TPage
             
             $pesquisa->store();
             TTransaction::close();
-            //$this->form->setData($data);
-            new TMessage('info', TAdiantiCoreTranslator::translate('Record saved'));
+            
+            new TMessage('info', TAdiantiCoreTranslator::translate('Record saved'));    
         }
         catch (Exception $e)
         {
@@ -235,8 +256,7 @@ class PesquisaFormAddItem extends TPage
     }
     
     public function onLoadFromForm1($data)
-    {   
-       
+    {
         $obj = new StdClass;
         $obj->pesquisa = $data['nome'];
         $obj->pesquisa_id = $data['id'];
@@ -369,7 +389,7 @@ class PesquisaFormAddItem extends TPage
                 // add the filter stored in the session to the criteria
                 $criteria->add(TSession::getValue('item_filter_categoria_id'));
             }
-              
+            
             // load the objects according to criteria
             $items = $repository->load($criteria);
             $this->datagrid->clear();
@@ -394,15 +414,15 @@ class PesquisaFormAddItem extends TPage
                 }
             }
             
-            //captura informação do form anterior e insere em pesquisa e pesquisa_id
             $form_step1 = TSession::getValue('form_step1_data');
 
-            $obj = new StdClass;
-            $obj->pesquisa = $form_step1->nome;
-            $obj->pesquisa_id = $form_step1->id;
+            //captura informação do form anterior e insere em pesquisa e pesquisa_id
+            if(TSession::getValue('form_step1_data') != NULL){
+                $obj = new StdClass;
+                $obj = TSession::getValue('form_step1_data');
 
-            $this->form->setData($obj);
-            //}
+                $this->form->setData($obj);
+            }
               
             // reset the criteria for record count
             $criteria->resetProperties();
