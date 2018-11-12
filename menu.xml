@@ -90,6 +90,10 @@
                   <icon>fa:copyright orange</icon>
                   <action>CategoriaList</action>
               </menuitem>
+              <menuitem label='Gerar Relatorio'>
+                  <icon>fa:clipboard orange</icon>
+                  <action>RelatorioForm</action>
+              </menuitem>
         </menu>
     </menuitem>
     
