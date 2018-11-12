@@ -49,6 +49,9 @@ class PesquisaForm extends TPage
          $fieldX->setSize( '100%' ); // set size
          **/
          
+         //Back List
+        $this->form->addAction(_t('Back'), new TAction(array('RelacaoList','onReload')),'fa:arrow-circle-o-left blue');
+         
         // create the form actions
         $btn = $this->form->addAction(_t('Save'), new TAction([$this, 'onSave']), 'fa:floppy-o');
         $btn->class = 'btn btn-sm btn-primary';
@@ -57,7 +60,7 @@ class PesquisaForm extends TPage
         // vertical box container
         $container = new TVBox;
         $container->style = 'width: 90%';
-        //$container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
+        $container->add(new TXMLBreadCrumb('menu.xml', 'PesquisaList'));
         $container->add($this->form);
         $this->form->addAction('Next', new TAction(array($this, 'onNextForm')), 'fa:chevron-circle-right green');
         

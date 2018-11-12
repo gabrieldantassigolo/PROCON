@@ -17,7 +17,7 @@ class ItemForm extends TPage
         parent::include_css('app/resources/estiloformcampo.css'); 
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Item');
-        $this->form->setFormTitle('Item');
+        $this->form->setFormTitle('Cadastro Produto');
         
 
         // create the form fields
@@ -69,7 +69,7 @@ class ItemForm extends TPage
         // vertical box container
         $container = new TVBox;
         $container->style = 'width: 90%';
-        // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
+        $container->add(new TXMLBreadCrumb('menu.xml', 'ItemList'));
         $container->add($this->form);
         
         parent::add($container);

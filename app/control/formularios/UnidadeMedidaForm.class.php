@@ -17,7 +17,7 @@ class UnidadeMedidaForm extends TPage
         parent::include_css('app/resources/estiloformcampo.css'); 
         // creates the form
         $this->form = new BootstrapFormBuilder('form_UnidadeMedida');
-        $this->form->setFormTitle('UnidadeMedida');
+        $this->form->setFormTitle('Cadastro de Un. de Medida');
         
 
         // create the form fields        
@@ -56,7 +56,7 @@ class UnidadeMedidaForm extends TPage
         // vertical box container
         $container = new TVBox;
         $container->style = 'width: 90%';
-        // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
+        $container->add(new TXMLBreadCrumb('menu.xml', 'UnidadeMedidaList'));
         $container->add($this->form);
         
         parent::add($container);

@@ -22,7 +22,7 @@ class EstabelecimentoList extends TPage
         parent::include_css('app/resources/estiloformcampo.css'); 
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Estabelecimento');
-        $this->form->setFormTitle('Estabelecimento');
+        $this->form->setFormTitle('Cadastrar Estabelecimento');
         
 
         // create the form fields
@@ -143,7 +143,7 @@ class EstabelecimentoList extends TPage
         $container->style = 'width: 100%';
         // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $container->add($this->form);
-        $container->add(TPanelGroup::pack('', $gridpack, $this->pageNavigation));
+        $container->add(TPanelGroup::pack('Estabelecimentos', $gridpack, $this->pageNavigation));
         
         parent::add($container);
     }

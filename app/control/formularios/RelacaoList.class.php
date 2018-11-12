@@ -23,10 +23,11 @@ class RelacaoList extends TPage
         
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Relacao');
-        $this->form->setFormTitle('Relacao');
+        $this->form->setFormTitle('Cadastrar Relação');
         
 
         // create the form fields
+        $id = new TDBCombo('id', 'procon_com', 'Relacao', 'id', 'nome');
         $pesquisa_id = new TDBCombo('pesquisa_id', 'procon_com', 'Pesquisa', 'id', 'nome');
         $estabelecimento_id = new TDBCombo('estabelecimento_id', 'procon_com', 'Estabelecimento', 'id', 'nome');
         $data = new TDate('data_criacao');
@@ -105,6 +106,7 @@ class RelacaoList extends TPage
         $action_view->setField('id');
         $action_view->setField('pesquisa_id');     
         $this->datagrid->addAction($action_view);
+       
         
         // create EDIT action
         $action_edit = new TDataGridAction(['RelacaoForm', 'onEdit']);
@@ -121,7 +123,7 @@ class RelacaoList extends TPage
         //$action_del->setButtonClass('btn btn-default');
         $action_del->setLabel(_t('Delete'));
         $action_del->setImage('fa:trash-o red fa-lg');
-        $action_del->setField('pesquisa_id');
+        $action_del->setField('id');
         $this->datagrid->addAction($action_del);
         
         // create the datagrid model
@@ -155,9 +157,9 @@ class RelacaoList extends TPage
         // vertical box container
         $container = new TVBox;
         $container->style = 'width: 90%';
-        // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
+        $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $container->add($this->form);
-        $container->add(TPanelGroup::pack('', $gridpack, $this->pageNavigation));
+        $container->add(TPanelGroup::pack('Relações', $gridpack, $this->pageNavigation));
         
         parent::add($container);
     }

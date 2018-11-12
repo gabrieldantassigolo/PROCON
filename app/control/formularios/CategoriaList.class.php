@@ -22,7 +22,7 @@ class CategoriaList extends TPage
         parent::include_css('app/resources/estiloformcampo.css'); 
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Categoria');
-        $this->form->setFormTitle('Categoria');
+        $this->form->setFormTitle('Cadastrar Categoria');
         
 
         // create the form fields
@@ -113,9 +113,9 @@ class CategoriaList extends TPage
         // vertical box container
         $container = new TVBox;
         $container->style = 'width: 90%';
-        // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
+        $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $container->add($this->form);
-        $container->add(TPanelGroup::pack('', $gridpack, $this->pageNavigation));
+        $container->add(TPanelGroup::pack('Categorias', $gridpack, $this->pageNavigation));
         
         parent::add($container);
     }

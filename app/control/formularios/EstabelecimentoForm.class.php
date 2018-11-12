@@ -17,7 +17,7 @@ class EstabelecimentoForm extends TPage
         parent::include_css('app/resources/estiloformcampo.css'); 
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Estabelecimento');
-        $this->form->setFormTitle('Estabelecimento');
+        $this->form->setFormTitle('Cadastro de Estabelecimento');
         
 
         // create the form fields
