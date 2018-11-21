@@ -9,7 +9,6 @@ class PesquisaFormAddItem extends TPage
     protected $cartgrid;
     protected $pageNavigation;
     protected $loaded;
-    protected $editando = 0;
     
     //protected $button;
     
@@ -143,7 +142,6 @@ class PesquisaFormAddItem extends TPage
             {
                 //Limpar a sessão de items do cart
                 TSession::setValue('cart_objects'   , NULL);
-                $this->editando = 1; //global para garantir que estamos editando (utiliza no onConfirma)
 
                 $key = $param['key'];  // get the parameter $key
                 TTransaction::open('procon_com'); // open a transaction
@@ -205,9 +203,7 @@ class PesquisaFormAddItem extends TPage
         {              
             TTransaction::open('procon_com');              
 
-            if(editando == 1){
-
-            }
+            
             //pega informação da sessão do form anterior, armazena em objeto
             $form_step1 = TSession::getValue('form_step1_data');                        
 

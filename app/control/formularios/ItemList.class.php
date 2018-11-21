@@ -32,13 +32,13 @@ class ItemList extends TPage
         $unidade_id = new TEntry('unidade_id');
         $categoria_id = new TDBCombo('categoria_id', 'procon_com', 'Categoria', 'id', 'nome');
 
-
+        
         // add the fields
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
         //$this->form->addFields( [ new TLabel('Qtd.') ], [ $quantidade ] );
         //$this->form->addFields( [ new TLabel('Un.') ], [ $unidade_id ] );
         $this->form->addFields( [ new TLabel('Categoria') ], [ $categoria_id ] );
-
+        
 
         // set sizes
         $nome->setSize('70%');
