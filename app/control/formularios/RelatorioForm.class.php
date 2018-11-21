@@ -115,6 +115,25 @@ class RelatorioForm extends TPage
         $this->relatorioButton = new TButton('relatorio_button'); 
         $this->relatorioButton->setAction(new TAction([$this, 'onGerarRelatorio']), 'Gerar Relatorio');
         $this->relatorioButton->setImage('fa:clipboard blue');
+        $this->datagrid->style = 'width: 100%; border-bottom: 1px solid rgba(0, 0, 0, 0.2)'; 
+        
+        // creates the page navigation
+        $this->pageNavigation = new TPageNavigation;
+        $this->pageNavigation->setAction(new TAction([$this, 'onReload']));
+        $this->pageNavigation->setWidth($this->datagrid->getWidth());
+        
+        //$this->datagrid->disableDefaultClick();
+        
+        
+        // put datagrid inside a form
+        $this->formgrid = new TForm;
+        $this->formgrid->add($this->datagrid);    
+        
+        $this->relatorioButton = new TButton('relatorio_button'); 
+        $this->relatorioButton->setAction(new TAction([$this, 'onGerarRelatorio']), 'Gerar Relatorio');
+        $this->relatorioButton->setImage('fa:clipboard black');
+        $this->relatorioButton->style = 'padding: 5px 50px;';
+        $this->relatorioButton->class = 'btn btn-sm btn-primary';
         $this->formgrid->addField($this->relatorioButton);
     
         $gridpack = new TVBox;
@@ -150,9 +169,7 @@ class RelatorioForm extends TPage
     function onGerarRelatorio()
     {           
         $relacoes = $this->getRelacoes();
-        echo '<pre>' , var_dump($relacoes) , '</pre>';
-        echo 'teste';
-        
+        echo '<pre>' , var_dump($relacoes) , '</pre>';    
     }
 
     function getRelacoes(){
