@@ -151,6 +151,7 @@ class RelatorioForm extends TPage
     {           
         $relacoes = $this->getRelacoes();
         echo '<pre>' , var_dump($relacoes) , '</pre>';
+        echo 'teste';
         
     }
 
