@@ -11,7 +11,8 @@ class RelatorioForm extends TPage
     private $formgrid;
     private $loaded;
     private $deleteButton;
-    private $gridClear = 0;
+    private $relatorioButton;
+    
     
     /**
      * Class constructor
@@ -35,7 +36,9 @@ class RelatorioForm extends TPage
         
         $pesquisa_id->setDefaultOption('Selecione uma pesquisa');    
     
+        //Clear Section
         TSession::setValue('Relatorio_filter_data',   NULL);
+        
         // add the fields
         $this->form->addFields( [ new TLabel('Pesquisa') ], [ $pesquisa_id ] );
         //$this->form->addFields( [ new TLabel('Estabelecimento') ], [ $estabelecimento_id ] );
@@ -110,9 +113,19 @@ class RelatorioForm extends TPage
         
         //$this->datagrid->disableDefaultClick();
         
+        
         // put datagrid inside a form
         $this->formgrid = new TForm;
         $this->formgrid->add($this->datagrid);
+        
+        /*$btn2 = $this->formgrid->addAction(_t('Find'), new TAction([$this, 'onGerarRelatorio']), 'fa:search');
+        $btn2->class = 'btn btn-sm btn-primary';*/
+        
+        $this->relatorioButton = new TButton('relatorio_button'); 
+        $this->relatorioButton->setAction(new TAction([$this, 'onGerarRelatorio']), 'Gerar Relatorio');
+        $this->relatorioButton->setImage('fa:clipboard blue');
+       
+        $this->formgrid->addField($this->relatorioButton);
         
         // creates the delete collection button
         $this->deleteButton = new TButton('delete_collection');
@@ -120,10 +133,15 @@ class RelatorioForm extends TPage
         $this->deleteButton->setImage('fa:remove red');
         $this->formgrid->addField($this->deleteButton);
         
+    
         $gridpack = new TVBox;
         $gridpack->style = 'width: 100%';
         $gridpack->add($this->formgrid);
+        
+        
         $gridpack->add($this->deleteButton)->style = 'background:whiteSmoke;border:1px solid #cccccc; padding: 3px;padding: 5px;';
+        
+        $gridpack->add($this->relatorioButton)->style = 'text-align: center; margin: 15px; font-size: 1em;';
         
         $this->transformCallback = array($this, 'onBeforeLoad');
         
@@ -140,6 +158,11 @@ class RelatorioForm extends TPage
         
         
         parent::add($container);
+    }
+    
+    public function onGerarRelatorio()
+    {
+        AdiantiCoreApplication::loadPage('');
     }
     
     public function onUpdateItens($data)

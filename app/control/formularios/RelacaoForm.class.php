@@ -24,7 +24,7 @@ class RelacaoForm extends TPage
         $id = new TEntry('id');
         $pesquisa_id = new TDBCombo('pesquisa_id', 'procon_com', 'Pesquisa', 'id', 'nome');
         $estabelecimento_id = new TDBCombo('estabelecimento_id', 'procon_com', 'Estabelecimento', 'id', 'nome');
-        $data_criacao = new TDate('data_criacao');
+        $data_criacao = new TEntry('data_criacao');
 
 
         // add the fields
@@ -43,7 +43,18 @@ class RelacaoForm extends TPage
 
         //mask
         $data_criacao->setMask('dd/mm/yyyy');
-
+       // TRequiredValidator();
+        
+        //setData
+        $datanow = date('d/m/Y');
+        $data_criacao->setValue($datanow);
+        
+        echo $datanow;
+        if($data_criacao < $datanow)
+        {
+            new TMessage('info', 'Data Inválida!');    
+        }
+        
         if (!empty($id))
         {
             $id->setEditable(FALSE);
@@ -66,6 +77,7 @@ class RelacaoForm extends TPage
         $container->style = 'width: 90%';
         $container->add(new TXMLBreadCrumb('menu.xml', 'RelacaoList'));
         $container->add($this->form);
+        $container->add($btn);
         
         parent::add($container);
     }
