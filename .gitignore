@@ -3,3 +3,12 @@
 .gitignore
 *.db
 app/database/log.db
+*.db
+*.db
+app/database/log.db
+.idea/misc.xml
+.idea/modules.xml
+.idea/php.xml
+.idea/PROCON.iml
+.idea/vcs.xml
+.idea/workspace.xml

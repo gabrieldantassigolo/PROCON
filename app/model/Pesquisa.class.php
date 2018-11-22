@@ -7,7 +7,7 @@ class Pesquisa extends TRecord
 {
     const TABLENAME = 'pesquisa';
     const PRIMARYKEY= 'id';
-    const IDPOLICY =  'serial'; // {max, serial}
+    const IDPOLICY =  'max'; // {max, serial}
     
     
     private $items;
@@ -17,8 +17,7 @@ class Pesquisa extends TRecord
      */
     public function __construct($id = NULL, $callObjectLoad = TRUE)
     {
-        parent::__construct($id, $callObjectLoad);        
-        //parent::addAttribute('id');
+        parent::__construct($id, $callObjectLoad);    
         parent::addAttribute('nome');
         parent::addAttribute('data_criacao');
     }

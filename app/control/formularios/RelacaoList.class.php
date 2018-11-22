@@ -166,7 +166,8 @@ class RelacaoList extends TPage
     
     public function onUpdateItens($data)
     {     
-        TTransaction::open('procon_com');       
+        TTransaction::open('procon_com');       
+
         $obj = new StdClass;
         $obj->relacao_id = $data['id'];
         
@@ -453,15 +454,13 @@ class RelacaoList extends TPage
         $deleteAction = $this->deleteButton->getAction();
         $deleteAction->setParameters($param); // important!
         
-        $gridfields = array( $this->deleteButton );
-        
-        foreach ($objects as $object)
-        {
-            $object->check = new TCheckButton('check' . $object->id);
-            $object->check->setIndexValue('on');
-            $gridfields[] = $object->check; // important
-        }
-        
+     
+            foreach ($objects as $object)
+            {
+                $object->check = new TCheckButton('check' . $object->id);
+                $object->check->setIndexValue('on');
+                $gridfields[] = $object->check; // important
+            }
         $this->formgrid->setFields($gridfields);
     }
 
