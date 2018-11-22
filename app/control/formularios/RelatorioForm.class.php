@@ -3,6 +3,8 @@
  * RelacaoList Listing
  * @author  <your name here>
  */
+include('C:\xampp\htdocs\PROCON\app\lib\pdf')
+
 class RelatorioForm extends TPage
 {
     private $form; // form
@@ -158,9 +160,9 @@ class RelatorioForm extends TPage
        // {
            // $container->add(TPanelGroup::pack('Relações', $gridpack, $this->pageNavigation));
         //}'
-        //if(TSession::getValue('RelatorioForm_filter_pesquisa_id')){
+        if(TSession::getValue('RelatorioForm_filter_pesquisa_id')){
             $container->add(TPanelGroup::pack('Relações', $gridpack, $this->pageNavigation));
-        //}
+        }
         parent::add($container);
     }
 
@@ -173,7 +175,16 @@ class RelatorioForm extends TPage
 
         if ($relacoes) 
         {
-            $widths = array(); //410
+            $widths = array(80, ); //410 maxsize larguras de coluna
+            
+            $pdf = new FPDF('L', 'mm', 'A3');
+            $pdf->Open();
+            $pdf->header = 2; //seleciona o tipo de header na classe FPDF
+            $pdf->AddPage();
+            $pdf->SetFillColor()
+            $pdf->SetFillColor(240,240,240);
+            $pdf->SetTextColor(0,0,0);
+            $pdf->
 
 
         }
@@ -312,20 +323,16 @@ class RelatorioForm extends TPage
     public function onBeforeLoad($objects, $param)
     {
         // update the action parameters to pass the current page to action
-        // without this, the action will only work for the first page 
+        // without this, the action will only work for the first page   
         
-        //verifica se o filtor esta vazio para nao dar erro no check
-        if($objects){
-            foreach ($objects as $object)
-                {
-                $object->check = new TCheckButton('check' . $object->id);
-                $object->check->setIndexValue('on');
-                $gridfields[] = $object->check; // important
-                }                
-            $this->formgrid->setFields($gridfields);
+        foreach ($objects as $object)
+            {
+            $object->check = new TCheckButton('check' . $object->id);
+            $object->check->setIndexValue('on');
+            $gridfields[] = $object->check; // important
         }
         
-        
+        $this->formgrid->setFields($gridfields);
     }
 
     public function show()

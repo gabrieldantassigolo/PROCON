@@ -379,21 +379,53 @@ class FPDF
     
     function Header()
     {
-        if (is_callable($this->headerCallback))
+        if ($this->header == 1)
         {
-            call_user_func( $this->headerCallback, $this->headerCallbackContext ? $this->headerCallbackContext : $this );
-            $this->headerCallbackContext->addRow();
+            $this->Image('app/images/esic-relatorio.png',10,7,70);
+            $this->SetFillColor(240,240,240);
+            $this->SetTextColor(0,0,0);
+            $this->SetFont('Arial','B',15);
+            $this->cell(275,5,utf8_decode("Relatório de Pedidos de Acesso à Informação e Solicitantes"),0,1,'R',0);
+            $this->SetFont('Arial','',12);
+            $this->cell(275,5,utf8_decode("Prefeitura Municipal de Dourados - MS"),0,1,'R',0);
+            $this->SetFont('Arial','',10);
+            $this->cell(275,5,utf8_decode(""),0,1,'R',0);
+            $this->cell(275,5,"",0,1,'R',0);
+            $this->SetFont('Arial','B',10);
         }
-        //To be implemented in your own inherited class
+        if ($this->header == 2)
+        {
+            $this->Image('app/images/esic-relatorio.png',10,7,70);
+            $this->SetFillColor(240,240,240);
+            $this->SetTextColor(0,0,0);
+            $this->SetFont('Arial','B',15);
+            $this->cell(275,5,utf8_decode("Relatório de Pedidos de Acesso à Informação e Solicitantes"),0,1,'R',0);
+            $this->SetFont('Arial','',12);
+            $this->cell(275,5,utf8_decode("Prefeitura Municipal de Dourados - MS"),0,1,'R',0);
+            $this->SetFont('Arial','',10);
+            $this->cell(275,5,utf8_decode(""),0,1,'R',0);
+            $this->cell(275,5,"",0,1,'R',0);
+            $this->SetFont('Arial','B',10);
+            $this->cell(23,9,utf8_decode("Protocolo."),1,0,'C',1);
+            $this->cell(32,9,utf8_decode("Data Abertura"),1,0,'C',1);
+            $this->cell(65,9,utf8_decode("Órgão"),1,0,'L',1);
+            $this->cell(105,9,utf8_decode("Resumo da Solicitação"),1,0,'L',1);
+            $this->cell(50,9,utf8_decode("Situação"),1,1,'C',1);
+        }
     }
     
     function Footer()
     {
-        if (is_callable($this->footerCallback))
-        {
-            call_user_func( $this->footerCallback, $this->footerCallbackContext ? $this->footerCallbackContext : $this );
-        }
-        //To be implemented in your own inherited class
+        $this->AliasNbPages(); #Método de Numerar Páginas
+        $this->Line(100,280,320,280); #Linha na horizontal
+        $this->SetFont('Arial','B',8); #Seta a Fonte
+        $this->SetXY(100,280); #Tavo o cursor para escrever no Ponto Y
+        $this->Cell(115,5,utf8_decode('eSIC Dourados - Sistema Eletrônico de Informação ao Cidadão'),0,0,'C',0); #Frase de Rodapé
+        $this->SetFont('Arial','B',8); #Seto a Fonte
+        $agora=date("d/m/Y   H:i");
+        $this->Cell(56,5,'Pagina '.$this->pageno().' de {nb}',0,0,'C',0); #Imprime o Número das Páginas
+        $this->Cell(56,5,$agora,0,0,'C',0); #Imprime o Número das Páginas
+        $this->Cell(36,5,TSession::getValue('username'),0,1,'C',0);
     }
     
     function PageNo()

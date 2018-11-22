@@ -21,6 +21,7 @@ class EstabelecimentoForm extends TPage
         
 
         // create the form fields
+        $id = new THidden('id');
         $nome = new TEntry('nome');
         $razao = new TEntry('razao');
         $cnpj = new TEntry('cnpj');
@@ -61,6 +62,7 @@ class EstabelecimentoForm extends TPage
         $nome->addValidation('Nome', new TMaxLengthValidator, array(50));
         
         // add the fields
+        $this->form->addFields( [ new TLabel('')], [$id]);
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
         $this->form->addFields( [ new TLabel('Razao') ], [ $razao ] );
         $this->form->addFields( [ new TLabel('Cnpj') ], [ $cnpj ] );

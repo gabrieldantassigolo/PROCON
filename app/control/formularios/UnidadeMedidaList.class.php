@@ -22,7 +22,7 @@ class UnidadeMedidaList extends TPage
         parent::include_css('app/resources/estiloformcampo.css'); 
         $this->setDatabase('procon_com');            // defines the database
         $this->setActiveRecord('UnidadeMedida');   // defines the active record
-        //$this->setDefaultOrder('id', 'asc');         // defines the default order
+        $this->setDefaultOrder('id', 'asc');         // defines the default order
         // $this->setCriteria($criteria) // define a standard filter
 
         // creates the form
