@@ -140,8 +140,9 @@ class PesquisaFormAddItem extends TPage
         {   //carrega as informações para preencher o form
             if (isset($param['key']))
             {
+                echo 'ONEDIT';
                 //Limpar a sessão de items do cart
-                TSession::setValue('cart_objects'   , NULL);
+                TSession::setValue('cart_objects', NULL);
 
                 $key = $param['key'];  // get the parameter $key
                 TTransaction::open('procon_com'); // open a transaction
@@ -258,6 +259,7 @@ class PesquisaFormAddItem extends TPage
         TTransaction::open('procon_com');
         $item = new Item($param['key']); // load the product
         $cart_objects[$item->id] = $item; // add the product inside the array
+        echo '<pre>' , var_dump(cart_objects) , '</pre>';
         TSession::setValue('cart_objects', $cart_objects); // put the array back to the session
         TTransaction::close();
         
