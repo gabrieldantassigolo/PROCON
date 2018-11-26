@@ -164,77 +164,90 @@ class RelatorioForm extends TPage
         }
         parent::add($container);
     }
-
-    
-    
     function onGerarRelatorio()
     {
         try
         {
             $relacoes = $this->getRelacoes();
             $estabelecimentos = $this->getEstabelecimentos($relacoes);
-
             echo '<pre>', var_dump($estabelecimentos), '</pre>';
-
             if ($relacoes) {
                 $widths = array(80, 30, 50); //410 maxsize larguras de coluna
-
                 $pdf = new FPDF('L', 'mm', 'A3');
                 $pdf->AddFont('Verdana', '', 'Verdana.php'); //adiciona fonte n é padrão
                 $pdf->SetFont('Verdana', '', 8);
                 $pdf->Open();
-                $pdf->header = 2; //seleciona o tipo de header na classe FPDF
+                $pdf->relacoes = $relacoes; //seleciona o tipo de header na classe FPDF
                 $pdf->AddPage();
-                $this->Header($pdf, $estabelecimentos);
                 $pdf->SetFillColor(240, 240, 240);
                 $pdf->SetTextColor(0, 0, 0);
                 $pdf->SetWidths($widths);
                 $pdf->SetFont('Verdana', '', 8);
-
-
                 //define o caminho e imprime o PDF
-                $file_path = 'app/output/procon.pdf';
-                $this->imprimePdf($pdf, $file_path);
 
+                TTransaction::open('procon_com');
                 foreach ($relacoes as $relacao) {
                     $pdf->Row(array(
-                        utf8_decode($relacao->pesquisa_id),
-                        utf8_decode($relacao->estabelecimento_id),
+                        utf8_decode($relacao->pesquisa->nome),
+                        utf8_decode($relacao->estabelecimento->nome),
                         utf8_decode($relacao->data_criacao)
                     ));
                 }
+                TTransaction::close();
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
+                $pdf->cell(185,5,"asdasd",1,1,'L',0);
 
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(185,5,"",1,1,'L',0);
-                $pdf->cell(155,7,"",0,0,'L',0);
+                $file_path = 'app/output/procon.pdf';
+                $this->imprimePdf($pdf, $file_path);
             }
         } catch (Exception $e)
         {
@@ -243,31 +256,6 @@ class RelatorioForm extends TPage
         }
     }
 
-    function Header($pdf, $estabelecimentos)
-    {
-        //$this->Image('app/images/esic-relatorio.png',10,7,70);
-        $pdf->SetFillColor(240,240,240);
-        $pdf->SetTextColor(0,0,0);
-        $pdf->SetFont('Arial','B',15);
-        $pdf->cell(275,5,utf8_decode("Relatório de Pedidos de Acesso à Informação e Solicitantes"),0,1,'R',0);
-        $pdf->SetFont('Arial','',12);
-        $pdf->cell(275,5,utf8_decode("Prefeitura Municipal de Dourados - MS"),0,1,'R',0);
-        $pdf->SetFont('Arial','',10);
-        $pdf->cell(275,5,utf8_decode(""),0,1,'R',0);
-        $pdf->cell(275,5,"",0,1,'R',0);
-
-        foreach($estabelecimentos as $estabelecimento)
-        {
-            $pdf->cell(30,40,utf8_decode($estabelecimento->nome), 1,0,'C', 1);
-        }
-        $pdf->SetFont('Arial','B',10);
-        $pdf->cell(23,9,utf8_decode("Protocolo."),1,0,'C',1);
-        $pdf->cell(32,9,utf8_decode("Data Abertura"),1,0,'C',1);
-        $pdf->cell(65,9,utf8_decode("Órgão"),1,0,'L',1);
-        $pdf->cell(105,9,utf8_decode("Resumo da Solicitação"),1,0,'L',1);
-        $pdf->cell(50,9,utf8_decode("Situação"),1,1,'C',1);
-
-    }
 
     function imprimePdf($pdf, $file_path){
         $file = $file_path;

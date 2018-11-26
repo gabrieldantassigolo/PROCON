@@ -11,6 +11,7 @@ define('FPDF_VERSION','1.81');
 
 class FPDF
 {
+    public $relacoes;
     protected $page;               // current page number
     protected $n;                  // current object number
     protected $offsets;            // array of object offsets
@@ -71,7 +72,8 @@ class FPDF
     protected $headerCallbackContext;
     protected $footerCallbackContext;
     protected $widths;
-    protected $aligns;
+    protected $aligns;         // RELACOES usado em header() e outros
+
 
     function SetWidths($w)
     {
@@ -398,7 +400,7 @@ class FPDF
         $this->_enddoc();
     }
     
-    function AddPage($orientation='', $size='', $rotation=0, $estabelecimentos=0)
+    function AddPage($orientation='', $size='', $rotation=0)
     {
         // Start a new page
         if($this->state==3)
@@ -481,49 +483,40 @@ class FPDF
     
     function Header()
     {
-        if ($this->header == 1)
-        {
             //$this->Image('app/images/esic-relatorio.png',10,7,70);
             $this->SetFillColor(240,240,240);
             $this->SetTextColor(0,0,0);
             $this->SetFont('Arial','B',15);
-            $this->cell(275,5,utf8_decode("Relatório de Pedidos de Acesso à Informação e Solicitantes"),0,1,'R',0);
+            $this->cell(275,7,utf8_decode("Pesquisa de Preços"),0,1,'R',0);
             $this->SetFont('Arial','',12);
-            $this->cell(275,5,utf8_decode("Prefeitura Municipal de Dourados - MS"),0,1,'R',0);
+            $this->cell(275,5,utf8_decode("PROCON - DOURADOS/MS"),0,1,'R',0);
             $this->SetFont('Arial','',10);
             $this->cell(275,5,utf8_decode(""),0,1,'R',0);
             $this->cell(275,5,"",0,1,'R',0);
             $this->SetFont('Arial','B',10);
-        }
-        if ($this->header == 2)
-        {
-            //$this->Image('app/images/esic-relatorio.png',10,7,70);
-            $this->SetFillColor(240,240,240);
-            $this->SetTextColor(0,0,0);
-            $this->SetFont('Arial','B',15);
-            $this->cell(275,5,utf8_decode("Relatório de Pedidos de Acesso à Informação e Solicitantes"),0,1,'R',0);
-            $this->SetFont('Arial','',12);
-            $this->cell(275,5,utf8_decode("Prefeitura Municipal de Dourados - MS"),0,1,'R',0);
-            $this->SetFont('Arial','',10);
-            $this->cell(275,5,utf8_decode(""),0,1,'R',0);
-            $this->cell(275,5,"",0,1,'R',0);
-
-            $this->SetFont('Arial','B',10);
-            $this->cell(23,9,utf8_decode("Protocolo."),1,0,'C',1);
-            $this->cell(32,9,utf8_decode("Data Abertura"),1,0,'C',1);
-            $this->cell(65,9,utf8_decode("Órgão"),1,0,'L',1);
-            $this->cell(105,9,utf8_decode("Resumo da Solicitação"),1,0,'L',1);
-            $this->cell(50,9,utf8_decode("Situação"),1,1,'C',1);
-
-        }
+            $this->cell(40,9,utf8_decode("Estabelecimentos"),1,0,'C',1);
+            TTransaction::open('procon_com');
+            foreach($this->relacoes as $relacao){
+                if (!next($this->relacoes))
+                {
+                    $this->cell(40, 9, utf8_decode($relacao->estabelecimento->nome), 1, 1, 'C', 1);
+                } else {
+                    $this->cell(40, 9, utf8_decode($relacao->estabelecimento->nome), 1, 0, 'C', 1);
+                }
+            }
+            TTransaction::close();
+//            $this->cell(32,9,utf8_decode("Data Abertura"),1,0,'C',1);
+//            $this->cell(65,9,utf8_decode("Órgão"),1,0,'L',1);
+//            $this->cell(105,9,utf8_decode("Resumo da Solicitação"),1,0,'L',1);
+//            $this->cell(50,9,utf8_decode("Situação"),1,1,'C',1);
     }
     
     function Footer()
     {
         $this->AliasNbPages(); #Método de Numerar Páginas
-        $this->Line(100,280,320,280); #Linha na horizontal
+        $this->Line(90,280,320,280); #Linha na horizontal
         $this->SetFont('Arial','B',8); #Seta a Fonte
-        $this->SetXY(100,280); #Tavo o cursor para escrever no Ponto Y
+        $this->SetXY(90,280); #Tavo o cursor para escrever no Ponto Y
         $this->Cell(115,5,utf8_decode('eSIC Dourados - Sistema Eletrônico de Informação ao Cidadão'),0,0,'C',0); #Frase de Rodapé
         $this->SetFont('Arial','B',8); #Seto a Fonte
         $agora=date("d/m/Y   H:i");
