@@ -170,14 +170,17 @@ class RelatorioForm extends TPage
         {
             $relacoes = $this->getRelacoes();
             $estabelecimentos = $this->getEstabelecimentos($relacoes);
-            echo '<pre>', var_dump($estabelecimentos), '</pre>';
+            $widths = array(54, 10, 16);
             if ($relacoes) {
-                $widths = array(80, 30, 50); //410 maxsize larguras de coluna
+                foreach($relacoes as $relacao){
+                    array_push($widths, 15);
+                }
+                 //410 maxsize larguras de coluna
                 $pdf = new FPDF('L', 'mm', 'A3');
                 $pdf->AddFont('Verdana', '', 'Verdana.php'); //adiciona fonte n é padrão
                 $pdf->SetFont('Verdana', '', 8);
                 $pdf->Open();
-                $pdf->relacoes = $relacoes; //seleciona o tipo de header na classe FPDF
+                $pdf->relacoes = $relacoes; //envia para a classe FPDF
                 $pdf->AddPage();
                 $pdf->SetFillColor(240, 240, 240);
                 $pdf->SetTextColor(0, 0, 0);
@@ -186,65 +189,35 @@ class RelatorioForm extends TPage
                 //define o caminho e imprime o PDF
 
                 TTransaction::open('procon_com');
-                foreach ($relacoes as $relacao) {
-                    $pdf->Row(array(
-                        utf8_decode($relacao->pesquisa->nome),
-                        utf8_decode($relacao->estabelecimento->nome),
-                        utf8_decode($relacao->data_criacao)
-                    ));
+                $items = $relacoes[0]->pesquisa->getItems();
+                TTransaction::close();
+
+
+
+
+                TTransaction::open('procon_com');
+                $repository = new TRepository('RelacaoItem');
+
+                foreach ($items as $item) {
+                    $linha=array(
+                        utf8_decode($item->nome),
+                        utf8_decode($item->quantidade),
+                        utf8_decode($item->unidadeMedida->nome)
+                        );
+
+                    foreach($relacoes as $relacao){
+                        $criteria = new TCriteria;
+                        //echo ($relacaoitem->preco_for($relacao->id, $item->id));
+                        $criteria->add(new TFilter('relacao_id', '=', $relacao->id), TExpression::AND_OPERATOR);
+                        $criteria->add(new TFilter('item_id',    '=', $item->id),    TExpression::AND_OPERATOR);
+                        $teste = $repository->load($criteria);
+
+                        array_push($linha, $teste[0]->preco);
+
+                        }
+                    $pdf->Row($linha);
                 }
                 TTransaction::close();
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
-                $pdf->cell(185,5,"asdasd",1,1,'L',0);
 
                 $file_path = 'app/output/procon.pdf';
                 $this->imprimePdf($pdf, $file_path);

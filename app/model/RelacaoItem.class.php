@@ -8,6 +8,8 @@ class RelacaoItem extends TRecord
     const TABLENAME = 'relacao_item';
     const PRIMARYKEY= 'id';
     const IDPOLICY =  'max'; // {max, serial}
+
+    private $preco;
     
     
     /**
@@ -32,16 +34,7 @@ class RelacaoItem extends TRecord
      * Sample of usage: $filme->distribuidor->attribute;
      * @returns Distribuidor instance
      */
-    public function get_item()
-    {
-        // loads the associated object
-        if (empty($this->item))
-            $this->item = new item($this->item_id);
-    
-        // returns the associated object
-        return $this->item;
-    }
-    
+
     public function set_pesquisa(Item $object)
     {
         $this->pesquisa = $object;
@@ -62,6 +55,25 @@ class RelacaoItem extends TRecord
         // returns the associated object
         return $this->pesquisa;
     }
-    
+
+
+    public function preco_for($rel_id, $item_id)
+    {
+        // load the related Item objects
+        $repository = new TRepository('RelacaoItem');
+        $criteria = new TCriteria;
+        $criteria->add(new TFilter('relacao_id', '=', $rel_id), TExpression::AND_OPERATOR);
+        $criteria->add(new TFilter('item_id',    '=', $item_id),TExpression::AND_OPERATOR);
+        $teste = $repository->load($criteria);
+        return $teste;
+        //        if ($relacao_items)
+//        {
+//            foreach ($relacao_items as $relacao_item)
+//            {
+//                $item = new Item( $relacao_item->item_id );
+//                $this->addItem($item);
+//            }
+//        }
+    }
 
 }

@@ -75,6 +75,23 @@ class FPDF
     protected $aligns;         // RELACOES usado em header() e outros
 
 
+    function TextWithDirection($x, $y, $txt, $direction='R')
+    {
+        if ($direction=='R')
+            $s=sprintf('BT %.2F %.2F %.2F %.2F %.2F %.2F Tm (%s) Tj ET',1,0,0,1,$x*$this->k,($this->h-$y)*$this->k,$this->_escape($txt));
+        elseif ($direction=='L')
+            $s=sprintf('BT %.2F %.2F %.2F %.2F %.2F %.2F Tm (%s) Tj ET',-1,0,0,-1,$x*$this->k,($this->h-$y)*$this->k,$this->_escape($txt));
+        elseif ($direction=='U')
+            $s=sprintf('BT %.2F %.2F %.2F %.2F %.2F %.2F Tm (%s) Tj ET',0,1,-1,0,$x*$this->k,($this->h-$y)*$this->k,$this->_escape($txt));
+        elseif ($direction=='D')
+            $s=sprintf('BT %.2F %.2F %.2F %.2F %.2F %.2F Tm (%s) Tj ET',0,-1,1,0,$x*$this->k,($this->h-$y)*$this->k,$this->_escape($txt));
+        else
+            $s=sprintf('BT %.2F %.2F Td (%s) Tj ET',$x*$this->k,($this->h-$y)*$this->k,$this->_escape($txt));
+        if ($this->ColorFlag)
+            $s='q '.$this->TextColor.' '.$s.' Q';
+        $this->_out($s);
+    }
+
     function SetWidths($w)
     {
         //Set the array of column widths
@@ -483,32 +500,40 @@ class FPDF
     
     function Header()
     {
+            $cont =0; //contador para o numero de estabelecimentos
             //$this->Image('app/images/esic-relatorio.png',10,7,70);
             $this->SetFillColor(240,240,240);
             $this->SetTextColor(0,0,0);
             $this->SetFont('Arial','B',15);
-            $this->cell(275,7,utf8_decode("Pesquisa de Preços"),0,1,'R',0);
+            $this->cell(275,7,utf8_decode("Pesquisa de Preços"),1,1,'R',0);
             $this->SetFont('Arial','',12);
-            $this->cell(275,5,utf8_decode("PROCON - DOURADOS/MS"),0,1,'R',0);
+            $this->cell(275,5,utf8_decode("PROCON - DOURADOS/MS"),1,1,'R',0);
             $this->SetFont('Arial','',10);
-            $this->cell(275,5,utf8_decode(""),0,1,'R',0);
-            $this->cell(275,5,"",0,1,'R',0);
+            $this->cell(275,5,"",1,1,'R',0);
             $this->SetFont('Arial','B',10);
-            $this->cell(40,9,utf8_decode("Estabelecimentos"),1,0,'C',1);
+
+            $this->SetY(68); //seta a posição da celula do titulo da pesquisa
+            //pega o nome da pesquisa
+            TTransaction::open('procon_com');
+            $objeto_relacao = $this->relacoes[0];
+            $this->cell(80,9,utf8_decode($objeto_relacao->pesquisa->nome),1,0,'C',1);
+            TTransaction::close();
+            $this->SetXY(90,27); //seta posição inicial das colunas de estabelecimento
+            $this->setFont('Arial', '',11);
             TTransaction::open('procon_com');
             foreach($this->relacoes as $relacao){
+                //verificar se é a ultima posição para quebrar a linha
                 if (!next($this->relacoes))
                 {
-                    $this->cell(40, 9, utf8_decode($relacao->estabelecimento->nome), 1, 1, 'C', 1);
+                    $this->cell(15, 50,'' , 1, 1, 'C', 1);
+                    $this->TextWithDirection(99+($cont*15),73, utf8_decode($relacao->estabelecimento->nome), 'U');
                 } else {
-                    $this->cell(40, 9, utf8_decode($relacao->estabelecimento->nome), 1, 0, 'C', 1);
+                    $this->cell(15, 50,'',1, 0, 'C', 1);
+                    $this->TextWithDirection(99+($cont*15),73, utf8_decode($relacao->estabelecimento->nome), 'U');
                 }
+                $cont++;
             }
             TTransaction::close();
-//            $this->cell(32,9,utf8_decode("Data Abertura"),1,0,'C',1);
-//            $this->cell(65,9,utf8_decode("Órgão"),1,0,'L',1);
-//            $this->cell(105,9,utf8_decode("Resumo da Solicitação"),1,0,'L',1);
-//            $this->cell(50,9,utf8_decode("Situação"),1,1,'C',1);
     }
     
     function Footer()

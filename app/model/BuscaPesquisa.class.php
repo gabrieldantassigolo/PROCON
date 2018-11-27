@@ -22,3 +22,5 @@ class BuscaPesquisa extends TRecord
 			TTransaction::close();
         return $this->pesquisa->nome;
     }
+}
+
