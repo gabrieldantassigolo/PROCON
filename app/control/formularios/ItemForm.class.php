@@ -29,7 +29,7 @@ class ItemForm extends TPage
 
 
         // add the fields
-        //$this->form->addFields( [ new TLabel('') ], [ $id ] );
+        $this->form->addFields( [ new TLabel('') ], [ $id ] );
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
         $this->form->addFields( [ new TLabel('Quantidade') ], [ $quantidade ] );
         $this->form->addFields( [ new TLabel('Un. de medida') ], [ $unidade] );
@@ -142,6 +142,7 @@ class ItemForm extends TPage
         {
             if (isset($param['key']))
             {
+            
                 $key = $param['key'];  // get the parameter $key
                 TTransaction::open('procon_com'); // open a transaction
                 $object = new Item($key); // instantiates the Active Record

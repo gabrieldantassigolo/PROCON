@@ -17,3 +17,7 @@ app/lib/pdf/rpdf/rpdf.php
 app/lib/pdf/rpdf/info.htm
 app/lib/pdf/rpdf/ex.php
 app/lib/pdf/rpdf/ex.pdf
+app/lib/pdf/rpdf.class.php
+app/lib/pdf/info.htm
+app/lib/pdf/ex.php
+app/lib/pdf/ex.pdf

@@ -77,7 +77,6 @@ class RelacaoForm extends TPage
         $container->style = 'width: 90%';
         $container->add(new TXMLBreadCrumb('menu.xml', 'RelacaoList'));
         $container->add($this->form);
-        $container->add($btn);
         
         parent::add($container);
     }

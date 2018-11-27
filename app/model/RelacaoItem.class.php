@@ -56,7 +56,17 @@ class RelacaoItem extends TRecord
         return $this->pesquisa;
     }
 
-
+    public function get_item()
+    {
+        // loads the associated object
+        if (empty($this->item))
+            $this->item = new item($this->item_id);
+    
+        // returns the associated object
+        return $this->item;
+    }
+    
+    
     public function preco_for($rel_id, $item_id)
     {
         // load the related Item objects

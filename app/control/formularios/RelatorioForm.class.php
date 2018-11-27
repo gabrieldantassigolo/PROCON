@@ -212,7 +212,12 @@ class RelatorioForm extends TPage
                         $criteria->add(new TFilter('item_id',    '=', $item->id),    TExpression::AND_OPERATOR);
                         $teste = $repository->load($criteria);
 
-                        array_push($linha, $teste[0]->preco);
+                        //Transformação de preço (alteração de ponto do BD para virgula no relatorio
+                        $preco_transformer = number_format($teste[0]->preco, 2, '', '');
+                        $preco_transformer = number_format($preco_transformer/100,2,",",".");
+                        
+                        //$preco_transformer->number                        
+                        array_push($linha, $preco_transformer);
 
                         }
                     $pdf->Row($linha);
@@ -387,8 +392,9 @@ class RelatorioForm extends TPage
             $object->check->setIndexValue('on');
             $gridfields[] = $object->check; // important
         }
-        
-        $this->formgrid->setFields($gridfields);
+        if($objects){
+            $this->formgrid->setFields($gridfields);
+        }
     }
 
     public function show()
