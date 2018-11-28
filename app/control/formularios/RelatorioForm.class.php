@@ -13,6 +13,7 @@ class RelatorioForm extends TPage
     private $loaded;
     private $deleteButton;
     private $relatorioButton;
+    private $first = 0;
     
     
     /**
@@ -23,12 +24,12 @@ class RelatorioForm extends TPage
     {
         parent::__construct();
         parent::include_css('app/resources/estiloformcampo.css');
-        
+
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Relacao');
         $this->form->setFormTitle('Relatório');
         
-
+        TSession::setValue('relatorio_existe', 1);
         // create the form fields
         $id = new TDBCombo('id', 'procon_com', 'Relacao', 'id', 'nome');
         $pesquisa_id = new TDBCombo('pesquisa_id', 'procon_com', 'Pesquisa', 'id', 'nome', NULL , NULL , FALSE);
@@ -37,8 +38,8 @@ class RelatorioForm extends TPage
         
         $pesquisa_id->setDefaultOption('Selecione uma pesquisa');    
     
-        //Clear Section
-        TSession::setValue('Relatorio_filter_data',   NULL);
+//        //Clear Section
+//        TSession::setValue('Relatorio_filter_data',   NULL);
         
         // add the fields
         $this->form->addFields( [ new TLabel('Pesquisa') ], [ $pesquisa_id ] );
@@ -159,11 +160,21 @@ class RelatorioForm extends TPage
        // {
            // $container->add(TPanelGroup::pack('Relações', $gridpack, $this->pageNavigation));
         //}'
-        if(TSession::getValue('RelatorioForm_filter_pesquisa_id')){
-            $container->add(TPanelGroup::pack('Relações', $gridpack, $this->pageNavigation));
-        }
+
+        $container->add(TPanelGroup::pack('Relações', $gridpack, $this->pageNavigation));
+
         parent::add($container);
     }
+
+    function filtra()
+    {
+        //executa somente no primeiro load
+        $this->first = 1;
+        TSession::setValue('Relatorio_filter_data', NULL);
+
+        $this->onSearch();
+    }
+
     function onGerarRelatorio()
     {
         try
@@ -292,8 +303,13 @@ class RelatorioForm extends TPage
         // clear session filters
         TSession::setValue('RelatorioForm_filter_pesquisa_id',   NULL);
 
+
         if (isset($data->pesquisa_id) AND ($data->pesquisa_id)) {
             $filter = new TFilter('pesquisa_id', '=', "$data->pesquisa_id"); // create the filter
+            TSession::setValue('RelatorioForm_filter_pesquisa_id',   $filter); // stores the filter in the session
+        } else {
+            //ELSE existe para que não sejam exibidos valores no datagrid (para nao misturar pesquisas diferentes)
+            $filter = new TFilter('pesquisa_id', '=', "99999999"); // create the filter
             TSession::setValue('RelatorioForm_filter_pesquisa_id',   $filter); // stores the filter in the session
         }
 
@@ -363,7 +379,12 @@ class RelatorioForm extends TPage
             $this->pageNavigation->setCount($count); // count of records
             $this->pageNavigation->setProperties($param); // order, page
             $this->pageNavigation->setLimit($limit); // limit
-            
+            //verifica se primeiro load
+
+
+            if((TSession::getValue('asdsd')) and $this->first == 0)
+               $this->filtra();
+
             // close the transaction
             TTransaction::close();
 
