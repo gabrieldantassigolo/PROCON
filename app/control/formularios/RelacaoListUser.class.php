@@ -149,7 +149,7 @@ class RelacaoListUser extends TPage
         TTransaction::close();
 
         TSession::setValue('RelacaoItem_relacao_id', $obj);
-        AdiantiCoreApplication::loadPage('RelacaoItemUpdateList', 'pegaID', $data);
+        AdiantiCoreApplication::loadPage('RelacaoItemUpdateListUser', 'pegaID', $data);
     }
 
     /**
