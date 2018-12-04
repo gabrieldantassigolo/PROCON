@@ -7,13 +7,17 @@
 class RelatorioForm extends TPage
 {
     private $form; // form
+    private $formConfig;
+    private $fieldlist;
     private $datagrid; // listing
     private $pageNavigation;
     private $formgrid;
     private $loaded;
     private $deleteButton;
     private $relatorioButton;
+    private $exibeTotal;
     private $first = 0;
+    private $gridpack;
     
     
     /**
@@ -35,6 +39,7 @@ class RelatorioForm extends TPage
         $pesquisa_id = new TDBCombo('pesquisa_id', 'procon_com', 'Pesquisa', 'id', 'nome', NULL , NULL , FALSE);
         $estabelecimento_id = new TDBCombo('estabelecimento_id', 'procon_com', 'Estabelecimento', 'id', 'nome');
         $data = new TDate('data_criacao');
+        $total = new TCheckButton('exibeTotal');
         
         $pesquisa_id->setDefaultOption('Selecione uma pesquisa');    
     
@@ -43,6 +48,7 @@ class RelatorioForm extends TPage
         
         // add the fields
         $this->form->addFields( [ new TLabel('Pesquisa') ], [ $pesquisa_id ] );
+        $this->form->addFields( [ new TLabel('Exibir Total: ') ], [ $total ] );
 
         // set sizes
         $pesquisa_id->setSize('70%');
@@ -101,7 +107,9 @@ class RelatorioForm extends TPage
        
         // create the datagrid model
         $this->datagrid->createModel();
-        
+
+        $this->datagrid->style = 'width: 100%; border-bottom: 1px solid rgba(0, 0, 0, 0.2)';
+
         // creates the page navigation
         $this->pageNavigation = new TPageNavigation;
         $this->pageNavigation->setAction(new TAction([$this, 'onReload']));
@@ -109,47 +117,110 @@ class RelatorioForm extends TPage
         
         //$this->datagrid->disableDefaultClick();
         
-        
-        // put datagrid inside a form
-        $this->formgrid = new TForm;
-        $this->formgrid->add($this->datagrid);    
-        
-        $this->relatorioButton = new TButton('relatorio_button'); 
-        $this->relatorioButton->setAction(new TAction([$this, 'onGerarRelatorio']), 'Gerar Relatorio');
-        $this->relatorioButton->setImage('fa:clipboard blue');
-        $this->datagrid->style = 'width: 100%; border-bottom: 1px solid rgba(0, 0, 0, 0.2)'; 
-        
-        // creates the page navigation
-        $this->pageNavigation = new TPageNavigation;
-        $this->pageNavigation->setAction(new TAction([$this, 'onReload']));
-        $this->pageNavigation->setWidth($this->datagrid->getWidth());
-        
-        //$this->datagrid->disableDefaultClick();
+
         
         
         // put datagrid inside a form
-        $this->formgrid = new TForm;
-        $this->formgrid->add($this->datagrid);    
+        $this->formgrid = new TForm('grid');
+        $this->formgrid->add($this->datagrid);
         
-        $this->relatorioButton = new TButton('relatorio_button'); 
+        $this->relatorioButton = new TButton('relatorio_button');
         $this->relatorioButton->setAction(new TAction([$this, 'onGerarRelatorio']), 'Gerar Relatorio');
         $this->relatorioButton->setImage('fa:clipboard black');
         $this->relatorioButton->style = 'padding: 5px 50px;';
         $this->relatorioButton->class = 'btn btn-sm btn-primary';
-        $this->formgrid->addField($this->relatorioButton);
-    
-        $gridpack = new TVBox;
-        $gridpack->style = 'width: 100%';
-        $gridpack->add($this->formgrid);
-            
-        $gridpack->add($this->relatorioButton)->style = 'text-align: center; margin: 15px; font-size: 1em;';
-        
+        //$this->formgrid->addField($this->relatorioButton);
+
+        ////////////////////
+//
+        $total = new TCheckButton('exibeTotalConfig');
+
+
+//        ///////////////////
+
+        $table = new TTable;
+        $table->width = '100%';
+        //$table->style = 'padding: 10px';
+        $table->style = 'text-align: center; ';
+
+//        $label = new TLabel('Exibir Total');
+//        $label->style = ""
+//        $table->addRowSet( $label, $total )->class ='linhaTotal';
+        $row = $table->addRow();
+        $row->style = "border: 1px solid";
+        $row->addCell(new TLabel('Exibir Total'))->style = "width: 54%;  text-align: right; padding-right: 15px; padding-top: 5px;";
+        $row->addCell($total)->style = "width: 46%;  text-align: left";
+
+
+        $table1 = new TTable;
+        $table1->width = '100%';
+        //$table->style = 'padding: 10px';
+        $table1->style = 'text-align: center; ';
+        $row = $table1->addRow();
+
+        $row->addCell($this->relatorioButton)->style = "width: 100%; content-align: center";
+        //$table->addRowSet( $this->relatorioButton );
+
+
+
+//        $row = $table->addRow();
+//        $cell=$row->addCell('Exibir Total');
+//        $cell->width= 50;
+//        $row->addCell($total);
+
+        // creates the action button
+//        $button1=new TButton('find');
+//        $button1->setAction(new TAction(array($this, 'onSearch')), 'Find');
+//        $button1->setImage('fa:search');
+//        $row1 = $table->addRow();
+//        $row1->addCell($this->relatorioButton);
+        $this->formgrid->add($table);
+        $this->formgrid->add($table1);
+        $this->formgrid->setFields(array($total, $this->relatorioButton));
+
+
+
+
+
+        $items = ['chaveTotal'=>'valorTotal'];
+
+        /*$obj = new StdClass;
+        $obj->check = new TCheckButton('objCheck');
+        $obj->check->setIndexValue('on');
+        $obj->check->setValue('on');
+        $this->form->addField($obj->check);
+*/
+
+//        $this->exibeTotal->setLayout('horizontal');
+//        $this->exibeTotal->setName('nome_check');
+//        $this->exibeTotal->setLabel('label_check');
+//
+//        $this->exibeTotal->addItems($items);
+//        $this->exibeTotal->style = 'padding: 5px 50px;';
+//        $this->exibeTotal->class = 'btn btn-sm btn-primary';
+//        //$this->exibeTotal->setValue( 'valorTotal');
+//        $this->exibeTotal->setIndexValue('on');
+//        //$this->exibeTotal->checked = 0;
+
+       // $this->exibeTotal = new TCombo('combo_total');
+        //$this->exibeTotal->addItems(array('Sim'));
+
+
+
+        $this->gridpack = new TVBox;
+        $this->gridpack->style = 'width: 100%';
+        $this->gridpack->add($this->formgrid);
+
+
+        //$this->gridpack->add($this->relatorioButton)->style = 'text-align: center; margin: 15px; font-size: 1em;';
+
+
         $this->transformCallback = array($this, 'onBeforeLoad');
         
         $this->datagrid->clear();
         // vertical box container
         $container = new TVBox;
-        $container->style = 'width: 90%';
+        $container->style = 'width: 100%';
         $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $container->add($this->form);
 
@@ -161,7 +232,7 @@ class RelatorioForm extends TPage
            // $container->add(TPanelGroup::pack('Relações', $gridpack, $this->pageNavigation));
         //}'
 
-        $container->add(TPanelGroup::pack('Relações', $gridpack, $this->pageNavigation));
+        $container->add(TPanelGroup::pack('Relações', $this->gridpack, $this->pageNavigation));
 
         parent::add($container);
     }
@@ -175,15 +246,18 @@ class RelatorioForm extends TPage
         $this->onSearch();
     }
 
-    function onGerarRelatorio()
+    function onGerarRelatorio($param)
     {
-        try
-        {
+        try {
             $relacoes = $this->getRelacoes();
             $estabelecimentos = $this->getEstabelecimentos($relacoes);
             $widths = array(54, 10, 16);
             if ($relacoes) {
-                foreach($relacoes as $relacao){
+//                foreach($relacoes as $relacao){
+//                    array_push($widths, 15);
+//                }
+
+                for($i = 0; $i < sizeof($relacoes)+3; $i++){
                     array_push($widths, 15);
                 }
                  //410 maxsize larguras de coluna
@@ -203,14 +277,22 @@ class RelatorioForm extends TPage
                 $items = $relacoes[0]->pesquisa->getItems();
                 TTransaction::close();
 
-
-
-
                 TTransaction::open('procon_com');
                 $repository = new TRepository('RelacaoItem');
 
+                //calcular posição inicial do texto com base no N de relações
+                $multiplicador = 1;
+                if(sizeof($relacoes)<5){
+                    $multiplicador = 6;
+                } elseif(sizeof($relacoes)<10) {
+                    $multiplicador = 4;
+                }
+                $posIni = 10*$multiplicador;
+
+
                 foreach ($items as $item) {
-                    $linha=array(
+                    $precos = array();
+                    $linha = array(
                         utf8_decode($item->nome),
                         utf8_decode($item->quantidade),
                         utf8_decode($item->unidadeMedida->nome)
@@ -218,22 +300,58 @@ class RelatorioForm extends TPage
 
                     foreach($relacoes as $relacao){
                         $criteria = new TCriteria;
-                        //echo ($relacaoitem->preco_for($relacao->id, $item->id));
                         $criteria->add(new TFilter('relacao_id', '=', $relacao->id), TExpression::AND_OPERATOR);
                         $criteria->add(new TFilter('item_id',    '=', $item->id),    TExpression::AND_OPERATOR);
-                        $teste = $repository->load($criteria);
+                        $result = $repository->load($criteria);
 
                         //Transformação de preço (alteração de ponto do BD para virgula no relatorio
-                        $preco_transformer = number_format($teste[0]->preco, 2, '', '');
+                        $preco_transformer = number_format($result[0]->preco, 2, '', '');
                         $preco_transformer = number_format($preco_transformer/100,2,",",".");
-                        
-                        //$preco_transformer->number                        
+
+
+                        //$preco_transformer->number
                         array_push($linha, $preco_transformer);
 
+                        //guardando no array de precos para calculo estatistico
+                        array_push($precos, $result[0]->preco);
+
+                        //se for o ultimo, push os dados
+                        if(!next($relacoes)) {
+                            $max = max($precos);
+                            $min = min($precos);
+                            if($min != 0)
+                                $variacao = ($max - $min) / $min;
+
+                            if($min == 0){
+                                array_push($linha, '0,00');
+                                array_push($linha, $max);
+                                array_push($linha, utf8_decode('Nulo'));
+                            } else {
+                                array_push($linha, $min);
+                                array_push($linha, $max);
+                                array_push($linha, round($variacao*100) . '%');
+                            }
                         }
+                    }
+                    $pdf->SetX($posIni);
                     $pdf->Row($linha);
                 }
                 TTransaction::close();
+
+                if(key_exists('exibeTotalConfig', $param)){
+                    //gera o total de cada relação
+                    $totais = $this->geraTotal($relacoes);
+                    //preenche as 3 primeiras celulas da linha do total
+                    array_unshift($totais, 'R$');
+                    array_unshift($totais, '');
+                    array_unshift($totais, 'Total');
+
+                    $pdf->SetFont('Verdana', '', 9);
+                    $pdf->SetTextColor(40, 100, 20);
+                    $pdf->Row($totais);
+                } else {
+                    echo 'nao existe';
+                }
 
                 $file_path = 'app/output/procon.pdf';
                 $this->imprimePdf($pdf, $file_path);
@@ -245,7 +363,31 @@ class RelatorioForm extends TPage
         }
     }
 
+    function geraTotal($relacoes)
+    {
+        $repository = new TRepository('RelacaoItem');
+        TTransaction::open('procon_com');
 
+        $totais = array();
+        foreach($relacoes as $relacao)
+        {
+            $criteria = new TCriteria;
+            $criteria->add(new TFilter('relacao_id', '=', $relacao->id));
+            $result = $repository->load($criteria);
+
+            $total = 0;
+            foreach($result as $obj){
+                $total += $obj->preco;
+            }
+            $totalFormatado = number_format($total, 2, '', '');
+            $totalFormatado = number_format($totalFormatado/100,2,",",".");
+
+            array_push($totais, $totalFormatado);
+        }
+        return $totais;
+        TTransaction::close();
+
+    }
     function imprimePdf($pdf, $file_path){
         $file = $file_path;
         if (!file_exists($file) OR is_writable($file))
@@ -299,6 +441,8 @@ class RelatorioForm extends TPage
     {
         // get the search form data
         $data = $this->form->getData();
+
+        var_dump($data);
         
         // clear session filters
         TSession::setValue('RelatorioForm_filter_pesquisa_id',   NULL);
@@ -381,8 +525,8 @@ class RelatorioForm extends TPage
             $this->pageNavigation->setLimit($limit); // limit
             //verifica se primeiro load
 
-
-            if((TSession::getValue('asdsd')) and $this->first == 0)
+            
+            if(((TSession::getValue('Relatorio_filter_data')) == NULL) and $this->first == 0)
                $this->filtra();
 
             // close the transaction

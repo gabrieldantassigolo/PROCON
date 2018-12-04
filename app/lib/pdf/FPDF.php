@@ -111,6 +111,16 @@ class FPDF
         for($i=0;$i<count($data);$i++)
             $nb=max($nb,$this->NbLines($this->widths[$i],$data[$i]));
         $h=5*$nb;
+
+        //multiplicador para definir posição do x de acordo com n de relações
+        $multiplicador =1;
+        if(sizeof($this->relacoes)<5){
+            $multiplicador = 6;
+        } elseif(sizeof($this->relacoes)<10) {
+            $multiplicador = 4;
+        }
+        $posIni = 10*$multiplicador;
+
         //Issue a page break first if needed
         $this->CheckPageBreak($h);
         //Draw the cells of the row
@@ -119,7 +129,12 @@ class FPDF
             $w=$this->widths[$i];
             $a=isset($this->aligns[$i]) ? $this->aligns[$i] : 'L';
             //Save the current position
-            $x=$this->GetX();
+            if($i == 0) {
+                $this->SetX($posIni); //precisa reSetar o x quando ele qujebra a linha CheckPageBreak
+                $x = $posIni;
+            } else {
+                $x = $this->GetX();
+            }
             $y=$this->GetY();
             //Draw the border
             $this->Rect($x,$y,$w,$h);
@@ -500,39 +515,69 @@ class FPDF
     
     function Header()
     {
+            $dadosEstatistica = ['Menor','Maior','Variação'];
             $cont =0; //contador para o numero de estabelecimentos
             //$this->Image('app/images/esic-relatorio.png',10,7,70);
             $this->SetFillColor(240,240,240);
             $this->SetTextColor(0,0,0);
             $this->SetFont('Arial','B',15);
-            $this->cell(275,7,utf8_decode("Pesquisa de Preços"),1,1,'R',0);
+            $this->cell(275,7,utf8_decode("Pesquisa de Preços"),0,1,'R',0);
             $this->SetFont('Arial','',12);
-            $this->cell(275,5,utf8_decode("PROCON - DOURADOS/MS"),1,1,'R',0);
+            $this->cell(275,5,utf8_decode("PROCON - DOURADOS/MS"),0,1,'R',0);
             $this->SetFont('Arial','',10);
-            $this->cell(275,5,"",1,1,'R',0);
+            $this->cell(275,5,"",0,1,'R',0);
             $this->SetFont('Arial','B',10);
 
-            $this->SetY(68); //seta a posição da celula do titulo da pesquisa
+            //calcular posição inicial das celulas
+            $multiplicador =1;
+            if(sizeof($this->relacoes)<5){
+                $multiplicador = 6;
+            } elseif(sizeof($this->relacoes)<10) {
+                $multiplicador = 4;
+            }
+            $posIni = 10*$multiplicador;
+
+            $this->SetXY($posIni, 68); //seta a posição da celula do titulo da pesquisa
             //pega o nome da pesquisa
             TTransaction::open('procon_com');
             $objeto_relacao = $this->relacoes[0];
             $this->cell(80,9,utf8_decode($objeto_relacao->pesquisa->nome),1,0,'C',1);
             TTransaction::close();
-            $this->SetXY(90,27); //seta posição inicial das colunas de estabelecimento
+
+            $this->SetXY($posIni +80,27); //seta posição inicial das colunas de estabelecimento
             $this->setFont('Arial', '',11);
             TTransaction::open('procon_com');
-            foreach($this->relacoes as $relacao){
+            foreach($this->relacoes as $relacao)
+            {
                 //verificar se é a ultima posição para quebrar a linha
-                if (!next($this->relacoes))
+//                if (!next($this->relacoes))
+//                {
+//                    echo 'entrou';
+//                    $this->Cell(15, 50,'' , 1, 1, 'C', 1);
+//                    $this->TextWithDirection($posIni + 89 +($cont*15),73, utf8_decode($relacao->estabelecimento->nome), 'U');
+//                } else {
+                    $this->Cell(15, 50,'',1, 0, 'C', 1);
+                    $this->TextWithDirection($posIni + 89 +($cont*15),73, utf8_decode($relacao->estabelecimento->nome), 'U');
+//                }
+                $cont++;
+            }
+
+            for($j = 0; $j < sizeof($dadosEstatistica); $j++){
+                $this->SetFont('Verdana', '', 8);
+                $this->SetTextColor(255,255,255);
+                $this->SetFillColor(70,70,70);
+                $this->SetXY($posIni + 80 +($cont*15), 69);
+                if (!next($dadosEstatistica))
                 {
-                    $this->cell(15, 50,'' , 1, 1, 'C', 1);
-                    $this->TextWithDirection(99+($cont*15),73, utf8_decode($relacao->estabelecimento->nome), 'U');
+                    $this->Cell(15, 8, utf8_decode($dadosEstatistica[$j]), 1, 1, 'C', 1);
                 } else {
-                    $this->cell(15, 50,'',1, 0, 'C', 1);
-                    $this->TextWithDirection(99+($cont*15),73, utf8_decode($relacao->estabelecimento->nome), 'U');
+                    $this->Cell(15, 8, utf8_decode($dadosEstatistica[$j]), 1, 0, 'C', 1);
                 }
                 $cont++;
             }
+
+
+
             TTransaction::close();
     }
     
@@ -1214,7 +1259,6 @@ class FPDF
         }
         return '';
     }
-    
     /*******************************************************************************
      *                              Protected methods                               *
      *******************************************************************************/
