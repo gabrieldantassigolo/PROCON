@@ -44,6 +44,8 @@ class RelacaoItemUpdateListUser extends TPage
         // keep the form filled during navigation with session data
         $this->form->setData( TSession::getValue('RelacaoItem_filter_data') );
 
+
+
          if (!empty($relacao_id))
         {
             $relacao_id->setEditable(FALSE);
@@ -162,8 +164,9 @@ class RelacaoItemUpdateListUser extends TPage
         //mantem o valor de relacao id quando troca pagina de navegação
         TSession::setValue('RelacaoItem_filter_data', $obj);
 
+        TSession::setValue('sessaoTeste', $param);
         $this->filtrado = 0;
-        //$this->onSearch($obj);
+        $this->onSearch($obj);
     }
 
     /**
@@ -218,11 +221,55 @@ class RelacaoItemUpdateListUser extends TPage
     /**
      * Register the filter in the session
      */
-    public function onSearch($obj)
+//    public function onSearch($obj)
+//    {
+//        //var_dump($param);
+//        //$teste = $param['key'];
+//
+//        // get the search form data
+//        $data = $this->form->getData();
+//
+//        // clear session filters
+//        TSession::setValue('RelacaoItemList_filter_item_id',   NULL);
+//        TSession::setValue('RelacaoItemList_filter_relacao_id',   NULL);
+//        TSession::setValue('RelacaoItemList_filter_pesquisa_id',   NULL);
+//
+//        if (isset($data->item_id) AND ($data->item_id)) {
+//            $filter = new TFilter('item_id', '=', "$data->item_id"); // create the filter
+//            TSession::setValue('RelacaoItemList_filter_item_id',   $filter); // stores the filter in the session
+//        }
+//
+//        if (isset($data->relacao_id) AND ($data->relacao_id)) {
+//            $filter = new TFilter('relacao_id', '=', "$data->relacao_id"); // create the filter
+//            TSession::setValue('RelacaoItemList_filter_relacao_id',   $filter); // stores the filter in the session
+//        }
+//
+//        //isset($data->relacao_id)== FALSE
+//        if (($this->filtrado == 0) and ($data->relacao_id == ""))
+//        {
+//            $filter = new TFilter('relacao_id', '=', "$obj->relacao_id"); // create the filter
+//            TSession::setValue('RelacaoItemList_filter_relacao_id',   $filter);
+//            $this->filtrado = 1;
+//        }
+//
+//        /*if(TSession::getValue('RelacaoItem_relacao_id')){
+//            $filter = new TFilter('relacao_id', '=', "$relacao_id_form");
+//            TSession::setValue('RelacaoItemList_filter_relacao_id',   $filter); // stores the filter in the session
+//        }*/
+//        // keep the search data in the session
+//        $this->form->setData($data);
+//        TSession::setValue('RelacaoItem_filter_data', $data);
+//
+//        $param = array();
+//        $param['offset']    =0;
+//        $param['first_page']=1;
+//        $this->onReload($param);
+//    }
+    public function onSearch($param)
     {
         //var_dump($param);
         //$teste = $param['key'];
-            
+
         // get the search form data
         $data = $this->form->getData();
 
@@ -237,25 +284,25 @@ class RelacaoItemUpdateListUser extends TPage
         }
 
         if (isset($data->relacao_id) AND ($data->relacao_id)) {
-            $filter = new TFilter('relacao_id', '=', "$data->relacao_id"); // create the filter
+            $filter = new TFilter('relacao_id', '=', "$param->id"); // create the filter
             TSession::setValue('RelacaoItemList_filter_relacao_id',   $filter); // stores the filter in the session
         }
-        
+
         //isset($data->relacao_id)== FALSE
         if (($this->filtrado == 0) and ($data->relacao_id == ""))
         {
-            $filter = new TFilter('relacao_id', '=', "$obj->relacao_id"); // create the filter
+            $filter = new TFilter('relacao_id', '=', "$param->relacao_id"); // create the filter
             TSession::setValue('RelacaoItemList_filter_relacao_id',   $filter);
-            $this->filtrado = 1;        
+            $this->filtrado = 1;
         }
-        
+
         /*if(TSession::getValue('RelacaoItem_relacao_id')){
             $filter = new TFilter('relacao_id', '=', "$relacao_id_form");
             TSession::setValue('RelacaoItemList_filter_relacao_id',   $filter); // stores the filter in the session
         }*/
         // keep the search data in the session
-        $this->form->setData($data);
-        TSession::setValue('RelacaoItem_filter_data', $data);
+        //$this->form->setData($data);
+        //TSession::setValue('RelacaoItem_filter_data', $data);
 
         $param = array();
         $param['offset']    =0;
@@ -269,12 +316,10 @@ class RelacaoItemUpdateListUser extends TPage
     public function onReload($param)
     {
         try
-        {    
+        {
+
            $data = $this->form->getData();
-            if($data->relacao_id) {
-               // $this->pegaID($data);
-                //echo('entrou if');
-            }
+
 
             // open a transaction with database 'procon_com'
             TTransaction::open('procon_com');
@@ -431,6 +476,15 @@ class RelacaoItemUpdateListUser extends TPage
 
     public function onControlSaveCollection($param)
     {
+        $dadosPrev = TSession::getValue('sessaoTeste');
+
+        TTransaction::open('procon_com');
+        $relacao = new Relacao($dadosPrev['id']);
+        TTransaction::close();
+
+        //Testa pra ver se é editavel
+        if($relacao->editavel == FALSE){
+
         $data = $this->formgrid->getData(); // get datagrid form data
         TSession::setValue('RelacaoItem_filter_data', $data);
         TSession::setValue('RelacaoItem_filter_data1', $data);
@@ -438,53 +492,64 @@ class RelacaoItemUpdateListUser extends TPage
     
         $action_yes = new TAction([$this, 'onSaveCollection'], $param);
         new TQuestion('Deseja confirmar os dados?', $action_yes);
+        } else {
+            new TMessage('error', "Essa relação de preços não pode ser alterada, contate o administrador
+                no telefone 12341234 para mais informações");
+        }
     }
 
 
     public function onSaveCollection($param)
     {
         $data = TSession::getValue('RelacaoItem_filter_data1'); // get datagrid form data
-
-        //TSession::setValue('RelacaoItem_filter_data1', $data);
-        var_dump($param);
-        try
-        {
-            // open transaction
-            TTransaction::open('procon_com');
-
-            // iterate datagrid form objects
-            foreach ($this->formgrid->getFields() as $name => $field)
+        $dadosPrev = TSession::getValue('sessaoTeste');
+            try
             {
-                if ($field instanceof TEntry)
+                //altera o estado de editavel para true
+                if($dadosPrev['id'])
                 {
-                    $parts = explode('_', $name);
-                    $id = end($parts);
-                    $object = RelacaoItem::find($id);
+                    TTransaction::open('procon_com');
+                    $obj = new Relacao($dadosPrev['id']);
+                    echo($dadosPrev['id']);
+                    $obj->editavel = TRUE;
+                    $obj->store();
+                    TTransaction::close();
+                }
 
-                    if ($object AND isset($param[$name]))
+                TTransaction::open('procon_com');
+
+                // iterate datagrid form objects
+                foreach ($this->formgrid->getFields() as $name => $field)
+                {
+                    if ($field instanceof TEntry)
                     {
-                        $object->preco = $data->{$name};
-                        $object->store();
+                        $parts = explode('_', $name);
+                        $id = end($parts);
+                        $object = RelacaoItem::find($id);
+
+                        if ($object AND isset($param[$name]))
+                        {
+                            $object->preco = $data->{$name};
+                            $object->store();
+
+                        }
                     }
                 }
+                TTransaction::close();
+
+
+
+                // close transaction
+
+                $pos_action = new TAction(array('RelacaoListUser', 'onReload'));
+                new TMessage('info', 'Dados Salvos!', $pos_action);
             }
-            if($param['id'])
+            catch (Exception $e)
             {
-                $obj = new Relacao($param['id']);
-                $obj->editavel = TRUE;
-                $obj->store();
+                // show the exception message
+                new TMessage('error', $e->getMessage());
             }
 
-            // close transaction
-            TTransaction::close();
-            $pos_action = new TAction(array('RelacaoListUser', 'onReload'));
-            new TMessage('info', 'Dados Salvos!', $pos_action);
-        }
-        catch (Exception $e)
-        {
-            // show the exception message
-            new TMessage('error', $e->getMessage());
-        }
     }
 
 

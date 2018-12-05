@@ -66,10 +66,11 @@ class RelacaoList extends TPage
         // creates the datagrid columns
         $column_check = new TDataGridColumn('check', '', 'center', '5%' );
         //$column_id = new TDataGridColumn('id', 'Id', 'right');
-        $column_pesquisa = new TDataGridColumn('pesquisa->nome', 'Pesquisa', 'left', '40%');
-        $column_estabelecimento = new TDataGridColumn('estabelecimento->nome', 'Estabelecimento', 'left', '40%');
+        $column_pesquisa = new TDataGridColumn('pesquisa->nome', 'Pesquisa', 'left', '30%');
+        $column_estabelecimento = new TDataGridColumn('estabelecimento->nome', 'Estabelecimento', 'left', '30%');
         $column_data = new TDataGridColumn('data_criacao', 'Data', 'left', '15%');
-        
+        $column_editavel = new TDataGridColumn('editavel', 'Editável', 'left', '15%');
+
         $column_data->setTransformer( function($value, $object, $row) {
             if ($value)
             {
@@ -93,6 +94,7 @@ class RelacaoList extends TPage
         $this->datagrid->addColumn($column_pesquisa);
         $this->datagrid->addColumn($column_estabelecimento);
         $this->datagrid->addColumn($column_data);
+        $this->datagrid->addColumn($column_editavel);
 
 
         // creates the datagrid column actions

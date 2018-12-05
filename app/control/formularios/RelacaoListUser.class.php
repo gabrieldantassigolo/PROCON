@@ -137,26 +137,20 @@ class RelacaoListUser extends TPage
 
     public function onUpdateItens($param)
     {
+
+
         TTransaction::open('procon_com');
-        $relacao = new Relacao($param['id']);
+        $obj = new StdClass;
+        $obj->relacao_id = $param['id'];
+
+        $pesquisa = new Pesquisa($param['pesquisa_id']);
+        $obj->pesquisa_id = $pesquisa->nome;
+
         TTransaction::close();
 
-        if($relacao->editavel == FALSE){
-            TTransaction::open('procon_com');
-            $obj = new StdClass;
-            $obj->relacao_id = $param['id'];
+        TSession::setValue('RelacaoItem_relacao_id', $obj);
+        AdiantiCoreApplication::loadPage('RelacaoItemUpdateListUser', 'pegaID', $param);
 
-            $pesquisa = new Pesquisa($param['pesquisa_id']);
-            $obj->pesquisa_id = $pesquisa->nome;
-
-            TTransaction::close();
-
-            TSession::setValue('RelacaoItem_relacao_id', $obj);
-            AdiantiCoreApplication::loadPage('RelacaoItemUpdateListUser', 'pegaID', $param);
-        } else {
-            new TMessage('error', "Essa relação de preços não pode ser editada, contate o administrador
-                no telefone 12341234 para mais informações");
-        }
     }
 
     /**
