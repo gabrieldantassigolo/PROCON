@@ -126,7 +126,6 @@ class RelacaoListUser extends TPage
 
         // vertical box container
         $container = new TVBox;
-        $container->title = 'ES';
         $container->style = 'width: 100%';
         // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         //$container->add($this->form);
@@ -280,6 +279,7 @@ class RelacaoListUser extends TPage
 
             $obj = new StdClass;
             $obj->cnpj = TSession::getValue('login');
+            //$obj->cnpj = TSee
             $this->form->setData($obj);
         }
         catch (Exception $e) // in case of exception

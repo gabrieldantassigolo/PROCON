@@ -94,7 +94,7 @@ class RelacaoItemUpdateList extends TPage
        $this->datagrid->addColumn($column_item_unidadeMedida);
        $this->datagrid->addColumn($column_item_categoria);
        $this->datagrid->addColumn($column_preco);
-
+       $this->datagrid->style = 'width: 100%';
         
         // creates the datagrid column actions
         //$column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
@@ -120,15 +120,17 @@ class RelacaoItemUpdateList extends TPage
 
         $this->saveButton = new TButton('update_collection');
         $this->saveButton->setAction(new TAction(array($this, 'onSaveCollection')), AdiantiCoreTranslator::translate('Save'));
-        $this->saveButton->setImage('fa:save green');
+        $this->saveButton-> class = 'btn btn-sm btn-primary';
+        $this->saveButton->style = 'text-algn: center; padding: 5px 30px;';
+        $this->saveButton->setImage('fa:save white');
         $this->formgrid->addField($this->saveButton);
 
         // vertical box container
         $gridpack = new TVBox;
         $gridpack->style = 'width: 100%';
         // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
-        $gridpack->add($this->formgrid);
-        $gridpack->add($this->saveButton)->style = 'background:whiteSmoke;border:1px solid #cccccc; padding: 3px;padding: 5px;';
+        $gridpack->add($this->formgrid)->style = 'border-bottom: 1px solid rgba(0, 0, 0, 0.2)';
+        $gridpack->add($this->saveButton)->style = 'text-align: center; padding: 10px 10px';
 
         $this->transformCallback = array($this, 'onBeforeLoad');
 
@@ -376,6 +378,8 @@ class RelacaoItemUpdateList extends TPage
         foreach ($objects as $object)
         {   
             $object->preco_widget = new TEntry('preco' . '_' . $object->id);
+            $precoFormatado = number_format($object->preco, 2, '', '');
+            $object->preco = number_format($precoFormatado/100, 2, ',', '.');
             $object->preco_widget->setValue( $object->preco );
             $object->preco_widget->setSize('100%');
             $object->preco_widget->setNumericMask(2, ',', '.', true);

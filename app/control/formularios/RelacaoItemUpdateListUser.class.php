@@ -436,7 +436,7 @@ class RelacaoItemUpdateListUser extends TPage
         $this->formgrid->setData($data);
     
         $action_yes = new TAction([$this, 'onSaveCollection'], $param);
-        new TQuestion('As alterações serão efetidas. Deseja confirmar os dados?', $action_yes);
+        new TQuestion('Deseja confirmar os dados?', $action_yes);
     }
 
 

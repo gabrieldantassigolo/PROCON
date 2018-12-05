@@ -25,7 +25,7 @@
               <menuitem label='_t{SQL Panel}'>
                   <icon>fa:table fa-fw</icon>
                   <action>SystemSQLPanel</action>
-              </menuitem>
+              </menuitem> 
               <menuitem label='PHP Info'>
                   <icon>fa:info-circle fa-fw</icon>
                   <action>SystemPHPInfoView</action>
