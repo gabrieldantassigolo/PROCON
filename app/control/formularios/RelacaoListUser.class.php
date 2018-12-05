@@ -135,20 +135,28 @@ class RelacaoListUser extends TPage
 
     }
 
-    public function onUpdateItens($data)
+    public function onUpdateItens($param)
     {
         TTransaction::open('procon_com');
-
-        $obj = new StdClass;
-        $obj->relacao_id = $data['id'];
-
-        $pesquisa = new Pesquisa($data['pesquisa_id']);
-        $obj->pesquisa_id = $pesquisa->nome;
-
+        $relacao = new Relacao($param['id']);
         TTransaction::close();
 
-        TSession::setValue('RelacaoItem_relacao_id', $obj);
-        AdiantiCoreApplication::loadPage('RelacaoItemUpdateListUser', 'pegaID', $data);
+        if($relacao->editavel == FALSE){
+            TTransaction::open('procon_com');
+            $obj = new StdClass;
+            $obj->relacao_id = $param['id'];
+
+            $pesquisa = new Pesquisa($param['pesquisa_id']);
+            $obj->pesquisa_id = $pesquisa->nome;
+
+            TTransaction::close();
+
+            TSession::setValue('RelacaoItem_relacao_id', $obj);
+            AdiantiCoreApplication::loadPage('RelacaoItemUpdateListUser', 'pegaID', $param);
+        } else {
+            new TMessage('error', "Essa relação de preços não pode ser editada, contate o administrador
+                no telefone 12341234 para mais informações");
+        }
     }
 
     /**
@@ -415,7 +423,7 @@ class RelacaoListUser extends TPage
         // update the action parameters to pass the current page to action
         // without this, the action will only work for the first page
         //$deleteAction = $this->deleteButton->getAction();
-        $deleteAction->setParameters($param); // important!
+        //$deleteAction->setParameters($param); // important!
 
         $gridfields = array( $this->deleteButton );
 

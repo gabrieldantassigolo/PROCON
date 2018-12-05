@@ -30,7 +30,7 @@ class RelacaoItemUpdateListUser extends TPage
         //$item_id = new TCombo('item_id', 'procon_com', 'Item', 'Código', 'nome');
         $pesquisa_id = new TEntry('pesquisa_id');
         $item_id = new TEntry('item_id');
-        $relacao_id = new THidden('relacao_id');
+        $relacao_id = new TEntry('relacao_id');
 
 
         // add the fields
@@ -121,7 +121,7 @@ class RelacaoItemUpdateListUser extends TPage
         $this->saveButton = new TButton('update_collection');
         $this->saveButton->setAction(new TAction(array($this, 'onControlSaveCollection')), AdiantiCoreTranslator::translate('Save'));
         $this->saveButton->setImage('fa:save white');
-        $this->saveButton-> class = 'btn btn-sm btn-primary';
+        $this->saveButton->class = 'btn btn-sm btn-primary';
         $this->saveButton->style = 'padding: 5px 30px;';
         $this->formgrid->addField($this->saveButton);
 
@@ -146,25 +146,24 @@ class RelacaoItemUpdateListUser extends TPage
         //$this->onSearch();
     }
 
-    public function pegaID($data){
-   
+    public function pegaID($param){
         TSession::setValue('RelacaoItemList_filter_relacao_id',   NULL);
         
         TTransaction::open('procon_com');
-        
+
         $obj = new StdClass;
-        $obj->relacao_id = $data['id'];
-        $obj->pesquisa_id = $data['pesquisa_id'];
-        
+        $obj->relacao_id = $param['id'];
+        $obj->pesquisa_id = $param['pesquisa_id'];
+
         $this->form->setData($obj);
-        
+
         TTransaction::close();
 
         //mantem o valor de relacao id quando troca pagina de navegação
         TSession::setValue('RelacaoItem_filter_data', $obj);
-        
+
         $this->filtrado = 0;
-        $this->onSearch($obj);       
+        //$this->onSearch($obj);
     }
 
     /**
@@ -178,6 +177,7 @@ class RelacaoItemUpdateListUser extends TPage
     {
         try
         {
+
             $data = $this->form->getData();
             // get the parameter $key
             $field = $param['field'];
@@ -219,7 +219,7 @@ class RelacaoItemUpdateListUser extends TPage
      * Register the filter in the session
      */
     public function onSearch($obj)
-    {    
+    {
         //var_dump($param);
         //$teste = $param['key'];
             
@@ -274,7 +274,8 @@ class RelacaoItemUpdateListUser extends TPage
             if($data->relacao_id) {
                // $this->pegaID($data);
                 //echo('entrou if');
-            }
+            }
+
             // open a transaction with database 'procon_com'
             TTransaction::open('procon_com');
 
@@ -443,9 +444,9 @@ class RelacaoItemUpdateListUser extends TPage
     public function onSaveCollection($param)
     {
         $data = TSession::getValue('RelacaoItem_filter_data1'); // get datagrid form data
-        //TSession::setValue('RelacaoItem_filter_data1', $data);
-        $this->formgrid->setData($data);
 
+        //TSession::setValue('RelacaoItem_filter_data1', $data);
+        var_dump($param);
         try
         {
             // open transaction
@@ -467,6 +468,13 @@ class RelacaoItemUpdateListUser extends TPage
                     }
                 }
             }
+            if($param['id'])
+            {
+                $obj = new Relacao($param['id']);
+                $obj->editavel = TRUE;
+                $obj->store();
+            }
+
             // close transaction
             TTransaction::close();
             $pos_action = new TAction(array('RelacaoListUser', 'onReload'));

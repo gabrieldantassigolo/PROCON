@@ -23,6 +23,7 @@ class Relacao extends TRecord
         parent::addAttribute('pesquisa_id');
         parent::addAttribute('estabelecimento_id');
         parent::addAttribute('data_criacao');
+        parent::addAttribute('editavel');
     }
 
     

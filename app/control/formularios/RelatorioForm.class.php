@@ -43,12 +43,9 @@ class RelatorioForm extends TPage
         
         $pesquisa_id->setDefaultOption('Selecione uma pesquisa');    
     
-//        //Clear Section
-//        TSession::setValue('Relatorio_filter_data',   NULL);
-        
+
         // add the fields
         $this->form->addFields( [ new TLabel('Pesquisa') ], [ $pesquisa_id ] );
-        $this->form->addFields( [ new TLabel('Exibir Total: ') ], [ $total ] );
 
         // set sizes
         $pesquisa_id->setSize('70%');
@@ -129,82 +126,32 @@ class RelatorioForm extends TPage
         $this->relatorioButton->setImage('fa:clipboard black');
         $this->relatorioButton->style = 'padding: 5px 50px;';
         $this->relatorioButton->class = 'btn btn-sm btn-primary';
-        //$this->formgrid->addField($this->relatorioButton);
 
-        ////////////////////
-//
         $total = new TCheckButton('exibeTotalConfig');
-
-
-//        ///////////////////
 
         $table = new TTable;
         $table->width = '100%';
-        //$table->style = 'padding: 10px';
+        $table->style = 'padding: 5px';
         $table->style = 'text-align: center; ';
 
-//        $label = new TLabel('Exibir Total');
-//        $label->style = ""
-//        $table->addRowSet( $label, $total )->class ='linhaTotal';
         $row = $table->addRow();
         $row->style = "border: 1px solid";
-        $row->addCell(new TLabel('Exibir Total'))->style = "width: 54%;  text-align: right; padding-right: 15px; padding-top: 5px;";
-        $row->addCell($total)->style = "width: 46%;  text-align: left";
+        $row->addCell(new TLabel('Exibir Total'))->style = "width: 53%;  text-align: right; padding-right: 15px; padding-top: 5px;";
+        $row->addCell($total)->style = "width: 47%;  text-align: left";
 
 
         $table1 = new TTable;
         $table1->width = '100%';
-        //$table->style = 'padding: 10px';
+        $table1->style = 'padding: 5px';
         $table1->style = 'text-align: center; ';
         $row = $table1->addRow();
 
         $row->addCell($this->relatorioButton)->style = "width: 100%; content-align: center";
-        //$table->addRowSet( $this->relatorioButton );
 
-
-
-//        $row = $table->addRow();
-//        $cell=$row->addCell('Exibir Total');
-//        $cell->width= 50;
-//        $row->addCell($total);
-
-        // creates the action button
-//        $button1=new TButton('find');
-//        $button1->setAction(new TAction(array($this, 'onSearch')), 'Find');
-//        $button1->setImage('fa:search');
-//        $row1 = $table->addRow();
-//        $row1->addCell($this->relatorioButton);
+//
         $this->formgrid->add($table);
         $this->formgrid->add($table1);
         $this->formgrid->setFields(array($total, $this->relatorioButton));
-
-
-
-
-
-        $items = ['chaveTotal'=>'valorTotal'];
-
-        /*$obj = new StdClass;
-        $obj->check = new TCheckButton('objCheck');
-        $obj->check->setIndexValue('on');
-        $obj->check->setValue('on');
-        $this->form->addField($obj->check);
-*/
-
-//        $this->exibeTotal->setLayout('horizontal');
-//        $this->exibeTotal->setName('nome_check');
-//        $this->exibeTotal->setLabel('label_check');
-//
-//        $this->exibeTotal->addItems($items);
-//        $this->exibeTotal->style = 'padding: 5px 50px;';
-//        $this->exibeTotal->class = 'btn btn-sm btn-primary';
-//        //$this->exibeTotal->setValue( 'valorTotal');
-//        $this->exibeTotal->setIndexValue('on');
-//        //$this->exibeTotal->checked = 0;
-
-       // $this->exibeTotal = new TCombo('combo_total');
-        //$this->exibeTotal->addItems(array('Sim'));
-
 
 
         $this->gridpack = new TVBox;
@@ -248,8 +195,13 @@ class RelatorioForm extends TPage
 
     function onGerarRelatorio($param)
     {
+
         try {
             $relacoes = $this->getRelacoes();
+            if(!($relacoes)){
+                new TMessage('error', 'Selecione pelo menos uma relação.');
+                return 0;
+            }
             $estabelecimentos = $this->getEstabelecimentos($relacoes);
             $widths = array(54, 10, 16);
             if ($relacoes) {
