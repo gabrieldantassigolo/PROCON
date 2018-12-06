@@ -27,7 +27,7 @@ class UnidadeMedidaList extends TPage
 
         // creates the form
         $this->form = new BootstrapFormBuilder('form_UnidadeMedida');
-        $this->form->setFormTitle('Cadastrar Unidade de Medida');
+        $this->form->setFormTitle('Unidades de Medida');
         
 
         
@@ -86,7 +86,7 @@ class UnidadeMedidaList extends TPage
         $container->style = 'width: 100%';
         $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $container->add($this->form)->style = 'width: 100%;';
-        $container->add(TPanelGroup::pack('Unidades de Medida', $this->datagrid, $this->pageNavigation));
+        $container->add(TPanelGroup::pack('', $this->datagrid, $this->pageNavigation));
         
         parent::add($container);
     }

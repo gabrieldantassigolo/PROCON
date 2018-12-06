@@ -97,6 +97,8 @@ class ItemList extends TPage
         $action_del->setField('id');
         $this->datagrid->addAction($action_del);
         
+        $this->datagrid->style = 'width: 100%; border-bottom: 1px solid rgba(0, 0, 0, 0.2)';
+        
         // create the datagrid model
         $this->datagrid->createModel();
         
@@ -120,14 +122,14 @@ class ItemList extends TPage
         $gridpack = new TVBox;
         $gridpack->style = 'width: 100%';
         $gridpack->add($this->formgrid);
-        $gridpack->add($this->deleteButton)->style = 'background:whiteSmoke;border:1px solid #cccccc; padding: 3px;padding: 5px;';
+        $gridpack->add($this->deleteButton)->style = 'background:whiteSmoke; padding: 3px;padding: 5px;';
         
         $this->transformCallback = array($this, 'onBeforeLoad');
 
 
         // vertical box container
         $container = new TVBox;
-        $container->style = 'width: 90%';
+        $container->style = 'width: 100%';
         $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $container->add($this->form);
         $container->add(TPanelGroup::pack('Produtos', $gridpack, $this->pageNavigation));
