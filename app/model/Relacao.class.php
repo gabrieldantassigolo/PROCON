@@ -139,7 +139,11 @@ class Relacao extends TRecord
      */
     public function updateEditavel()
     {
-        $this->editavel = !($this->editavel);
+        if($this->editavel == 'Bloqueado'){
+            $this->editavel = 'Desbloqueado';
+        } else {
+            $this->editavel = 'Bloqueado';
+        }
         parent::store();
     }
 

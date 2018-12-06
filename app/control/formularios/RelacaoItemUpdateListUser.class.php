@@ -484,7 +484,7 @@ class RelacaoItemUpdateListUser extends TPage
         TTransaction::close();
 
         //Testa pra ver se é editavel
-        if($relacao->editavel == FALSE){
+        if(!($relacao->editavel == 'Bloqueado')){
 
             $data = $this->formgrid->getData(); // get datagrid form data
             TSession::setValue('RelacaoItem_filter_data', $data);
@@ -516,7 +516,7 @@ class RelacaoItemUpdateListUser extends TPage
                 {
                     TTransaction::open('procon_com');
                     $obj = new Relacao($dadosPrev['id']);
-                    $this->setTrue($obj);
+                    $this->changeEditavel($obj);
                     TTransaction::close();
                 }
                 TTransaction::open('procon_com');

@@ -69,7 +69,7 @@ class RelacaoList extends TPage
         $column_pesquisa = new TDataGridColumn('pesquisa->nome', 'Pesquisa', 'left', '30%');
         $column_estabelecimento = new TDataGridColumn('estabelecimento->nome', 'Estabelecimento', 'left', '30%');
         $column_data = new TDataGridColumn('data_criacao', 'Data', 'left', '15%');
-        $column_editavel = new TDataGridColumn('editavel', 'Editável', 'left', '15%');
+        $column_editavel = new TDataGridColumn('editavel', 'Status', 'left', '15%');
 
         $column_data->setTransformer( function($value, $object, $row) {
             if ($value)
@@ -102,11 +102,10 @@ class RelacaoList extends TPage
         $column_data->setAction(new TAction([$this, 'onReload']), ['order' => 'data_criacao']);
 
 
-        $action_view = new TDataGridAction(array($this, 'onUpdateItens'));
-        $action_view->setLabel('Definir preços dos Itens');        
-        $action_view->setImage('fa:dollar blue');
+        $action_view = new TDataGridAction(array($this, 'onUpdateEditavel'));
+        $action_view->setLabel('Bloquear/Desbloquear');
+        $action_view->setImage('fa:lock green');
         $action_view->setField('id');
-        $action_view->setField('pesquisa_id');     
         $this->datagrid->addAction($action_view);
        
         
@@ -165,7 +164,17 @@ class RelacaoList extends TPage
         
         parent::add($container);
     }
-    
+
+    public function onUpdateEditavel($data){
+        TTransaction::open('procon_com');
+
+        $obj = new Relacao($data['id']);
+        $obj->updateEditavel();
+        TTransaction::close();
+
+        $this->onReload();
+    }
+
     public function onUpdateItens($data)
     {     
         TTransaction::open('procon_com');       
