@@ -23,22 +23,20 @@ class RelacaoItemUpdateListUser extends TPage
         $this->filtrado = 0;
         // creates the form
         $this->form = new BootstrapFormBuilder('form_RelacaoItem');
-        $this->form->setFormTitle('RelacaoItem');
+        $this->form->setFormTitle('Alterar Preços');
         
 
         // create the form fields
         //$item_id = new TCombo('item_id', 'procon_com', 'Item', 'Código', 'nome');
         $pesquisa_id = new TEntry('pesquisa_id');
         $item_id = new TEntry('item_id');
-        $relacao_id = new TEntry('relacao_id');
+        $relacao_id = new THidden('relacao_id');
 
 
         // add the fields
-        $this->form->addFields( [ new TLabel('Pesquisa') ], [ $pesquisa_id ] );
-        $this->form->addFields( [ new TLabel('Item') ], [ $item_id ] );
-        $this->form->addFields( [ new TLabel('') ], [ $relacao_id ] );
-
-        // set sizes
+        /*$this->form->addFields( [ new TLabel('Pesquisa') ], [ $pesquisa_id ] );
+        $this->form->addFields( [ new TLabel('Item') ], [ $item_id ] );*/
+        $this->form->addFields( [ new TLabel('Aviso: após a confirmação da alteração dos valores, novas alterações só serão possíveis com a permissão do Administrador!') ], [ $relacao_id ] );
         $item_id->setSize('100%');
         
         // keep the form filled during navigation with session data
@@ -56,10 +54,8 @@ class RelacaoItemUpdateListUser extends TPage
             $pesquisa_id->setEditable(FALSE);
         }
         //Back List
-        $this->form->addAction(_t('Back'), new TAction(array('RelacaoListUser','onReload')),'fa:arrow-circle-o-left blue');
-        // add the search form actions
-        $btn = $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search');
-        $btn->class = 'btn btn-sm btn-primary';
+        //$this->form->addAction(_t('Back'), new TAction(array('RelacaoListUser','onReload')),'fa:arrow-circle-o-left blue');
+
         //$this->form->addActionLink(_t('New'), new TAction(['RelacaoItemForm', 'onEdit']), 'fa:plus green');
 
         // creates a Datagrid
@@ -96,18 +92,8 @@ class RelacaoItemUpdateListUser extends TPage
        $this->datagrid->addColumn($column_item_unidadeMedida);
        $this->datagrid->addColumn($column_item_categoria);
        $this->datagrid->addColumn($column_preco);
-
         
-        // creates the datagrid column actions
-        //$column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
-       // create EDIT action
-        //$action_edit = new TDataGridAction(['RelacaoItemForm', 'onEdit']);
-        //$action_edit->setUseButton(TRUE);
-        //$action_edit->setButtonClass('btn btn-default');
-        //$action_edit->setLabel(_t('Edit'));
-        //$action_edit->setImage('fa:pencil-square-o blue fa-lg');
-        //$action_edit->setField('id');
-        //$this->datagrid->addAction($action_edit);
+       $this->datagrid->style = 'width: 100%; border-bottom: 1px solid rgba(0, 0, 0, 0.2)';
 
         // create the datagrid model
         $this->datagrid->createModel();
@@ -116,30 +102,54 @@ class RelacaoItemUpdateListUser extends TPage
         $this->pageNavigation = new TPageNavigation;
         $this->pageNavigation->setAction(new TAction([$this, 'onReload']));
         $this->pageNavigation->setWidth($this->datagrid->getWidth());
+                
+        //button back
+        $buttonBack = new TButton('buttonBack');
+        //$buttonBack->setAction(new TAction(['RelacaoListUser', 'onReload']));
+        $buttonBack->setAction(new TAction(array('RelacaoListUser', 'onReload')), 'Voltar');
+        $buttonBack->setImage('fa:arrow-circle-o-left blue');
+        $buttonBack->style = 'padding: 5px 30px;';
 
-        $this->formgrid = new TForm;
-        $this->formgrid->add($this->datagrid);
-
+        //button save
         $this->saveButton = new TButton('update_collection');
         $this->saveButton->setAction(new TAction(array($this, 'onControlSaveCollection')), AdiantiCoreTranslator::translate('Save'));
         $this->saveButton->setImage('fa:save white');
         $this->saveButton->class = 'btn btn-sm btn-primary';
         $this->saveButton->style = 'padding: 5px 30px;';
+        
+        $this->formgrid = new TForm;
+        //$this->formgrid->addField($buttonBack);
+        $this->formgrid->add($this->datagrid);
+        
+        $this->formgrid->addField($buttonBack);
         $this->formgrid->addField($this->saveButton);
+        
+        $buttons = new THBox;
+        $buttons->add($buttonBack)->style = 'display: inline-table; margin-left: 10px; float: left'; 
+        $buttons->add($this->saveButton)->style = 'display: inline-table; margin-right: 150px;';
 
         // vertical box container
         $gridpack = new TVBox;
         $gridpack->style = 'width: 100%';
         // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
+        //$gridpack->add($buttonBack)->style = 'display-block: float; left;';
         $gridpack->add($this->formgrid);
-        $gridpack->add($this->saveButton)->style = 'text-align: center; background:whiteSmoke; border:1px solid #cccccc; padding: 10px';
-
+        $gridpack->add($buttons)->style = 'text-align: center; justify-content: space-between; padding: 10px';
+        //$gridpack->add($this->saveButton)->style = 'text-align: center; padding: 10px;';
+       
+        
         $this->transformCallback = array($this, 'onBeforeLoad');
+        
+        $message = 'Observação: Após a confirmação dos valores, somente será possível nova alteração com a permissão do Administrador do sistema!';
+        
+        $aviso = new TVBox;
+        $aviso->add($message);
 
         $container = new TVBox;
         $container->style = 'width: 100%';
         // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
-        $container->add($this->form);
+        //$container->add($this->form);
+        $container->add($aviso)->style = 'font-weight: bold; text-align: center; margin-bottom: 10px; background-color: rgb(255, 255, 153); padding: 20px';
         $container->add(TPanelGroup::pack('', $gridpack, $this->pageNavigation));
 
 
@@ -177,7 +187,7 @@ class RelacaoItemUpdateListUser extends TPage
      *              field name: object attribute to be updated
      *              value: new attribute content
      */
-    public function onInlineEdit()
+    public function onInlineEdit($param)
     {
         try
         {
