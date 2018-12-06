@@ -43,7 +43,7 @@ class Logradouro extends TRecord
 			TTransaction::close();
         return $this->estado->nome;
     }
-}
+
     /**
      * Method getPostos
      */

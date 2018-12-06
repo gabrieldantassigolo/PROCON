@@ -137,6 +137,12 @@ class Relacao extends TRecord
     /**
      * Store the object and its aggregates
      */
+    public function updateEditavel()
+    {
+        $this->editavel = !($this->editavel);
+        parent::store();
+    }
+
     public function store()
     {
         // store the object itself

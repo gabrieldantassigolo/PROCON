@@ -150,6 +150,7 @@ class RelacaoItemUpdateListUser extends TPage
 
     public function pegaID($param){
         TSession::setValue('RelacaoItemList_filter_relacao_id',   NULL);
+        TSession::setValue('sessaoTeste',   NULL);
         
         TTransaction::open('procon_com');
 
@@ -485,24 +486,29 @@ class RelacaoItemUpdateListUser extends TPage
         //Testa pra ver se é editavel
         if($relacao->editavel == FALSE){
 
-        $data = $this->formgrid->getData(); // get datagrid form data
-        TSession::setValue('RelacaoItem_filter_data', $data);
-        TSession::setValue('RelacaoItem_filter_data1', $data);
-        $this->formgrid->setData($data);
-    
-        $action_yes = new TAction([$this, 'onSaveCollection'], $param);
-        new TQuestion('Deseja confirmar os dados?', $action_yes);
+            $data = $this->formgrid->getData(); // get datagrid form data
+            TSession::setValue('RelacaoItem_filter_data', $data);
+            TSession::setValue('RelacaoItem_filter_data1', $data);
+            $this->formgrid->setData($data);
+
+            $action_yes = new TAction([$this, 'onSaveCollection'], $param);
+            new TQuestion('Deseja confirmar os dados?', $action_yes);
         } else {
             new TMessage('error', "Essa relação de preços não pode ser alterada, contate o administrador
                 no telefone 12341234 para mais informações");
         }
     }
 
+    public function changeEditavel($relacao){
+        $relacao->updateEditavel();
+    }
 
     public function onSaveCollection($param)
     {
         $data = TSession::getValue('RelacaoItem_filter_data1'); // get datagrid form data
+        $this->formgrid->setData($data);
         $dadosPrev = TSession::getValue('sessaoTeste');
+
             try
             {
                 //altera o estado de editavel para true
@@ -510,14 +516,10 @@ class RelacaoItemUpdateListUser extends TPage
                 {
                     TTransaction::open('procon_com');
                     $obj = new Relacao($dadosPrev['id']);
-                    echo($dadosPrev['id']);
-                    $obj->editavel = TRUE;
-                    $obj->store();
+                    $this->setTrue($obj);
                     TTransaction::close();
                 }
-
                 TTransaction::open('procon_com');
-
                 // iterate datagrid form objects
                 foreach ($this->formgrid->getFields() as $name => $field)
                 {
@@ -526,7 +528,6 @@ class RelacaoItemUpdateListUser extends TPage
                         $parts = explode('_', $name);
                         $id = end($parts);
                         $object = RelacaoItem::find($id);
-
                         if ($object AND isset($param[$name]))
                         {
                             $object->preco = $data->{$name};
@@ -536,8 +537,6 @@ class RelacaoItemUpdateListUser extends TPage
                     }
                 }
                 TTransaction::close();
-
-
 
                 // close transaction
 
