@@ -393,8 +393,6 @@ class RelatorioForm extends TPage
     {
         // get the search form data
         $data = $this->form->getData();
-
-        var_dump($data);
         
         // clear session filters
         TSession::setValue('RelatorioForm_filter_pesquisa_id',   NULL);

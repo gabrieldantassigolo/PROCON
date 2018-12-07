@@ -125,7 +125,7 @@ class RelacaoItemUpdateListUser extends TPage
         $this->formgrid->addField($this->saveButton);
         
         $buttons = new THBox;
-        $buttons->add($buttonBack)->style = 'display: inline-table; margin-left: 10px; float: left'; 
+        $buttons->add($buttonBack)->style = 'border: 1px solid rgba(0, 0, 0, 0.2);display: inline-table; margin-left: 0px; float: left'; 
         $buttons->add($this->saveButton)->style = 'display: inline-table; margin-right: 150px;';
 
         // vertical box container
@@ -134,7 +134,7 @@ class RelacaoItemUpdateListUser extends TPage
         // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         //$gridpack->add($buttonBack)->style = 'display-block: float; left;';
         $gridpack->add($this->formgrid);
-        $gridpack->add($buttons)->style = 'text-align: center; justify-content: space-between; padding: 10px';
+        $gridpack->add($buttons)->style = 'text-align: center; justify-content: space-between; padding: 10px 0;';
         //$gridpack->add($this->saveButton)->style = 'text-align: center; padding: 10px;';
        
         
