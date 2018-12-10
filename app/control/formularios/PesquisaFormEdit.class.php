@@ -222,7 +222,7 @@ class PesquisaFormEdit extends TPage
                 
                 $pos_action = new TAction([__CLASS__, 'onReload']);
                 //new TMessage('info', TAdiantiCoreTranslator::translate('Record deleted'), $pos_action); // success message
-                echo 'deletado ';
+                //echo 'deletado ';
             }
             catch (Exception $e) // in case of exception
             {

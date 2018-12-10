@@ -319,11 +319,17 @@ class ItemList extends TPage
         // define the delete action
         $action = new TAction([__CLASS__, 'Delete']);
         $action->setParameters($param); // pass the key parameter ahead
-        
+
+
         // shows a dialog to the user
         new TQuestion(TAdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
     }
-    
+
+    public function possuiDependencia($param){
+        $key = $param['key'];
+
+
+    }
     /**
      * Delete a record
      */

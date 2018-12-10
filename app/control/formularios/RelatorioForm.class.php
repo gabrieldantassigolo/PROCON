@@ -301,8 +301,6 @@ class RelatorioForm extends TPage
                     $pdf->SetFont('Verdana', '', 9);
                     $pdf->SetTextColor(40, 100, 20);
                     $pdf->Row($totais);
-                } else {
-                    echo 'nao existe';
                 }
 
                 $file_path = 'app/output/procon.pdf';

@@ -120,7 +120,7 @@ class RelacaoItemUpdateList extends TPage
 
         $this->saveButton = new TButton('update_collection');
         $this->saveButton->setAction(new TAction(array($this, 'onSaveCollection')), AdiantiCoreTranslator::translate('Save'));
-        $this->saveButton-> class = 'btn btn-sm btn-primary';
+        $this->saveButton->class = 'btn btn-sm btn-primary';
         $this->saveButton->style = 'text-algn: center; padding: 5px 30px;';
         $this->saveButton->setImage('fa:save white');
         $this->formgrid->addField($this->saveButton);
@@ -174,7 +174,7 @@ class RelacaoItemUpdateList extends TPage
      *              field name: object attribute to be updated
      *              value: new attribute content
      */
-    public function onInlineEdit()
+    public function onInlineEdit($param)
     {
         try
         {
@@ -274,7 +274,8 @@ class RelacaoItemUpdateList extends TPage
             if($data->relacao_id) {
                // $this->pegaID($data);
                 //echo('entrou if');
-            }
+            }
+
             // open a transaction with database 'procon_com'
             TTransaction::open('procon_com');
 
