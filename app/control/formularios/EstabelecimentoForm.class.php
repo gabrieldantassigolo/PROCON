@@ -26,6 +26,7 @@ class EstabelecimentoForm extends TPage
         $razao = new TEntry('razao');
         $cnpj = new TEntry('cnpj');
         $responsavel = new TEntry('responsavel');
+        $responsavel2 = new TEntry('responsavel2');
         $email = new TEntry('email');
         $telefone = new TEntry('telefone');
         $cep = new TEntry('cep');
@@ -40,33 +41,24 @@ class EstabelecimentoForm extends TPage
         $nome->maxlength = 50;
         $razao->maxlength = 50;
         $telefone->setMask('(99)9999-9999');
-        //$bandeira->maxlength = 50;
         $cep->setMask('99999-999');
 		$buscacep = new TAction(array($this, 'onChangeCep'));
 		$cep->setExitAction($buscacep);
         $numero->setMask('9999');
         $complemento->forceUpperCase();
-		/*$nome_municipio->setValue($vemcep->municipio_nome);
-		$nome_logradouro->setValue($vemcep->nome);
-		$nome_bairro->setValue($vemcep->bairro);
-		$nome_estado->setValue($vemcep->estado_nome);*/
-		$complemento->forceUpperCase();
-		
-					
+		$complemento->forceUpperCase();			
 	    $logradouro->setEditable(FALSE);
 		$bairro->setEditable(FALSE);
 		$municipio->setEditable(FALSE);
 		$estado->setEditable(FALSE);
-        
-        // Validation
-        $nome->addValidation('Nome', new TMaxLengthValidator, array(50));
-        
+        
         // add the fields
         $this->form->addFields( [ new TLabel('')], [$id]);
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
         $this->form->addFields( [ new TLabel('Razao') ], [ $razao ] );
         $this->form->addFields( [ new TLabel('Cnpj') ], [ $cnpj ] );
-        $this->form->addFields( [ new TLabel('Responsavel') ], [ $responsavel ] );
+        $this->form->addFields( [ new TLabel('1º Responsavel') ], [ $responsavel ] );
+        $this->form->addFields( [ new TLabel('2º Responsavel ') ], [ $responsavel2 ] );
         $this->form->addFields( [ new TLabel('Email') ], [ $email ] );
         $this->form->addFields( [ new TLabel('Telefone') ], [ $telefone ] );
         $this->form->addFields( [ new TLabel('Cep') ], [ $cep ] );
@@ -77,8 +69,12 @@ class EstabelecimentoForm extends TPage
         $this->form->addFields( [ new TLabel('Numero') ], [ $numero ] );
         $this->form->addFields( [ new TLabel('Complemento') ], [ $complemento ] );
 
+
+        // Validation
+        $nome->addValidation('Nome', new TMaxLengthValidator, array(50));
         $nome->addValidation('Nome', new TRequiredValidator);
         $responsavel->addValidation('Responsavel', new TRequiredValidator);
+        $responsavel->addValidation('Responsavel2', new TRequiredValidator);
         $email->addValidation('Email', new TRequiredValidator);
         $telefone->addValidation('Telefone', new TRequiredValidator);
         $cep->addValidation('Cep', new TRequiredValidator);
@@ -90,9 +86,9 @@ class EstabelecimentoForm extends TPage
         $razao->setSize('70%');
         $cnpj->setSize('70%');
         $responsavel->setSize('70%');
+        $responsavel2->setSize('70%');
         $email->setSize('70%');
-        $telefone->setSize('35%');
-        
+        $telefone->setSize('35%'); 
         $cep->setSize('35%');
         $logradouro->setSize('35%');
         $estado->setSize('70%');

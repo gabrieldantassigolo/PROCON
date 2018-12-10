@@ -28,6 +28,7 @@ class Estabelecimento extends TRecord
         parent::addAttribute('complemento');
         parent::addAttribute('cep');
         parent::addAttribute('responsavel');
+        parent::addAttribute('responsavel2');
         parent::addAttribute('email');
     }
 

@@ -64,8 +64,8 @@ class ItemList extends TPage
         $column_check = new TDataGridColumn('check', '', 'center' , '5%');
         $column_nome = new TDataGridColumn('nome', 'Nome', 'left', '50%');
         $column_quantidade = new TDataGridColumn('quantidade', 'Qtd.', 'center', '10%');
-        $column_unidade_id = new TDataGridColumn('unidadeMedida->nome', 'Un.', 'center', '15%');
-        $column_categoria_id = new TDataGridColumn('categoria->nome', 'Categoria', 'left', '20');
+        $column_unidade_id = new TDataGridColumn('unidadeMedida->nome', 'Un.', 'center', '10%');
+        $column_categoria_id = new TDataGridColumn('categoria->nome', 'Categoria', 'left', '25%');
 
 
         // add the columns to the DataGrid
@@ -122,7 +122,7 @@ class ItemList extends TPage
         $gridpack = new TVBox;
         $gridpack->style = 'width: 100%';
         $gridpack->add($this->formgrid);
-        $gridpack->add($this->deleteButton)->style = 'background:whiteSmoke; padding: 3px;padding: 5px;';
+        $gridpack->add($this->deleteButton)->style = 'padding: 10px;';
         
         $this->transformCallback = array($this, 'onBeforeLoad');
 
@@ -132,7 +132,7 @@ class ItemList extends TPage
         $container->style = 'width: 100%';
         $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $container->add($this->form);
-        $container->add(TPanelGroup::pack('Produtos', $gridpack, $this->pageNavigation));
+        $container->add(TPanelGroup::pack('', $gridpack, $this->pageNavigation));
         
         parent::add($container);
     }

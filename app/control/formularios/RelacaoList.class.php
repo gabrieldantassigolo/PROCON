@@ -97,6 +97,9 @@ class RelacaoList extends TPage
         $this->datagrid->addColumn($column_editavel);
 
 
+        //separador
+        $this->datagrid->style = 'width: 100%; border-bottom: 1px solid rgba(0, 0, 0, 0.2)';
+
         // creates the datagrid column actions
         //$column_id->setAction(new TAction([$this, 'onReload']), ['order' => 'id']);
         $column_data->setAction(new TAction([$this, 'onReload']), ['order' => 'data_criacao']);
@@ -150,14 +153,14 @@ class RelacaoList extends TPage
         $gridpack = new TVBox;
         $gridpack->style = 'width: 100%';
         $gridpack->add($this->formgrid);
-        $gridpack->add($this->deleteButton)->style = 'background:whiteSmoke;border:1px solid #cccccc; padding: 3px;padding: 5px;';
+        $gridpack->add($this->deleteButton)->style = 'padding: 10px;';
         
         $this->transformCallback = array($this, 'onBeforeLoad');
 
 
         // vertical box container
         $container = new TVBox;
-        $container->style = 'width: 90%';
+        $container->style = 'width: 100%';
         $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $container->add($this->form);
         $container->add(TPanelGroup::pack('', $gridpack, $this->pageNavigation));

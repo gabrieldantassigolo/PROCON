@@ -63,6 +63,8 @@ class CategoriaList extends TPage
         //$this->datagrid->addColumn($column_id);
         $this->datagrid->addColumn($column_nome);
 
+        //separador
+        $this->datagrid->style = 'width: 100%; border-bottom: 1px solid rgba(0, 0, 0, 0.2)';
         
         // create EDIT action
         $action_edit = new TDataGridAction(['CategoriaForm', 'onEdit']);
@@ -105,7 +107,7 @@ class CategoriaList extends TPage
         $gridpack = new TVBox;
         $gridpack->style = 'width: 100%';
         $gridpack->add($this->formgrid);
-        $gridpack->add($this->deleteButton)->style = 'background:whiteSmoke;border:1px solid #cccccc; padding: 3px;padding: 5px;';
+        $gridpack->add($this->deleteButton)->style = 'padding: 10px;';
         
         $this->transformCallback = array($this, 'onBeforeLoad');
 

@@ -64,7 +64,7 @@ class EstabelecimentoList extends TPage
         // creates the datagrid columns
         $column_check = new TDataGridColumn('check', '', 'left', '5%');
         $column_nome = new TDataGridColumn('nome', 'Nome', 'left');        
-        $column_responsavel = new TDataGridColumn('responsavel', 'Responsavel', 'left');
+        $column_responsavel = new TDataGridColumn('responsavel', 'Responsavel I', 'left');
         $column_email = new TDataGridColumn('email', 'Email', 'left');
         $column_telefone = new TDataGridColumn('telefone', 'Telefone', 'left');
         
@@ -77,19 +77,13 @@ class EstabelecimentoList extends TPage
         $this->datagrid->addColumn($column_telefone);
 
 
+        //separador
+        $this->datagrid->style = 'width: 100%; border-bottom: 1px solid rgba(0, 0, 0, 0.2)';
+
 
         // creates the datagrid column actions
         $column_nome->setAction(new TAction([$this, 'onReload']), ['order' => 'nome']);
         $column_responsavel->setAction(new TAction([$this, 'onReload']), ['order' => 'responsavel']);
-        //$column_estado->setAction(new TAction([$this, 'onReload']), ['order' => 'estado']);
-        //$column_municipio->setAction(new TAction([$this, 'onReload']), ['order' => 'municipio']);
-        //$column_logradouro->setAction(new TAction([$this, 'onReload']), ['order' => 'logradouro']);
-        //$column_bairro->setAction(new TAction([$this, 'onReload']), ['order' => 'bairro']);
-
-        // define the transformer method over image
-        /*$column_nome->setTransformer( function($value, $object, $row) {
-            return strtoupper($value);
-        });*/
 
         
         // create EDIT action
@@ -118,7 +112,7 @@ class EstabelecimentoList extends TPage
         $this->pageNavigation->setAction(new TAction([$this, 'onReload']));
         $this->pageNavigation->setWidth($this->datagrid->getWidth());
         
-        $this->datagrid->disableDefaultClick();
+        //$this->datagrid->disableDefaultClick();
         
         // put datagrid inside a form
         $this->formgrid = new TForm;
@@ -133,7 +127,7 @@ class EstabelecimentoList extends TPage
         $gridpack = new TVBox;
         $gridpack->style = 'width: 100%';
         $gridpack->add($this->formgrid);
-        $gridpack->add($this->deleteButton)->style = 'background:whiteSmoke;border:1px solid #cccccc; padding: 3px;padding: 5px;';
+        $gridpack->add($this->deleteButton)->style = 'padding: 10px;';
         
         $this->transformCallback = array($this, 'onBeforeLoad');
 
@@ -143,7 +137,7 @@ class EstabelecimentoList extends TPage
         $container->style = 'width: 100%';
         // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $container->add($this->form);
-        $container->add(TPanelGroup::pack('Estabelecimentos', $gridpack, $this->pageNavigation));
+        $container->add(TPanelGroup::pack('', $gridpack, $this->pageNavigation));
         
         parent::add($container);
     }
@@ -306,7 +300,7 @@ class EstabelecimentoList extends TPage
             
             // creates a repository for Estabelecimento
             $repository = new TRepository('Estabelecimento');
-            $limit = 10;
+            $limit = 20;
             // creates a criteria
             $criteria = new TCriteria;
             

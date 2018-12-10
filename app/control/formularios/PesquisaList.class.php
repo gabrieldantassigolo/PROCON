@@ -22,7 +22,7 @@ class PesquisaList extends TPage
         parent::include_css('app/resources/estiloformcampo.css'); 
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Pesquisa');
-        $this->form->setFormTitle('Pesquisa');
+        $this->form->setFormTitle('Cadastrar Pesquisa');
         
 
         // create the form fields
@@ -50,7 +50,6 @@ class PesquisaList extends TPage
         
         // creates a Datagrid
         $this->datagrid = new BootstrapDatagridWrapper(new TDataGrid);
-        $this->datagrid->style = 'width: 100%';
         $this->datagrid->datatable = 'true';
         // $this->datagrid->enablePopover('Popover', 'Hi <b> {name} </b>');
         
@@ -66,7 +65,9 @@ class PesquisaList extends TPage
         $this->datagrid->addColumn($column_nome);
         $this->datagrid->addColumn($column_data);
 
-
+        //separador
+        $this->datagrid->style = 'width: 100%; border-bottom: 1px solid rgba(0, 0, 0, 0.2)';
+        
         // creates the datagrid column actions
         $column_nome->setAction(new TAction([$this, 'onReload']), ['order' => 'nome']);
 
@@ -112,7 +113,7 @@ class PesquisaList extends TPage
         $gridpack = new TVBox;
         $gridpack->style = 'width: 100%';
         $gridpack->add($this->formgrid);
-        $gridpack->add($this->deleteButton)->style = 'background:whiteSmoke;border:1px solid #cccccc; padding: 3px;padding: 5px;';
+        $gridpack->add($this->deleteButton)->style = 'padding: 10px;';
         
         $this->transformCallback = array($this, 'onBeforeLoad');
 
@@ -122,7 +123,7 @@ class PesquisaList extends TPage
         $container->style = 'width: 100%';
         $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $container->add($this->form);
-        $container->add(TPanelGroup::pack('Pesquisas', $gridpack, $this->pageNavigation));
+        $container->add(TPanelGroup::pack('', $gridpack, $this->pageNavigation));
         
         parent::add($container);
     }
