@@ -117,7 +117,8 @@ class SystemUserList extends TStandardList
 
         
         // create EDIT action
-        $action_edit = new TDataGridAction(array('SystemUserForm', 'onEdit'));
+        //$action_edit = new TDataGridAction(array('SystemUserForm', 'onEdit'));
+        $action_edit = new TDataGridAction(array($this, 'testeEdit'));
         $action_edit->setButtonClass('btn btn-default');
         $action_edit->setLabel(_t('Edit'));
         $action_edit->setImage('fa:pencil-square-o blue fa-lg');
@@ -125,7 +126,7 @@ class SystemUserList extends TStandardList
         $this->datagrid->addAction($action_edit);
         
         // create DELETE action
-        $action_del = new TDataGridAction(array($this, 'onDelete'));
+        $action_del = new TDataGridAction(array($this, 'testeDelete'));
         $action_del->setButtonClass('btn btn-default');
         $action_del->setLabel(_t('Delete'));
         $action_del->setImage('fa:trash-o red fa-lg');
@@ -163,19 +164,44 @@ class SystemUserList extends TStandardList
         parent::add($container);
     }
     
+    //Deletar apenas usuarios não Admin
+    public function testeDelete($param){
+        if($param['id'] != 1){
+            $this->onDelete($param);
+        }else{
+            new TMessage('error', 'Você não tem permissão!');
+        }
+    }
+    
+    //Editar apenas usuarios não Admin
+    public function testeEdit($param){
+        if($param['id'] != 1){
+            AdiantiCoreApplication::loadPage('SystemUserForm', 'onEdit', $param);
+        }else{
+            new TMessage('error', 'Você não tem permissão!');
+        }
+    }
+    
+    
     /**
      * Turn on/off an user
      */
     public function onTurnOnOff($param)
     {
+        $onOff = TSession::getValue('login');
         try
         {
             TTransaction::open('permission');
-            $user = SystemUser::find($param['id']);
-            if ($user instanceof SystemUser)
-            {
-                $user->active = $user->active == 'Y' ? 'N' : 'Y';
-                $user->store();
+            //on/off apenas usuarios não Admin
+            if($param['id'] != 1){
+                $user = SystemUser::find($param['id']);
+                if ($user instanceof SystemUser)
+                {
+                    $user->active = $user->active == 'Y' ? 'N' : 'Y';
+                    $user->store();
+                }
+            }else{
+                new TMessage('error', 'Você não tem permissão!');             
             }
             
             TTransaction::close();
@@ -187,5 +213,5 @@ class SystemUserList extends TStandardList
             new TMessage('error', $e->getMessage());
             TTransaction::rollback();
         }
-    }
+     }
 }

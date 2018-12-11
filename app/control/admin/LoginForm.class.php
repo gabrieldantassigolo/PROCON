@@ -234,7 +234,6 @@ class LoginForm extends TPage
         TTransaction::open('permission');
         $user = new SystemUser(TSession::getValue('userid'));
         $ids  = $user->getSystemUserGroupIds();
-        var_dump($ids);
         TTransaction::close();
         return(in_array(1,$ids));
     }
