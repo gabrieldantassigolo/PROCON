@@ -229,7 +229,16 @@ class LoginForm extends TPage
             new TMessage('error', $e->getMessage());
         }
     }
-    
+
+    public static function checaAdmin(){
+        TTransaction::open('permission');
+        $user = new SystemUser(TSession::getValue('userid'));
+        $ids  = $user->getSystemUserGroupIds();
+        var_dump($ids);
+        TTransaction::close();
+        return(in_array(1,$ids));
+    }
+
     /**
      *
      */

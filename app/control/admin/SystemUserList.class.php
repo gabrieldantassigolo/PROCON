@@ -36,7 +36,8 @@ class SystemUserList extends TStandardList
         // creates the form
         $this->form = new BootstrapFormBuilder('form_search_SystemUser');
         $this->form->setFormTitle(_t('Users'));
-        
+
+
 
         // create the form fields
         $id = new TEntry('id');

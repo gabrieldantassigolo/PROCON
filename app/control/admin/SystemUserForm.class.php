@@ -39,7 +39,10 @@ class SystemUserForm extends TPage
         $groups              = new TDBCheckGroup('groups','permission','SystemGroup','id','name');
         $frontpage_id        = new TDBUniqueSearch('frontpage_id', 'permission', 'SystemProgram', 'id', 'name', 'name');
         $units               = new TDBCheckGroup('units','permission','SystemUnit','id','name');
-        
+        $first               = 0;
+
+
+
         $units->setLayout('horizontal');
         if ($units->getLabels())
         {
@@ -48,14 +51,17 @@ class SystemUserForm extends TPage
                 $label->setSize(200);
             }
         }
-        
+
         $groups->setLayout('horizontal');
         if ($groups->getLabels())
         {
-            foreach ($groups->getLabels() as $label)
-            {
+            foreach ($groups->getLabels() as $label) {
+
                 $label->setSize(200);
             }
+            TTransaction::open('permission');
+
+
         }
         
         $btn = $this->form->addAction( _t('Save'), new TAction(array($this, 'onSave')), 'fa:floppy-o');
@@ -120,8 +126,12 @@ class SystemUserForm extends TPage
         $this->form->addFields( [$units] );
         $this->form->addFields( [new TFormSeparator(_t('Groups'))] );
         $this->form->addFields( [$groups] );
-        $this->form->addFields( [new TFormSeparator(_t('Programs'))] );
-        $this->form->addFields( [$vbox] );
+
+
+        if(LoginForm::checaAdmin()) {
+            $this->form->addFields([new TFormSeparator(_t('Programs'))]);
+            $this->form->addFields([$vbox]);
+        }
         
         $container = new TVBox;
         $container->style = 'width: 90%';
@@ -149,9 +159,10 @@ class SystemUserForm extends TPage
     public static function onSave($param)
     {
         try
-        {
-            // open a transaction with database 'permission'
-            TTransaction::open('permission');
+        {   TTransaction::open('permission');
+
+            //get user info para controle de permissao
+            $user = new SystemUser(TSession::getValue('userid'));
             
             $object = new SystemUser;
             $object->fromArray( $param );
@@ -200,6 +211,8 @@ class SystemUserForm extends TPage
             
             if( !empty($param['groups']) )
             {
+                if(((in_array(1, $user->getSystemUserGroupNames()))!= true) and in_array(1, $param['groups']))
+                    throw new Exception('Você não possui permissão para adicionar um usuário do tipo Administrador');
                 foreach( $param['groups'] as $group_id )
                 {
                     $object->addSystemUserGroup( new SystemGroup($group_id) );
@@ -242,7 +255,9 @@ class SystemUserForm extends TPage
             TTransaction::rollback();
         }
     }
-    
+
+
+
     /**
      * method onEdit()
      * Executed whenever the user clicks at the edit button da datagrid

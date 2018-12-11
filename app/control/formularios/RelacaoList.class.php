@@ -96,6 +96,16 @@ class RelacaoList extends TPage
         $this->datagrid->addColumn($column_data);
         $this->datagrid->addColumn($column_editavel);
 
+        $column_editavel->setTransformer( function($value, $object, $row) {
+            $class = ($value=='Bloqueado') ? 'danger' : 'success';
+            $label = ($value=='Bloqueado') ? ('Bloqueado') : ('Desbloqueado');
+            $div = new TElement('span');
+            $div->class="label label-{$class}";
+            $div->style="text-shadow:none; font-size:12px; font-weight:lighter";
+            $div->add($label);
+            return $div;
+        });
+
 
         //separador
         $this->datagrid->style = 'width: 100%; border-bottom: 1px solid rgba(0, 0, 0, 0.2)';
