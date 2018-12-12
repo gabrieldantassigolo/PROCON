@@ -18,21 +18,21 @@ class WelcomeView extends TPage
     {
         parent::__construct();
         
-        $html1 = new THtmlRenderer('app/resources/system_welcome_en.html');
+        //$html1 = new THtmlRenderer('app/resources/system_welcome_en.html');
         $html2 = new THtmlRenderer('app/resources/system_welcome_pt.html');
 
         // replace the main section variables
-        $html1->enableSection('main', array());
+        //$html1->enableSection('main', array());
         $html2->enableSection('main', array());
         
-        $panel1 = new TPanelGroup('Welcome!');
-        $panel1->add($html1);
+        /*$panel1 = new TPanelGroup('Welcome!');
+        $panel1->add($html1);*/
         
         $panel2 = new TPanelGroup('Bem-vindo!');
-        $panel2->add($html2);
+        $panel2->add($html2) ;
         
-        $vbox = TVBox::pack($panel1, $panel2);
-        $vbox->style = 'display:block; width: 90%';
+        $vbox = TVBox::pack($panel2);
+        $vbox->style = 'display:block; width: 100%';
         
         // add the template to the page
         parent::add( $vbox );
