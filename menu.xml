@@ -63,37 +63,55 @@
         </menu>
     </menuitem>
     
-    <menuitem label='PROCON'>
-        <icon>fa:file-text-o fa-fw orange</icon>
+    <menuitem label='Cadastros'>
+        <icon>fa:edit orange</icon>
         <menu>
-              <menuitem label='Adicionar Preço'>
-                  <icon>fa:dollar orange</icon>
-                  <action>RelacaoList</action>
-              </menuitem>
-              <menuitem label='Cadastrar Produtos'>
+            <menuitem label='Unidade/Categoria'>
+                <icon>fa:info-circle orange</icon>
+                <menu>
+                      <menuitem label='1. Unidade de medida'>
+                          <icon>fa:percent orange</icon>
+                          <action>UnidadeMedidaList</action>
+                      </menuitem>
+                      <menuitem label='2. Categoria'>
+                          <icon>fa:copyright orange</icon>
+                          <action>CategoriaList</action>
+                      </menuitem>  
+                 </menu>     
+              </menuitem>      
+              <menuitem label='1. Produtos'>
                   <icon>fa:archive orange</icon>
                   <action>ItemList</action>
               </menuitem>
-              <menuitem label='Cadastrar Pesquisa'>
-                  <icon>fa:search orange</icon>
+              <menuitem label='2. Pesquisas'>
+                  <icon>fa:search-plus orange</icon>
                   <action>PesquisaList</action>
               </menuitem>
-              <menuitem label='Cadastrar Estabelecimento'>
+              <menuitem label='3. Estabelecimentos'>
                   <icon>fa:building orange</icon>
-                  <action>EstabelecimentoList</action>
+                  <action>EstabelecimentoList</action>       
               </menuitem>
-              <menuitem label='Cadastrar Unidade de medida'>
-                  <icon>fa:percent orange</icon>
-                  <action>UnidadeMedidaList</action>
+              <menuitem label='4. Relações'>
+                  <icon>fa:sitemap orange</icon>
+                  <action>RelacaoList</action>
               </menuitem>
-              <menuitem label='Cadastrar Categoria'>
-                  <icon>fa:copyright orange</icon>
-                  <action>CategoriaList</action>
-              </menuitem>
+
+        </menu>
+    </menuitem>
+    
+    <menuitem label='Relatorio'>
+        <icon>fa:line-chart orange</icon>
+        <menu>
               <menuitem label='Gerar Relatorio'>
                   <icon>fa:clipboard orange</icon>
                   <action>RelatorioForm</action>
               </menuitem>
+        </menu>
+    </menuitem>
+    
+    <menuitem label='Pesquisa'>
+        <icon>fa:search orange</icon>
+        <menu>
               <menuitem label='Lista de Pesquisas'>
                   <icon>fa:clipboard orange</icon>
                   <action>RelacaoListUser</action>

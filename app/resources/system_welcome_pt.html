@@ -1,28 +1,56 @@
 <!--[main]-->
 <h4>
-Agora, você pode iniciar a criação das classes na estrutura do template:
+&nbsp;&nbsp;&nbsp;&nbsp;SPD (Sistema de Pesquisa de Preços de Dourados)
 </h4>
+
+<BR><BR>
+<h5>Definição:</h5>
+<ul>
+    <li>
+        <b>Unidade de Medida</b>: Tipo de unidade de medida que será usado para atribuir ao produto. Ex: KG, Litro, Peça.
+    </li>
+    <li>
+        <b>Categoria</b>: Tipo de categoria que será usada para atribuir ao produto. Ex: Alimento, Higiene, Flor, Combustível.
+    </li>
+        <li>
+        <b>Produtos</b>: Item que será utilizado para compor uma <b>Pesquisa</b>. Ex: Arroz, Feijão, Gasolina, Tulipa, Caderno.
+    </li>
+        <li>
+        <b>Pesquisa</b>: Lista de produtos que será utilizada para compor uma <b>Relação</b> (Pesquisa e Estabelecimento).
+    </li>
+        <li>
+        <b>Estabelecimento</b>: Possui informações (CNPJ, Email) sobre o estabelecimento e seus Responsáveis. Ex: Posto Ipiranga, Mercado Líder.
+    </li>
+        <li>
+        <b>Relações</b>: União entre <b>Pesquisa</b> e <b>Estabelecimento</b>. A Relação possibilita ao Responsável pelo estabelecimento definir os preços da pesquisa designada. 
+    </li>
+</ul>
+<BR>
+<h5>Instruções Iniciais:</h5>
+
 <ol>
     <li>
-    Crie a classe de controle. Ex: ProductForm, ProductList;
+        Definir Unidade de Medida que será utilizada para ser adicionada ao(s) Produto(s).
     </li>
     <li>
-    Efetue login como administrador (admin), para registrar as permissões;
+        Definir Categoria que será utilizada para ser adicionada ao(s) Produto(s).
     </li>
     <li>
-    Registre a classe como programa (Administração -> Programas). Você deve preencher o campo "classe de controle" com o nome da classe (Ex: ProductForm);
+        Definir Produto que será adicionado a pesquisa no passso seguinte.
     </li>
     <li>
-    Conceda permissões para a classe registrada para algum usuário ou grupo (Administration -> Users ou Administration -> Groups);
+        Definir o nome da Pesquisa e adicionar os produtos correspondentes a mesma.  
     </li>
     <li>
-    Adicione o programa ao menu.xml, que contém a estrutura do menu;
+        Definir Estabelecimento que será adicionado a Relação.  
     </li>
     <li>
-    Realize um logout e um login com algum usuário com permissão para rodar o programa criado;
+        Definir a Relação entre Pesquisa e Estabelecimento para que o responsavel possa adicionar os preços aos Produtos.
     </li>
-    <li>
-    Finalize a criação do programa.
-    </li>
+    
+    
 </ol>
+
+<BR><BR><BR><BR>
+<p style='text-align: center';>Departamento de Tecnologia da Informação/PMD (3411-7295)</p>
 <!--[/main]-->
