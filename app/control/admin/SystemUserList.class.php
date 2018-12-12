@@ -169,7 +169,11 @@ class SystemUserList extends TStandardList
         if($param['id'] != 1){
             $this->onDelete($param);
         }else{
-            new TMessage('error', 'Você não tem permissão!');
+            if(LoginForm::checaAdmin()){
+                $this->onDelete($param);
+            } else {
+                new TMessage('error', 'Você não tem permissão!');
+            }
         }
     }
     
@@ -178,7 +182,11 @@ class SystemUserList extends TStandardList
         if($param['id'] != 1){
             AdiantiCoreApplication::loadPage('SystemUserForm', 'onEdit', $param);
         }else{
-            new TMessage('error', 'Você não tem permissão!');
+            if(LoginForm::checaAdmin()){
+                AdiantiCoreApplication::loadPage('SystemUserForm', 'onEdit', $param);
+            } else {
+                new TMessage('error', 'Você não tem permissão!');
+            }
         }
     }
     
