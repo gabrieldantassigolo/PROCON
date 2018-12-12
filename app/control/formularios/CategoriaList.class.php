@@ -257,12 +257,43 @@ class CategoriaList extends TPage
     /**
      * Ask before deletion
      */
+    function geraTotal($relacoes)
+    {
+        $repository = new TRepository('RelacaoItem');
+        TTransaction::open('procon_com');
+
+        $totais = array();
+        foreach($relacoes as $relacao)
+        {
+            $criteria = new TCriteria;
+            $criteria->add(new TFilter('relacao_id', '=', $relacao->id));
+            $result = $repository->load($criteria);
+
+            $total = 0; //reseta o total para cada relação
+            foreach($result as $obj){
+                $total += $obj->preco;
+            }
+            $totalFormatado = number_format($total, 2, '', '');
+            $totalFormatado = number_format($totalFormatado/100,2,",",".");
+
+            array_push($totais, $totalFormatado);
+        }
+        return $totais;
+        TTransaction::close();
+    }
     public static function onDelete($param)
     {
         // define the delete action
         $action = new TAction([__CLASS__, 'Delete']);
         $action->setParameters($param); // pass the key parameter ahead
-        
+
+        $repository = new TRepository('item');
+        TTransaction:open('procon_com');
+
+        $criteria = new TCriteria;
+        $criteria->add(new TFilter('id', '=', $param['id']));
+        $result = $repository->load($criteria);
+
         // shows a dialog to the user
         new TQuestion(TAdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
     }

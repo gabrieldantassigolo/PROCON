@@ -336,8 +336,8 @@ class RelatorioForm extends TPage
         }
         return $totais;
         TTransaction::close();
-
     }
+
     function imprimePdf($pdf, $file_path){
         $file = $file_path;
         if (!file_exists($file) OR is_writable($file))

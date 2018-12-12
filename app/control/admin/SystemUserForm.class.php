@@ -205,18 +205,13 @@ class SystemUserForm extends TPage
             {
                 unset($object->password);
             }
-
-            if( empty($object->frontpage_id) )
-            {
-                $object->frontpage_id = 10;
-            }
             
             $object->store();
             $object->clearParts();
             
             if( !empty($param['groups']) )
             {
-                if(!(LoginForm::checaAdmin()) and in_array(1, $param['groups']))
+                if(((in_array(1, $user->getSystemUserGroupNames()))!= true) and in_array(1, $param['groups']))
                     throw new Exception('Você não possui permissão para adicionar um usuário do tipo Administrador');
                 foreach( $param['groups'] as $group_id )
                 {
