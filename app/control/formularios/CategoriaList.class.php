@@ -257,45 +257,27 @@ class CategoriaList extends TPage
     /**
      * Ask before deletion
      */
-    function geraTotal($relacoes)
-    {
-        $repository = new TRepository('RelacaoItem');
-        TTransaction::open('procon_com');
-
-        $totais = array();
-        foreach($relacoes as $relacao)
-        {
-            $criteria = new TCriteria;
-            $criteria->add(new TFilter('relacao_id', '=', $relacao->id));
-            $result = $repository->load($criteria);
-
-            $total = 0; //reseta o total para cada relação
-            foreach($result as $obj){
-                $total += $obj->preco;
-            }
-            $totalFormatado = number_format($total, 2, '', '');
-            $totalFormatado = number_format($totalFormatado/100,2,",",".");
-
-            array_push($totais, $totalFormatado);
-        }
-        return $totais;
-        TTransaction::close();
-    }
     public static function onDelete($param)
     {
         // define the delete action
+        echo 'entrou';
         $action = new TAction([__CLASS__, 'Delete']);
         $action->setParameters($param); // pass the key parameter ahead
 
-        $repository = new TRepository('item');
-        TTransaction:open('procon_com');
-
+        $repository = new TRepository('Item');
+        TTransaction::open('procon_com');
         $criteria = new TCriteria;
-        $criteria->add(new TFilter('id', '=', $param['id']));
+        $criteria->add(new TFilter('categoria_id', '=', $param['id']));
         $result = $repository->load($criteria);
+        TTransaction::close();
+        if(empty($result)){
+            new TQuestion(TAdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+        } else {
+            new TQuestion(('A exclusão dessa Categoria acarretará na exclusão de todos os itens da mesma. Deseja Continuar?'), $action);
+        }
 
         // shows a dialog to the user
-        new TQuestion(TAdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+
     }
     
     /**
@@ -328,7 +310,9 @@ class CategoriaList extends TPage
     {
         $data = $this->formgrid->getData(); // get selected records from datagrid
         $this->formgrid->setData($data); // keep form filled
-        
+
+
+
         if ($data)
         {
             $selected = array();
@@ -350,9 +334,27 @@ class CategoriaList extends TPage
                 // define the delete action
                 $action = new TAction(array($this, 'deleteCollection'));
                 $action->setParameters($param); // pass the key parameter ahead
-                
-                // shows a dialog to the user
-                new TQuestion(AdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+
+                //check if exists item
+                $dependencia = FALSE;
+                $repository = new TRepository('Item');
+                TTransaction::open('procon_com');
+                foreach($selected as $index)
+                {
+                    $criteria = new TCriteria;
+                    $criteria->add(new TFilter('categoria_id', '=', $index));
+                    $result = $repository->load($criteria);
+                    if(!empty($result)){
+                        $dependencia = TRUE;
+                    }
+                }
+                TTransaction::close();
+                if($dependencia){
+                new TQuestion(('A exclusão dessas Categorias acarretará na exclusão de todos os itens da mesma. Deseja Continuar?'), $action);
+                } else{
+                    new TQuestion(TAdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+                }
+
             }
         }
     }

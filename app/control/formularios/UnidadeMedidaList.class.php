@@ -264,9 +264,18 @@ class UnidadeMedidaList extends TPage
         // define the delete action
         $action = new TAction([__CLASS__, 'Delete']);
         $action->setParameters($param); // pass the key parameter ahead
-        
-        // shows a dialog to the user
-        new TQuestion(TAdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+
+        $repository = new TRepository('Item');
+        TTransaction::open('procon_com');
+        $criteria = new TCriteria;
+        $criteria->add(new TFilter('unidade_id', '=', $param['id']));
+        $result = $repository->load($criteria);
+        TTransaction::close();
+        if(empty($result)){
+            new TQuestion(TAdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+        } else {
+            new TQuestion(('A exclusão dessa Unidade de Medida acarretará na exclusão de todo Produto associado. Deseja Continuar?'), $action);
+        }
     }
     
     /**
@@ -321,9 +330,26 @@ class UnidadeMedidaList extends TPage
                 // define the delete action
                 $action = new TAction(array($this, 'deleteCollection'));
                 $action->setParameters($param); // pass the key parameter ahead
-                
-                // shows a dialog to the user
-                new TQuestion(AdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+
+                //check if exists item
+                $dependencia = FALSE;
+                $repository = new TRepository('Item');
+                TTransaction::open('procon_com');
+                foreach($selected as $index)
+                {
+                    $criteria = new TCriteria;
+                    $criteria->add(new TFilter('unidade_id', '=', $index));
+                    $result = $repository->load($criteria);
+                    if(!empty($result)){
+                        $dependencia = TRUE;
+                    }
+                }
+                TTransaction::close();
+                if($dependencia){
+                    new TQuestion(('A exclusão dessas Unidades de Medida acarretará na exclusão de todos os Produtos associados. Deseja Continuar?'), $action);
+                } else{
+                    new TQuestion(TAdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+                }
             }
         }
     }

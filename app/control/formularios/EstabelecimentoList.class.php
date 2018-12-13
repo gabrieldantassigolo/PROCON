@@ -112,7 +112,7 @@ class EstabelecimentoList extends TPage
         $this->pageNavigation->setAction(new TAction([$this, 'onReload']));
         $this->pageNavigation->setWidth($this->datagrid->getWidth());
         
-        //$this->datagrid->disableDefaultClick();
+        $this->datagrid->disableDefaultClick();
         
         // put datagrid inside a form
         $this->formgrid = new TForm;
@@ -130,7 +130,6 @@ class EstabelecimentoList extends TPage
         $gridpack->add($this->deleteButton)->style = 'padding: 10px;';
         
         $this->transformCallback = array($this, 'onBeforeLoad');
-
 
         // vertical box container
         $container = new TVBox;
@@ -427,9 +426,18 @@ class EstabelecimentoList extends TPage
         // define the delete action
         $action = new TAction([__CLASS__, 'Delete']);
         $action->setParameters($param); // pass the key parameter ahead
-        
-        // shows a dialog to the user
-        new TQuestion(TAdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+
+        $repository = new TRepository('Relacao');
+        TTransaction::open('procon_com');
+        $criteria = new TCriteria;
+        $criteria->add(new TFilter('estabelecimento_id', '=', $param['id']));
+        $result = $repository->load($criteria);
+        TTransaction::close();
+        if(empty($result)){
+            new TQuestion(TAdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+        } else {
+            new TQuestion(('A exclusão desse estabelecimento excluirá todas as Relações (preços) que o estabelecimento possui. Deseja Continuar?'), $action);
+        }
     }
     
     /**
@@ -484,9 +492,26 @@ class EstabelecimentoList extends TPage
                 // define the delete action
                 $action = new TAction(array($this, 'deleteCollection'));
                 $action->setParameters($param); // pass the key parameter ahead
-                
-                // shows a dialog to the user
-                new TQuestion(AdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+
+                //check if exists item
+                $dependencia = FALSE;
+                $repository = new TRepository('Relacao');
+                TTransaction::open('procon_com');
+                foreach($selected as $index)
+                {
+                    $criteria = new TCriteria;
+                    $criteria->add(new TFilter('pesquisa_id', '=', $index));
+                    $result = $repository->load($criteria);
+                    if(!empty($result)){
+                        $dependencia = TRUE;
+                    }
+                }
+                TTransaction::close();
+                if($dependencia){
+                    new TQuestion(('A exclusão desses estabelecimentos excluirá todas as Relações (preços) que os estabelecimentos possuem. Deseja Continuar?'), $action);
+                } else{
+                    new TQuestion(TAdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+                }
             }
         }
     }

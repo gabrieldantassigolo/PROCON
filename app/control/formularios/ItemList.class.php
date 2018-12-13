@@ -321,8 +321,17 @@ class ItemList extends TPage
         $action->setParameters($param); // pass the key parameter ahead
 
 
-        // shows a dialog to the user
-        new TQuestion(TAdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+        $repository = new TRepository('PesquisaItem');
+        TTransaction::open('procon_com');
+        $criteria = new TCriteria;
+        $criteria->add(new TFilter('item_id', '=', $param['id']));
+        $result = $repository->load($criteria);
+        TTransaction::close();
+        if(empty($result)){
+            new TQuestion(TAdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+        } else {
+            new TQuestion(('A exclusão desse Produto removerá o mesmo de todas as Pesquisas associadas (a pesquisa manterá os outros produtos). Deseja Continuar?'), $action);
+        }
     }
 
     public function possuiDependencia($param){
@@ -382,9 +391,26 @@ class ItemList extends TPage
                 // define the delete action
                 $action = new TAction(array($this, 'deleteCollection'));
                 $action->setParameters($param); // pass the key parameter ahead
-                
-                // shows a dialog to the user
-                new TQuestion(AdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+
+                //check if exists item
+                $dependencia = FALSE;
+                $repository = new TRepository('PesquisaItem');
+                TTransaction::open('procon_com');
+                foreach($selected as $index)
+                {
+                    $criteria = new TCriteria;
+                    $criteria->add(new TFilter('item_id', '=', $index));
+                    $result = $repository->load($criteria);
+                    if(!empty($result)){
+                        $dependencia = TRUE;
+                    }
+                }
+                TTransaction::close();
+                if($dependencia){
+                    new TQuestion(('A exclusão desse Produto removerá o mesmo de todas as Pesquisas associadas (a pesquisa manterá os outros produtos). Deseja Continuar?'), $action);
+                } else{
+                    new TQuestion(TAdiantiCoreTranslator::translate('Do you really want to delete ?'), $action);
+                }
             }
         }
     }

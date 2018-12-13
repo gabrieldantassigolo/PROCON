@@ -29,13 +29,15 @@ class RelacaoItemUpdateList extends TPage
         // create the form fields
         //$item_id = new TCombo('item_id', 'procon_com', 'Item', 'Código', 'nome');
         $pesquisa_id = new TEntry('pesquisa_id');
-        $item_id = new TEntry('item_id');
+        $estabelecimento_id = new TEntry('estabelecimento_id');
+        $item_id = new THidden('item_id');
         $relacao_id = new THidden('relacao_id');
 
 
         // add the fields
         $this->form->addFields( [ new TLabel('Pesquisa') ], [ $pesquisa_id ] );
-        $this->form->addFields( [ new TLabel('Item') ], [ $item_id ] );
+        $this->form->addFields( [ new TLabel('Estabelecimento') ], [ $estabelecimento_id ] );
+        $this->form->addFields( [ new TLabel('') ], [ $item_id ] );
         $this->form->addFields( [ new TLabel('') ], [ $relacao_id ] );
 
         // set sizes
@@ -53,11 +55,16 @@ class RelacaoItemUpdateList extends TPage
         {
             $pesquisa_id->setEditable(FALSE);
         }
+
+        if (!empty($estabelecimento_id))
+        {
+            $estabelecimento_id->setEditable(FALSE);
+        }
         //Back List
         $this->form->addAction(_t('Back'), new TAction(array('RelacaoList','onReload')),'fa:arrow-circle-o-left blue');
         // add the search form actions
-        $btn = $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search');
-        $btn->class = 'btn btn-sm btn-primary';
+        //$btn = $this->form->addAction(_t('Find'), new TAction([$this, 'onSearch']), 'fa:search');
+        //$btn->class = 'btn btn-sm btn-primary';
         //$this->form->addActionLink(_t('New'), new TAction(['RelacaoItemForm', 'onEdit']), 'fa:plus green');
 
         // creates a Datagrid
@@ -130,7 +137,7 @@ class RelacaoItemUpdateList extends TPage
         $gridpack->style = 'width: 100%';
         // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
         $gridpack->add($this->formgrid)->style = 'border-bottom: 1px solid rgba(0, 0, 0, 0.2)';
-        $gridpack->add($this->saveButton)->style = 'text-align: center; padding: 10px 10px';
+        //$gridpack->add($this->saveButton)->style = 'text-align: center; padding: 10px 10px';
 
         $this->transformCallback = array($this, 'onBeforeLoad');
 
@@ -151,20 +158,24 @@ class RelacaoItemUpdateList extends TPage
         TSession::setValue('RelacaoItemList_filter_relacao_id',   NULL);
         
         TTransaction::open('procon_com');
-        
+
+        $pesquisa = new Pesquisa($data['pesquisa_id']);
+        $estabelecimento = new Estabelecimento($data['estabelecimento_id']);
+
         $obj = new StdClass;
         $obj->relacao_id = $data['id'];
-        $obj->pesquisa_id = $data['pesquisa_id'];
+        $obj->pesquisa_id = $pesquisa->nome;
+        $obj->estabelecimento_id = $estabelecimento->nome;
         
         $this->form->setData($obj);
         
         TTransaction::close();
 
         //mantem o valor de relacao id quando troca pagina de navegação
-        TSession::setValue('RelacaoItem_filter_data', $obj);
+        TSession::setValue('RelacaoItem_preenche', $obj);
         
         $this->filtrado = 0;
-        $this->onSearch($obj);       
+        $this->onSearch($obj);
     }
 
     /**
@@ -224,7 +235,8 @@ class RelacaoItemUpdateList extends TPage
         //$teste = $param['key'];
             
         // get the search form data
-        $data = $this->form->getData();
+        $data = TSession::getValue('RelacaoItem_filter_data');
+
 
         // clear session filters
         TSession::setValue('RelacaoItemList_filter_item_id',   NULL);
@@ -247,6 +259,8 @@ class RelacaoItemUpdateList extends TPage
             $filter = new TFilter('relacao_id', '=', "$obj->relacao_id"); // create the filter
             TSession::setValue('RelacaoItemList_filter_relacao_id',   $filter);
             $this->filtrado = 1;        
+        } else {
+            TSession::setValue('RelacaoItem_filter_data', $data);
         }
         
         /*if(TSession::getValue('RelacaoItem_relacao_id')){
@@ -254,8 +268,8 @@ class RelacaoItemUpdateList extends TPage
             TSession::setValue('RelacaoItemList_filter_relacao_id',   $filter); // stores the filter in the session
         }*/
         // keep the search data in the session
-        $this->form->setData($data);
-        TSession::setValue('RelacaoItem_filter_data', $data);
+       // $this->form->setData($data);
+       // TSession::setValue('RelacaoItem_filter_data', $data);
 
         $param = array();
         $param['offset']    =0;
@@ -270,11 +284,7 @@ class RelacaoItemUpdateList extends TPage
     {
         try
         {    
-           $data = $this->form->getData();
-            if($data->relacao_id) {
-               // $this->pegaID($data);
-                //echo('entrou if');
-            }
+           $data = TSession::getValue('relacaoItem_filter_data');
 
             // open a transaction with database 'procon_com'
             TTransaction::open('procon_com');
@@ -348,7 +358,7 @@ class RelacaoItemUpdateList extends TPage
 
             $data = $this->form->getData();
             TSession::setValue('RelacaoItem_filter_data', $data);
-            $this->form->setData(TSession::getValue('RelacaoItem_relacao_id'));
+            $this->form->setData(TSession::getValue('RelacaoItem_preenche'));
 
             // close the transaction
             TTransaction::close();
@@ -381,9 +391,10 @@ class RelacaoItemUpdateList extends TPage
             $object->preco_widget = new TEntry('preco' . '_' . $object->id);
             $precoFormatado = number_format($object->preco, 2, '', '');
             $object->preco = number_format($precoFormatado/100, 2, ',', '.');
-            $object->preco_widget->setValue( $object->preco );
+            $object->preco_widget->setValue( $object->preco);
             $object->preco_widget->setSize('100%');
             $object->preco_widget->setNumericMask(2, ',', '.', true);
+            $object->preco_widget->setEditable(FALSE);
           
             $gridfields[] = $object->preco_widget; // important
         }
