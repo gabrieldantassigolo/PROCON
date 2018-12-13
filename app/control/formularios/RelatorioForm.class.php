@@ -136,8 +136,8 @@ class RelatorioForm extends TPage
 
         $row = $table->addRow();
         $row->style = "border: 1px solid";
-        $row->addCell(new TLabel('Exibir Total'))->style = "width: 53%;  text-align: right; padding-right: 15px; padding-top: 5px;";
-        $row->addCell($total)->style = "width: 47%;  text-align: left";
+        $row->addCell(new TLabel('Exibir Total'))->style = "width: 53%; text-align: right; padding-right: 15px; padding-top: 25px; padding-bottom: 15px;";
+        $row->addCell($total)->style = "width: 47%; text-align: left; padding-top: 20px; padding-bottom: 15px;";
 
 
         $table1 = new TTable;
@@ -193,6 +193,16 @@ class RelatorioForm extends TPage
         $this->onSearch();
     }
 
+    public function calculaLarguraColuna($relacoes){
+        if($relacoes < 6){
+            return 30;
+        } elseif($relacoes < 11){
+            return 20;
+        } else {
+            return 15;
+        }
+    }
+
     function onGerarRelatorio($param)
     {
 
@@ -208,7 +218,7 @@ class RelatorioForm extends TPage
 //                foreach($relacoes as $relacao){
 //                    array_push($widths, 15);
 //                }
-
+                $larguraColuna = $this->calculaLarguraColuna($relacoes);
                 for($i = 0; $i < sizeof($relacoes)+3; $i++){
                     array_push($widths, 15);
                 }

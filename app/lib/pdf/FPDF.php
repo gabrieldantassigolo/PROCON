@@ -517,16 +517,18 @@ class FPDF
     {
             $dadosEstatistica = ['Menor','Maior','Variação'];
             $cont =0; //contador para o numero de estabelecimentos
-            //$this->Image('app/images/esic-relatorio.png',10,7,70);
+            $this->Image('app/images/favicon-96x96.png',10,7,30);
             $this->SetFillColor(240,240,240);
             $this->SetTextColor(0,0,0);
             $this->SetFont('Arial','B',15);
-            $this->cell(275,7,utf8_decode("Pesquisa de Preços"),0,1,'R',0);
+            $this->cell(420,7,utf8_decode("Pesquisa de Preços"),0,1,'C',0);
             $this->SetFont('Arial','',12);
-            $this->cell(275,5,utf8_decode("PROCON - DOURADOS/MS"),0,1,'R',0);
+            $this->cell(420,5,utf8_decode("PROCON - DOURADOS/MS"),0,1,'C',0);
             $this->SetFont('Arial','',10);
-            $this->cell(275,5,"",0,1,'R',0);
+            $this->cell(420,5,"",0,1,'R',0);
             $this->SetFont('Arial','B',10);
+
+
 
             //calcular posição inicial das celulas
             $multiplicador =1;
@@ -583,11 +585,12 @@ class FPDF
     
     function Footer()
     {
+        $this->SetTextColor(0,0,0);
         $this->AliasNbPages(); #Método de Numerar Páginas
         $this->Line(90,280,320,280); #Linha na horizontal
         $this->SetFont('Arial','B',8); #Seta a Fonte
         $this->SetXY(90,280); #Tavo o cursor para escrever no Ponto Y
-        $this->Cell(115,5,utf8_decode('eSIC Dourados - Sistema Eletrônico de Informação ao Cidadão'),0,0,'C',0); #Frase de Rodapé
+        $this->Cell(115,5,utf8_decode('SPD - Sistema de Pesquisa de Preços de Dourados'),0,0,'C',0); #Frase de Rodapé
         $this->SetFont('Arial','B',8); #Seto a Fonte
         $agora=date("d/m/Y   H:i");
         $this->Cell(56,5,'Pagina '.$this->pageno().' de {nb}',0,0,'C',0); #Imprime o Número das Páginas
