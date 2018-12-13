@@ -1,12 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="">
-        <meta name="author" content="">
+        <meta name="description" content="Sistema de Apoio Operacional do PROCON de Dourados">
+        <meta name="author" content="Departamento de Tecnologia da Informação - Prefeitura de Dourados - MS">
+        
+        <meta property="og:title" content="PROCON de Dourados - MS"/>
+        <meta property="og:image" content="http://procon.dourados.ms.gov.br/app/images/procon.jpg"/>
+        <meta property="og:url" content="http://procon.dourados.ms.gov.br"/>
+        <meta property="og:site_name" content="PROCON de Dourados - MS"/>
+        <meta property="og:description" content="Sistema de Apoio Operacional do PROCON de Dourados"/>
+        <meta name="twitter:title" content="PROCON de Dourados - MS" />
+        <meta name="twitter:image" content="http://procon.dourados.ms.gov.br/app/images/procon.jpg" />
+        <meta name="twitter:url" content="http://procon.dourados.ms.gov.br" />
+        <meta name="twitter:card" content="Sistema de Apoio Operacional do PROCON de Dourados" />
+        
+        <link rel="apple-touch-icon" sizes="57x57" href="http://procon.dourados.ms.gov.br/app/images/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="http://procon.dourados.ms.gov.br/app/images/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="http://procon.dourados.ms.gov.br/app/images/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="http://procon.dourados.ms.gov.br/app/images/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="http://procon.dourados.ms.gov.br/app/images/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="http://procon.dourados.ms.gov.br/app/images/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="http://procon.dourados.ms.gov.br/app/images/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="http://procon.dourados.ms.gov.br/app/images/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="http://procon.dourados.ms.gov.br/app/images/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192"  href="http://procon.dourados.ms.gov.br/app/images/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="http://procon.dourados.ms.gov.br/app/images/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="http://procon.dourados.ms.gov.br/app/images/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="http://procon.dourados.ms.gov.br/app/images/favicon-16x16.png">
+        <link rel="manifest" href="http://procon.dourados.ms.gov.br/app/images/manifest.json">
+        <meta name="msapplication-TileColor" content="#232478">
+        <meta name="msapplication-TileImage" content="http://procon.dourados.ms.gov.br/app/images/ms-icon-144x144.png">
+        <meta name="theme-color" content="#232478">
+
+        
     
-        <title>Adianti Template IV</title>
+        <title>PROCON - Dourados</title>
         
         {LIBRARIES}
         {HEAD}
@@ -17,57 +47,44 @@
         <link href="app/templates/{template}/css/themes/all-themes.css" rel="stylesheet" />
         
         <style>
-        html
+        .navbar
         {
-            height: unset;
+            position: relative;
         }
+		#myVideo {
+			position: fixed;
+			right: 0;
+			bottom: 0;
+			min-width: 100%; 
+			min-height: 100%;
+			width: auto;
+			height: auto;
+			z-index: -1000;
+		}
+		.logo_pmd {
+			margin:auto; 
+			margin-top:5px;
+			max-width:460px;
+		}
         </style>
     </head>
+    <video autoplay muted loop id="myVideo">
+  		<source src="app/templates/theme4/images/stars.mp4" type="video/mp4">
+	</video>
     <body>
-        <!-- Page Loader -->
-        <div class="page-loader-wrapper">
-            <div class="loader">
-                <div class="preloader">
-                    <div class="spinner-layer pl-red">
-                        <div class="circle-clipper left">
-                            <div class="circle"></div>
-                        </div>
-                        <div class="circle-clipper right">
-                            <div class="circle"></div>
-                        </div>
-                    </div>
-                </div>
-                <p>Carregando...</p>
-            </div>
-        </div>
-        <!-- #END# Page Loader -->
-        
-        <nav class="bg-blue main-header navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0; text-align:center; position:relative">
-            <div class="navbar-header" style="display: inline-block;float:none; width:100%;">
-                <span class="navbar-brand" style="color:white">Adianti Template IV</san>
-            </div>
-            <!-- /.navbar-header -->
-        </nav>
-        
-        <div id="wrapper" style="width:90%;margin:auto;margin-top:10px">
+        <div id="wrapper">
             <!-- Navigation -->
     
             <div id="adianti_div_content"></div>
             <div id="adianti_online_content"></div>
             <div id="adianti_online_content2"></div>
+            <div class="logo_pmd" align="center">
+            	<img style="margin: auto;" src="app/images/procon.png" width="55%" alt=""/>
+            </div>
+    
             
         </div>
-        <div style="text-align:center">
-            <!--[CREATE-ACCOUNT]--> <a href="index.php?class=SystemRegistrationForm">[_t{Create account}]</a> <!--[/CREATE-ACCOUNT]-->
-            <!--[RESET-PASSWORD]--> <a href="index.php?class=SystemRequestPasswordResetForm">[_t{Reset password}]</a> <!--[/RESET-PASSWORD]-->
-        </div>
-        
-        <a class="little-float-button bg-orange" title="PHP Modules" href="index.php?class=SystemModulesCheckView" style="pointer-events: auto;">
-            <i class="fa fa-cog internal-float-button"></i>
-        </a>
-        
-        <!-- /#wrapper -->
-        
+       
         <script src="app/templates/{template}/js/admin-login.js"></script>
     </body>
 </html>

@@ -26,7 +26,9 @@ class LoginForm extends TPage
         $this->style = 'clear:both';
         // creates the form
         $this->form = new BootstrapFormBuilder('form_login');
-        $this->form->setFormTitle( 'LOG IN' );
+        //$this->form->setFormTitle( 'Procon' );
+        
+        $this->form->class = 'testeCss';
         
         // create the form fields
         $login = new TEntry('login');
@@ -55,7 +57,7 @@ class LoginForm extends TPage
         {
             $unit_id = new TCombo('unit_id');
             $unit_id->setSize('70%');
-            $unit_id->style = 'height:35px;font-size:14px;float:left;border-bottom-left-radius: 0;border-top-left-radius: 0;';
+            $unit_id->style = 'height:35px;font-size:14px;float:left; border-bottom-left-radius: 0;border-top-left-radius: 0;';
             $this->form->addFields( [$unit, $unit_id] );
             $login->setExitAction(new TAction( [$this, 'onExitUser'] ) );
         }
@@ -65,7 +67,7 @@ class LoginForm extends TPage
         $btn->style = 'height: 40px;width: 90%;display: block;margin: auto;font-size:17px;';
         
         $wrapper = new TElement('div');
-        $wrapper->style = 'margin:auto; margin-top:100px;max-width:460px;';
+        $wrapper->style = 'margin:auto; margin-top:100px; max-width:460px; border-radius: 40px;';
         $wrapper->id    = 'login-wrapper';
         $wrapper->add($this->form);
         

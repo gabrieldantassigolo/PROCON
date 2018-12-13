@@ -3,8 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>Adianti Template IV</title>
+    <title>PROCON - Dourados</title>
     
+    <meta name="description" content="SIGOEGMD - Sistema Integrado de Gestão Operacional Eletrônica da PROCON de Dourados">
+    <meta name="author" content="Departamento de Tecnologia da Informação - Prefeitura de Dourados - MS">
+    
+    <meta property="og:title" content="PROCON de Dourados - MS"/>
+    <meta property="og:image" content="http://procon.dourados.ms.gov.br/app/images/procon.jpg"/>
+    <meta property="og:url" content="http://procon.dourados.ms.gov.br"/>
+    <meta property="og:site_name" content="PROCON de Dourados - MS"/>
+    <meta property="og:description" content="SIGOE - Sistema Integrado de Gestão Operacional Eletrônica"/>
+    <meta name="twitter:title" content="PROCON de Dourados - MS" />
+    <meta name="twitter:image" content="http://procon.dourados.ms.gov.br/app/images/procon.jpg" />
+    <meta name="twitter:url" content="http://procon.dourados.ms.gov.br" />
+    <meta name="twitter:card" content="SIGOE - Sistema Integrado de Gestão Operacional Eletrônica" />
+    
+    <link rel="apple-touch-icon" sizes="57x57" href="http://procon.dourados.ms.gov.br/app/images/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="http://procon.dourados.ms.gov.br/app/images/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="http://procon.dourados.ms.gov.br/app/images/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="http://procon.dourados.ms.gov.br/app/images/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="http://procon.dourados.ms.gov.br/app/images/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="http://procon.dourados.ms.gov.br/app/images/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="http://procon.dourados.ms.gov.br/app/images/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="http://procon.dourados.ms.gov.br/app/images/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="http://procon.dourados.ms.gov.br/app/images/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="http://procon.dourados.ms.gov.br/app/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="http://procon.dourados.ms.gov.br/app/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="http://procon.dourados.ms.gov.br/app/images/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="http://procon.dourados.ms.gov.br/app/images/favicon-16x16.png">
+    <link rel="manifest" href="http://procon.dourados.ms.gov.br/app/images/manifest.json">
+    <meta name="msapplication-TitleColor" content="#232478">
+    <meta name="msapplication-TitleImage" content="http://procon.dourados.ms.gov.br/app/images/ms-icon-144x144.png">
+    <meta name="theme-color" content="#232478">
+        
+        
     {LIBRARIES}
     {HEAD}
     
@@ -46,12 +78,12 @@
     </script>
 </head>
 
-<body class="theme-blue">
+<body class="theme-red">
     <!-- Page Loader -->
     <div class="page-loader-wrapper">
         <div class="loader">
             <div class="preloader">
-                <div class="spinner-layer pl-blue">
+                <div class="spinner-layer pl-red">
                     <div class="circle-clipper left">
                         <div class="circle"></div>
                     </div>
@@ -87,14 +119,38 @@
             <div class="navbar-header">
                 <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                 <a href="javascript:void(0);" class="bars"></a>
-                <a class="navbar-brand" href="index.php">Adianti Template IV</a>
+                <a class="navbar-brand" href="index.php">PROCON - Dourados</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Call Search -->
                     <li><a href="javascript:void(0);" class="js-search" data-close="true"><i class="material-icons">search</i></a></li>
                     <!-- #END# Call Search -->
-                      <!--{BUILDER-MENU}-->
+                    
+                      {IF-BUILDER}
+                      <li class="dropdown" id="asdf">
+                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-cog fa-fw fa-lg"></i>
+                         </a>
+                         <ul class="dropdown-menu">
+                            <li>
+                                <a onclick="__adianti_builder_edit_page()" generator="adianti" style="cursor:pointer">
+                                    <i class="fa fa-pencil-square-o blue"></i> Editar a página
+                                </a>
+                            </li>
+                            <li>
+                                <a onclick="__adianti_builder_update_page()" generator="adianti" style="cursor:pointer">
+                                    <i class="fa fa-download green"></i> Atualizar a página
+                                </a>
+                            </li>
+                    <li>
+                        <a onclick="__adianti_builder_get_new_pages()" generator="adianti" style="cursor:pointer">
+                            <i class="fa fa-cloud-download orange"></i> Baixar novas páginas
+                        </a>
+                    </li>
+                         </ul>
+                      </li>
+                      {/IF-BUILDER}
                       
                       <!-- Notifications -->
                       <li>
@@ -120,7 +176,7 @@
             <!-- User Info -->
             <div class="user-info">
                 <div class="image">
-                    <img src="app/images/photos/{login}.jpg" onError="this.onerror=null;this.src='app/templates/{template}/images/user.png';" width="48" height="48" alt="User" />
+                    <img src="app/templates/{template}/images/user.png" width="48" height="48" alt="User" />
                 </div>
                 <div class="info-container">
                     <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{username}</div>
@@ -148,7 +204,7 @@
             <!-- Footer -->
             <div class="legal">
                 <div class="copyright">
-                    &copy; 2016 AdminBSB 1.0.4
+                    &copy; 2013 DepTI 2.0
                 </div>
             </div>
             <!-- #Footer -->
