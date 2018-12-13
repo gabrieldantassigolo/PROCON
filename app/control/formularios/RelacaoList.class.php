@@ -115,11 +115,13 @@ class RelacaoList extends TPage
         $column_data->setAction(new TAction([$this, 'onReload']), ['order' => 'data_criacao']);
 
 
-        $action_view = new TDataGridAction(array($this, 'onUpdateEditavel'));
-        $action_view->setLabel('Bloquear/Desbloquear');
-        $action_view->setImage('fa:lock green');
-        $action_view->setField('id');
-        $this->datagrid->addAction($action_view);
+        $action_preco = new TDataGridAction(array('RelacaoItemUpdateList', 'pegaID'));
+        $action_preco->setLabel('Visualizar preços');
+        $action_preco->setImage('fa:dollar green');
+        $action_preco->setField('id');
+        $action_preco->setField('pesquisa_id');
+        $action_preco->setField('estabelecimento_id');
+        $this->datagrid->addAction($action_preco);
        
         
         // create EDIT action
@@ -139,6 +141,12 @@ class RelacaoList extends TPage
         $action_del->setImage('fa:trash-o red fa-lg');
         $action_del->setField('id');
         $this->datagrid->addAction($action_del);
+
+        $action_view = new TDataGridAction(array($this, 'onUpdateEditavel'));
+        $action_view->setLabel('Bloquear/Desbloquear');
+        $action_view->setImage('fa:lock green');
+        $action_view->setField('id');
+        $this->datagrid->addAction($action_view);
         
         // create the datagrid model
         $this->datagrid->createModel();
