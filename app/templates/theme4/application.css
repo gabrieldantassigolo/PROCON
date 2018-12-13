@@ -368,7 +368,7 @@ table.tdatagrid_table
 .panel
 {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    border-radius: 2px;
+    border-radius: 0px;
 }
 
 .panel-default>.panel-heading > .panel-title
@@ -381,7 +381,7 @@ table.tdatagrid_table
 {
     background: initial;
     min-height: 53px !important;
-    border-radius: initial;
+    border-radius: 0px;
 }
 
 .panel-footer
@@ -859,7 +859,7 @@ input[widget="tfile"], input[widget="tmultifile"] {
 
 .panel{
     border-color: #ddd !important;
-    border-radius: 10px;
+    border-radius: 3px;
 }
 
 .panel-default[widget='bootstrapformbuilder'] > .panel-heading{

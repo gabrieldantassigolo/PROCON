@@ -49,7 +49,6 @@ class RelacaoForm extends TPage
         $datanow = date('d/m/Y');
         $data_criacao->setValue($datanow);
         
-        echo $datanow;
         if($data_criacao < $datanow)
         {
             new TMessage('info', 'Data Inválida!');    
