@@ -27,6 +27,9 @@ class ItemForm extends TPage
         $unidade = new TDBCombo('unidade_id', 'procon_com', 'UnidadeMedida', 'id', 'nome');
         $categoria = new TDBCombo('categoria_id', 'procon_com', 'categoria', 'id', 'nome');
 
+        //mask
+        $nome->maxlength = 50;
+        
 
         // add the fields
         $this->form->addFields( [ new TLabel('') ], [ $id ] );
@@ -35,7 +38,8 @@ class ItemForm extends TPage
         $this->form->addFields( [ new TLabel('Un. de medida') ], [ $unidade] );
         $this->form->addFields( [ new TLabel('Categoria') ], [ $categoria ] );
 
-
+        //validation
+        $quantidade->addValidation('quantidade', new TNumericValidator);
 
         // set sizes
         $id->setSize('10%');

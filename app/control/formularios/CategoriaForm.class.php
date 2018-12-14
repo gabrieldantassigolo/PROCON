@@ -24,13 +24,16 @@ class CategoriaForm extends TPage
         $id = new THidden('id');
         $nome = new TEntry('nome');
 
+        //Mask
+        $nome->maxlength = 50;
 
         // add the fields
         $this->form->addFields( [ new TLabel('') ], [ $id ] );
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
 
-        $nome->addValidation('Nome', new TRequiredValidator);
-
+        //Validation
+        $nome->addValidation('Nome', new TMaxLengthValidator, array(50));
+        
 
         // set sizes
         $nome->setSize('70%');

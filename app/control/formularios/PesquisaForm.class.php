@@ -24,7 +24,9 @@ class PesquisaForm extends TPage
         $id = new TEntry('id');
         $nome = new TEntry('nome');
 
-
+        //MASK
+        $nome->maxlength = 50;
+        
         // add the fields
         //$this->form->addFields( [ new TLabel('') ], [ $id ] );
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );

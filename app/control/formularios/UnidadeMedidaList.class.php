@@ -19,6 +19,7 @@ class UnidadeMedidaList extends TPage
     public function __construct()
     {
         parent::__construct();
+        parent::include_css('app/resources/estiloformcampo.css'); 
         
         // creates the form
         $this->form = new BootstrapFormBuilder('form_UnidadeMedida');
@@ -28,13 +29,15 @@ class UnidadeMedidaList extends TPage
         // create the form fields
         $nome = new TEntry('nome');
 
+        //Mask
+        $nome->maxlength = 50;
 
         // add the fields
         $this->form->addFields( [ new TLabel('Nome') ], [ $nome ] );
 
-
+    
         // set sizes
-        $nome->setSize('100%');
+        $nome->setSize('70%');
 
         
         // keep the form filled during navigation with session data

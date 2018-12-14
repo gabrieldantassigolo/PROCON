@@ -145,6 +145,12 @@
                   </menuitem>
             </menu>
         </menuitem>
+        
+        
+        <menuitem label='Contato'>
+            <icon>fa:phone fa-fw orange</icon>
+            <action>Contato</action>
+        </menuitem>
 
         
     <menuitem label='Common pages'>

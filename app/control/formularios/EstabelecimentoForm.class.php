@@ -38,6 +38,7 @@ class EstabelecimentoForm extends TPage
         $complemento = new TEntry('complemento');
         
         // Fields Mask
+        $cnpj->setMask('99.999.999/9999-99');
         $nome->maxlength = 50;
         $razao->maxlength = 50;
         $telefone->setMask('(99)9999-9999');
@@ -46,7 +47,6 @@ class EstabelecimentoForm extends TPage
 		$cep->setExitAction($buscacep);
         $numero->setMask('9999');
         $complemento->forceUpperCase();
-		$complemento->forceUpperCase();			
 	    $logradouro->setEditable(FALSE);
 		$bairro->setEditable(FALSE);
 		$municipio->setEditable(FALSE);
@@ -72,16 +72,17 @@ class EstabelecimentoForm extends TPage
 
         // Validation
         $nome->addValidation('Nome', new TMaxLengthValidator, array(50));
-        $nome->addValidation('Nome', new TRequiredValidator);
-        $responsavel->addValidation('Responsavel', new TRequiredValidator);
-        $responsavel->addValidation('Responsavel2', new TRequiredValidator);
-        $email->addValidation('Email', new TRequiredValidator);
+        $nome->addValidation('Nome', new TMaxLengthValidator, array(50));
+        $responsavel->addValidation('Responsavel', new TMaxLengthValidator, array(50));
+        $responsavel->addValidation('Responsavel2', new TMaxLengthValidator, array(50));
+        $email->addValidation('Email', new TEmailValidator);
         $telefone->addValidation('Telefone', new TRequiredValidator);
         $cep->addValidation('Cep', new TRequiredValidator);
         $numero->addValidation('Numero', new TRequiredValidator);
-
+        $cnpj->addValidation('Cnpj', new TCNPJValidator);
         
         // set sizes
+        $bairro->setSize('70%');
         $nome->setSize('70%');
         $razao->setSize('70%');
         $cnpj->setSize('70%');
