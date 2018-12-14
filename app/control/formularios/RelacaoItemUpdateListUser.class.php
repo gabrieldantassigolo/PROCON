@@ -36,7 +36,8 @@ class RelacaoItemUpdateListUser extends TPage
         // add the fields
         /*$this->form->addFields( [ new TLabel('Pesquisa') ], [ $pesquisa_id ] );
         $this->form->addFields( [ new TLabel('Item') ], [ $item_id ] );*/
-        $this->form->addFields( [ new TLabel('Aviso: após a confirmação da alteração dos valores, novas alterações só serão possíveis com a permissão do Administrador!') ], [ $relacao_id ] );
+        $this->form->addFields( [ new TLabel('Aviso: após a confirmação da alteração dos valores, novas alterações só serão possíveis com a permissão do Administrador!') ], [ $relacao_id ] );
+
         $item_id->setSize('100%');
         
         // keep the form filled during navigation with session data
@@ -435,11 +436,13 @@ class RelacaoItemUpdateListUser extends TPage
         foreach ($objects as $object)
         {   
             $object->preco_widget = new TEntry('preco' . '_' . $object->id);
+            $object->preco_widget->setMaxLength(5);
             $precoFormatado = number_format($object->preco, 2, '', '');
             $object->preco = number_format($precoFormatado/100, 2, ',', '.');
             $object->preco_widget->setValue( $object->preco );
             $object->preco_widget->setSize('100%');
             $object->preco_widget->setNumericMask(2, ',', '.', true);
+
             /*$precoFormatado = number_format($object->preco, 2, '', '');
             $object->preco = number_format($precoFormatado/100, 2, ',', '.');*/
                       
@@ -452,6 +455,8 @@ class RelacaoItemUpdateListUser extends TPage
     /**
      * Ask before deletion
      */
+
+
     public static function onDelete($param)
     {
         // define the delete action
@@ -487,25 +492,43 @@ class RelacaoItemUpdateListUser extends TPage
 
     public function onControlSaveCollection($param)
     {
-        $dadosPrev = TSession::getValue('sessaoTeste');
+        try {
+            $dadosPrev = TSession::getValue('sessaoTeste');
 
-        TTransaction::open('procon_com');
-        $relacao = new Relacao($dadosPrev['id']);
-        TTransaction::close();
+            TTransaction::open('procon_com');
+            $relacao = new Relacao($dadosPrev['id']);
+            TTransaction::close();
 
-        //Testa pra ver se é editavel
-        if(!($relacao->editavel == 'Bloqueado')){
+            //Testa pra ver se é editavel
+            if (!($relacao->editavel == 'Bloqueado')) {
 
-            $data = $this->formgrid->getData(); // get datagrid form data
-            TSession::setValue('RelacaoItem_filter_data', $data);
-            TSession::setValue('RelacaoItem_filter_data1', $data);
-            $this->formgrid->setData($data);
+                $data = $this->formgrid->getData(); // get datagrid form data
+                TSession::setValue('RelacaoItem_filter_data', $data);
+                TSession::setValue('RelacaoItem_filter_data1', $data);
+                $this->formgrid->setData($data);
 
-            $action_yes = new TAction([$this, 'onSaveCollection'], $param);
-            new TQuestion('Deseja confirmar os dados?', $action_yes);
-        } else {
-            new TMessage('error', "Essa relação de preços não pode ser alterada, contate o administrador
-                no telefone 12341234 para mais informações");
+                $maiorCinco = false;
+                $precos = TSession::getValue('RelacaoItem_filter_data1');
+                foreach ($precos as $preco) {
+                    if (strlen($preco) > 6) {
+                        $maiorCinco = true;
+                    }
+                }
+
+                if ($maiorCinco == true) {
+                    throw new Exception('Todos os preços definidos devem possuir menos de 5 dígitos. Exemplo: (999,99)');
+                }
+
+                $action_yes = new TAction([$this, 'onSaveCollection'], $param);
+                new TQuestion('Deseja confirmar os dados?', $action_yes);
+            } else {
+                new TMessage('error', "Essa relação de preços não pode ser alterada, contate o administrador
+                    no telefone 12341234 para mais informações");
+            }
+        } catch (Exception $e)
+        {
+            // show the exception message
+            new TMessage('error', $e->getMessage());
         }
     }
 
@@ -517,7 +540,9 @@ class RelacaoItemUpdateListUser extends TPage
     {
         $data = TSession::getValue('RelacaoItem_filter_data1'); // get datagrid form data
         $this->formgrid->setData($data);
+
         $dadosPrev = TSession::getValue('sessaoTeste');
+        $maiorCinco = false;
 
             try
             {
@@ -526,7 +551,7 @@ class RelacaoItemUpdateListUser extends TPage
                 {
                     TTransaction::open('procon_com');
                     $obj = new Relacao($dadosPrev['id']);
-                    $this->changeEditavel($obj);
+                    //$this->changeEditavel($obj);
                     TTransaction::close();
                 }
                 TTransaction::open('procon_com');

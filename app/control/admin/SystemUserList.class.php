@@ -64,8 +64,15 @@ class SystemUserList extends TStandardList
         // add the search form actions
         $btn = $this->form->addAction(_t('Find'), new TAction(array($this, 'onSearch')), 'fa:search');
         $btn->class = 'btn btn-sm btn-primary';
-        $this->form->addAction(_t('New'),  new TAction(array('SystemUserForm', 'onEdit')), 'bs:plus-sign green');
-        
+
+        //verifica se é proconadmin ou nao
+        $groupid = (TSession::getValue('usergroupids'));
+        if(in_array(3, $groupid)){
+            $this->form->addAction(_t('New'),  new TAction(array('UserFormProconAdmin', 'onEdit')), 'bs:plus-sign green');
+        } else {
+            $this->form->addAction(_t('New'),  new TAction(array('SystemUserForm', 'onEdit')), 'bs:plus-sign green');
+        }
+
         // creates a DataGrid
         $this->datagrid = new BootstrapDatagridWrapper(new TDataGrid);
         $this->datagrid->datatable = 'true';

@@ -18,6 +18,8 @@ class RelatorioForm extends TPage
     private $exibeTotal;
     private $first = 0;
     private $gridpack;
+    protected $larguraColuna = 0;
+    protected $larguraColunaStats = 0;
     
     
     /**
@@ -194,13 +196,19 @@ class RelatorioForm extends TPage
     }
 
     public function calculaLarguraColuna($relacoes){
-        if($relacoes < 6){
-            return 30;
-        } elseif($relacoes < 11){
-            return 20;
+        if(sizeof($relacoes) < 6){
+            $this->larguraColuna = 180/(sizeof($relacoes));
+        } elseif(sizeof($relacoes) < 11){
+            $this->larguraColuna = 200/(sizeof($relacoes));
         } else {
-            return 15;
+            $this->larguraColuna = 220/(sizeof($relacoes));
         }
+    }
+
+    public function transformaReal($valor){
+        $preco_transformer = number_format($valor, 2, '', '');
+        $preco_transformer = number_format($preco_transformer/100,2,",",".");
+        return $preco_transformer;
     }
 
     function onGerarRelatorio($param)
@@ -213,20 +221,27 @@ class RelatorioForm extends TPage
                 return 0;
             }
             $estabelecimentos = $this->getEstabelecimentos($relacoes);
-            $widths = array(54, 10, 16);
+            $widths = array(50, 10, 20);
             if ($relacoes) {
 //                foreach($relacoes as $relacao){
 //                    array_push($widths, 15);
 //                }
-                $larguraColuna = $this->calculaLarguraColuna($relacoes);
-                for($i = 0; $i < sizeof($relacoes)+3; $i++){
-                    array_push($widths, 15);
+                $this->calculaLarguraColuna($relacoes);
+
+                //tamanho das colunas de acordo com N de relacoes
+                for($i = 0; $i < sizeof($relacoes); $i++){
+                    array_push($widths, $this->larguraColuna);
+                }
+
+                for($i = 0; $i < 4; $i++){
+                    array_push($widths, 20);
                 }
                  //410 maxsize larguras de coluna
                 $pdf = new FPDF('L', 'mm', 'A3');
                 $pdf->AddFont('Verdana', '', 'Verdana.php'); //adiciona fonte n é padrão
                 $pdf->SetFont('Verdana', '', 8);
                 $pdf->Open();
+                $pdf->larguraColuna = $this->larguraColuna;
                 $pdf->relacoes = $relacoes; //envia para a classe FPDF
                 $pdf->AddPage();
                 $pdf->SetFillColor(240, 240, 240);
@@ -243,11 +258,11 @@ class RelatorioForm extends TPage
                 $repository = new TRepository('RelacaoItem');
 
                 //calcular posição inicial do texto com base no N de relações
-                $multiplicador = 1;
-                if(sizeof($relacoes)<5){
-                    $multiplicador = 6;
-                } elseif(sizeof($relacoes)<10) {
+                $multiplicador = 2;
+                if(sizeof($relacoes)<6){
                     $multiplicador = 4;
+                } elseif(sizeof($relacoes)<11) {
+                    $multiplicador = 3;
                 }
                 $posIni = 10*$multiplicador;
 
@@ -267,12 +282,10 @@ class RelatorioForm extends TPage
                         $result = $repository->load($criteria);
 
                         //Transformação de preço (alteração de ponto do BD para virgula no relatorio
-                        $preco_transformer = number_format($result[0]->preco, 2, '', '');
-                        $preco_transformer = number_format($preco_transformer/100,2,",",".");
-
+                        $valorFormatado = $this->transformaReal($result[0]->preco);
 
                         //$preco_transformer->number
-                        array_push($linha, $preco_transformer);
+                        array_push($linha, $valorFormatado);
 
                         //guardando no array de precos para calculo estatistico
                         array_push($precos, $result[0]->preco);
@@ -281,6 +294,7 @@ class RelatorioForm extends TPage
                         if(!next($relacoes)) {
                             $max = max($precos);
                             $min = min($precos);
+                            $media = $this->transformaReal(array_sum($precos)/count($precos));
                             if($min != 0)
                                 $variacao = ($max - $min) / $min;
 
@@ -288,10 +302,12 @@ class RelatorioForm extends TPage
                                 array_push($linha, '0,00');
                                 array_push($linha, $max);
                                 array_push($linha, utf8_decode('Nulo'));
+                                array_push($linha, $media);
                             } else {
                                 array_push($linha, $min);
                                 array_push($linha, $max);
                                 array_push($linha, round($variacao*100) . '%');
+                                array_push($linha, $media);
                             }
                         }
                     }

@@ -11,6 +11,7 @@ define('FPDF_VERSION','1.81');
 
 class FPDF
 {
+    public $larguraColuna;
     public $relacoes;
     protected $page;               // current page number
     protected $n;                  // current object number
@@ -113,11 +114,11 @@ class FPDF
         $h=5*$nb;
 
         //multiplicador para definir posição do x de acordo com n de relações
-        $multiplicador =1;
-        if(sizeof($this->relacoes)<5){
-            $multiplicador = 6;
-        } elseif(sizeof($this->relacoes)<10) {
+        $multiplicador =2;
+        if(sizeof($this->relacoes)<6){
             $multiplicador = 4;
+        } elseif(sizeof($this->relacoes)<11) {
+            $multiplicador = 3;
         }
         $posIni = 10*$multiplicador;
 
@@ -512,10 +513,21 @@ class FPDF
         $this->footerCallback = $cb;
         $this->footerCallbackContext = $context;
     }
-    
+
+    public function calculaLarguraColuna($relacoes){
+        if(sizeof($relacoes) < 6){
+            $this->larguraColuna = 180/(sizeof($relacoes));
+        } elseif(sizeof($relacoes) < 11){
+            $this->larguraColuna = 200/(sizeof($relacoes));
+        } else {
+            $this->larguraColuna = 220/(sizeof($relacoes));
+        }
+    }
+
+
     function Header()
     {
-            $dadosEstatistica = ['Menor','Maior','Variação'];
+            $dadosEstatistica = ['Menor','Maior','Variação', 'Média'];
             $cont =0; //contador para o numero de estabelecimentos
             $this->Image('app/images/favicon-96x96.png',10,7,30);
             $this->SetFillColor(240,240,240);
@@ -529,13 +541,12 @@ class FPDF
             $this->SetFont('Arial','B',10);
 
 
-
             //calcular posição inicial das celulas
-            $multiplicador =1;
-            if(sizeof($this->relacoes)<5){
-                $multiplicador = 6;
-            } elseif(sizeof($this->relacoes)<10) {
+            $multiplicador =2;
+            if(sizeof($this->relacoes)<6){
                 $multiplicador = 4;
+            } elseif(sizeof($this->relacoes)<11) {
+                $multiplicador = 3;
             }
             $posIni = 10*$multiplicador;
 
@@ -549,6 +560,8 @@ class FPDF
             $this->SetXY($posIni +80,27); //seta posição inicial das colunas de estabelecimento
             $this->setFont('Arial', '',11);
             TTransaction::open('procon_com');
+
+
             foreach($this->relacoes as $relacao)
             {
                 //verificar se é a ultima posição para quebrar a linha
@@ -558,23 +571,25 @@ class FPDF
 //                    $this->Cell(15, 50,'' , 1, 1, 'C', 1);
 //                    $this->TextWithDirection($posIni + 89 +($cont*15),73, utf8_decode($relacao->estabelecimento->nome), 'U');
 //                } else {
-                    $this->Cell(15, 50,'',1, 0, 'C', 1);
-                    $this->TextWithDirection($posIni + 89 +($cont*15),73, utf8_decode($relacao->estabelecimento->nome), 'U');
+                    $this->Cell($this->larguraColuna, 50,'',1, 0, 'C', 1);
+                    $this->TextWithDirection($posIni + 80 +($cont*($this->larguraColuna))+ ($this->larguraColuna)/1.9,73, utf8_decode($relacao->estabelecimento->nome), 'U');
 //                }
                 $cont++;
             }
 
+            $this->SetXY($posIni + 80 +($cont*$this->larguraColuna), 69); //reposiciona o ponteiro para corrigir o reajuste de cima (esta pasando)
             for($j = 0; $j < sizeof($dadosEstatistica); $j++){
                 $this->SetFont('Verdana', '', 8);
                 $this->SetTextColor(255,255,255);
                 $this->SetFillColor(70,70,70);
-                $this->SetXY($posIni + 80 +($cont*15), 69);
+                //$this->SetXY($posIni + 80 +($cont*20), 69); //reposiciona o ponteiro
                 if (!next($dadosEstatistica))
                 {
-                    $this->Cell(15, 8, utf8_decode($dadosEstatistica[$j]), 1, 1, 'C', 1);
+                    $this->Cell(20, 8, utf8_decode($dadosEstatistica[$j]), 1, 1, 'C', 1);
                 } else {
-                    $this->Cell(15, 8, utf8_decode($dadosEstatistica[$j]), 1, 0, 'C', 1);
+                    $this->Cell(20, 8, utf8_decode($dadosEstatistica[$j]), 1, 0, 'C', 1);
                 }
+
                 $cont++;
             }
 
