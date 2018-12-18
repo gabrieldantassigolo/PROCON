@@ -212,7 +212,7 @@ class SystemUserForm extends TPage
             if( !empty($param['groups']) )
             {
 
-                if(((in_array(1, $user->getSystemUserGroupIds()))!= true) and (in_array(1, $param['groups']) or in_array(3, $param['groups'])));
+                if(((in_array(1, $user->getSystemUserGroupIds()))!= true) and (in_array(1, $param['groups'])))
                     throw new Exception('Você não possui permissão para adicionar um usuário do tipo Administrador');
                 foreach( $param['groups'] as $group_id )
                 {

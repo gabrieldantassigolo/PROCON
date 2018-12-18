@@ -182,7 +182,7 @@ class SystemUserList extends TStandardList
     
     //Editar apenas usuarios não Admin
     public function testeEdit($param){
-        if($param['id'] != 1){
+        if($param['id'] != 1 or TSession::getValue('login') == 'admin'){
             AdiantiCoreApplication::loadPage('SystemUserForm', 'onEdit', $param);
         }else{
             new TMessage('error', 'Você não tem permissão!');
