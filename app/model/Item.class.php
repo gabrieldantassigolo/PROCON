@@ -20,6 +20,7 @@ class Item extends TRecord
         parent::addAttribute('quantidade');
         parent::addAttribute('unidade_id');
         parent::addAttribute('categoria_id');
+        parent::addAttribute('teste_id');
     }
     
     public function set_categoria(Categoria $object)
@@ -62,6 +63,27 @@ class Item extends TRecord
     
         // returns the associated object
         return $this->unidadeMedida;
+    }
+    
+       public function set_teste(Teste $object)
+    {
+        $this->teste = $object;
+        $this->teste_id = $object->id;
+    }
+    
+    /**
+     * Method get_distribuidor
+     * Sample of usage: $filme->distribuidor->attribute;
+     * @returns Distribuidor instance
+     */
+    public function get_teste()
+    {
+        // loads the associated object
+        if (empty($this->teste))
+            $this->teste = new teste($this->teste_id);
+    
+        // returns the associated object
+        return $this->teste;
     }
     
     

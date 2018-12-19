@@ -19,7 +19,7 @@ class ItemList extends TPage
     public function __construct()
     {
         parent::__construct();
-        parent::include_css('app/resources/estiloformcampo.css'); 
+        parent::include_css('app/resources/estiloformcampo.css');
         
         // creates the form
         $this->form = new BootstrapFormBuilder('form_Item');
@@ -64,7 +64,7 @@ class ItemList extends TPage
         $column_check = new TDataGridColumn('check', '', 'center' , '5%');
         $column_nome = new TDataGridColumn('nome', 'Nome', 'left', '50%');
         $column_quantidade = new TDataGridColumn('quantidade', 'Qtd.', 'center', '10%');
-        $column_unidade_id = new TDataGridColumn('unidadeMedida->nome', 'Un.', 'center', '10%');
+        $column_unidade_id = new TDataGridColumn('teste->nome', 'Un.', 'center', '10%');
         $column_categoria_id = new TDataGridColumn('categoria->nome', 'Categoria', 'left', '25%');
 
 
@@ -80,7 +80,7 @@ class ItemList extends TPage
         $column_categoria_id->setAction(new TAction([$this, 'onReload']), ['order' => 'categoria->nome']);
         
         // create EDIT action
-        $action_edit = new TDataGridAction(['ItemForm', 'onEdit']);
+        $action_edit = new TDataGridAction(array('ItemForm', 'onEdit'));
         //$action_edit->setUseButton(TRUE);
         //$action_edit->setButtonClass('btn btn-default');
         $action_edit->setLabel(_t('Edit'));
@@ -247,7 +247,7 @@ class ItemList extends TPage
                 $param['order'] = 'id';
                 $param['direction'] = 'asc';
             }
-            $criteria->setProperties($newparam); // order, offset
+            $criteria->setProperties($param); // order, offset
             $criteria->setProperty('limit', $limit);
             
 
